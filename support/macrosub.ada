@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
---     this public release, the Government intends to confer upon all
---     recipients unlimited rights  equal to those held by the Government.
---     These rights include rights to use, duplicate, release or disclose the
---     released technical data and computer software in whole or in part, in
---     any manner and for any purpose whatsoever, and to have or permit others
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
+--     this public release, the Government intends to confer upon all 
+--     recipients unlimited rights  equal to those held by the Government.  
+--     These rights include rights to use, duplicate, release or disclose the 
+--     released technical data and computer software in whole or in part, in 
+--     any manner and for any purpose whatsoever, and to have or permit others 
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -436,7 +436,6 @@ PROCEDURE MACROSUB IS
      A_LINE, TEMP_MACRO, TEMP_LINE, NEW_LINE : VAL_STRING;
      END_OF_LINE_SEARCH, FLAG       : BOOLEAN := FALSE;
      TESTS_FILE                     : CONSTANT STRING := "TSTTESTS.DAT";
-     TESTS_FILE_LC                  : CONSTANT STRING := "tsttests.dat";
      TSTTESTS,FILE_CRE              : EXCEPTION;
 
 BEGIN
@@ -446,13 +445,9 @@ BEGIN
           OPEN (INFILE2, IN_FILE, TESTS_FILE);
      EXCEPTION
           WHEN NAME_ERROR =>
-               OPEN (INFILE2, IN_FILE, TESTS_FILE_LC);
-          EXCEPTION
-               WHEN NAME_ERROR =>
-                    PUT_LINE ("** ERROR: UNABLE TO OPEN " &
-                                TESTS_FILE & " OR" &
-                                TEST_FILE_LC);
-                    RAISE TSTTESTS;
+               PUT_LINE ("** ERROR: ERROR DURING OPENING OF " &
+                         "TSTTESTS.DAT");
+               RAISE TSTTESTS;
      END;
      WHILE NOT END_OF_FILE (INFILE2) LOOP
           GET_LINE (INFILE2, FNAME, LENGTH);
@@ -551,9 +546,3 @@ EXCEPTION
      WHEN OTHERS =>
           PUT_LINE ("UNEXPECTED EXCEPTION RAISED");
 END MACROSUB;
-
--- Local Variables:
--- ada-indent: 5
--- ada-case-identifier: upper-case
--- ada-case-keyword: upper-case
--- End:

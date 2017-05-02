@@ -186,21 +186,21 @@ for i in $dir/support/*.ada $dir/support/*.a; do
    host_gnatchop $i >> $dir/acats.log 2>&1
 done
 
-# These tools are used to preprocess some ACATS sources
-# they need to be compiled native on the host.
+# These tools are used to preprocess some ACATS sources.
+# They need to be compiled native on the host.
 
 host_gnatmake -q -gnatws macrosub.adb
 if [ $? -ne 0 ]; then
    display "**** Failed to compile macrosub"
    exit 1
 fi
-./macrosub > macrosub.out 2>&1
-
-gcc -c cd300051.c
+./macrosub >> $dir/acats.log 2>&1
 
 rm -f $dir/support/macrosub
 rm -f $dir/support/*.ali
 rm -f $dir/support/*.o
+
+gcc -c cd300051.c
 
 display " done."
 
