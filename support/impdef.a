@@ -59,6 +59,15 @@
 --     13 Dec 96   SAIC    Added Address_Value_IO
 --     13 Sep 99   RLB     Added more external name string constants.
 --     16 Sep 99   RLB     Corrected definition of Non_State_String constant.
+--      5 Jul 12   RLB     Removed misleading comment.
+--     20 Jul 12   RLB     Added Maximum_Adjustment_To_Specified_Storage_Size.
+--     24 Mar 14   RLB     Added external name string constants for new tests.
+--     14 Jan 15   RLB     Added environment variable names for new tests.
+--                         Removed obsolete .AW processor constants.
+--      9 Feb 15   RLB     Added directory name for new test.
+--     19 Feb 15   RLB     Added file name comparison function for new tests.
+--                         Added current and parent directory names.
+--     25 Nov 15   RLB     Added external name string constants for new tests.
 --
 --!
 
@@ -105,8 +114,6 @@ package ImpDef is
    Minimum_Task_Switch : constant Duration := 0.001;
    --                                         ^^^ --- MODIFY HERE AS NEEDED
 
-   Long_Minimum_Task_Switch : constant Duration := 0.1;
-
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
 
    -- This is the time required to activate another task and allow it
@@ -118,8 +125,6 @@ package ImpDef is
 
    Switch_To_New_Task : constant Duration := 0.001;
    --                                        ^^^ -- MODIFY HERE AS NEEDED
-
-   Long_Switch_To_New_Task : constant Duration := 0.1;
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
 
@@ -196,18 +201,14 @@ package ImpDef is
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
 
    -- The following address constant must be a valid address to locate
-   -- the C program CD30005_1.  It is shown here as a named number;
-   -- the implementation may choose to type the constant as appropriate.
+   -- the C program CD30005_1.
 
    function Cd30005_Proc (X : Integer) return Integer;
    pragma Import (C, Cd30005_Proc, "_cd30005_1");
- 
+
    pragma Linker_Options ("ACATS4GNATDIR/support/cd300051.o");
- 
+
    CD30005_1_Foreign_Address : constant System.Address:= Cd30005_Proc'Address;
- 
-   -- CD30005_1_Foreign_Address : constant System.Address:=
-   --          System.Storage_Elements.To_Address ( 16#0000_0000# )
    --               --MODIFY HERE AS REQUIRED --- ^^^^^^^^^^^^^
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
@@ -233,9 +234,87 @@ package ImpDef is
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
 
+   -- The following constant represents the largest amount that a
+   -- reported Storage_Size will exceed that specified for an access type.
+   -- This should reflect any rounding up that the implementation may do
+   -- to a specified Storage_Size. Used in tests CDB0001 and CDB0002.
+
+   Maximum_Adjustment_To_Specified_Storage_Size : constant := 1024;
+   --                          MODIFY HERE AS NEEDED ---------^^^^
+
+--=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
+
+   -- The following string constant should be set to the simple name of a
+   -- directory that can be created, used, and deleted in the test default
+   -- directory during the execution of test CXAG001. If execution environment
+   -- does not support directories, this string should be set to the null
+   -- string ("").
+
+   Directory_To_Create : constant String := "TESTDIR";
+   --        MODIFY HERE AS NEEDED ----------^^^^^^^
+
+   -- The following function returns true if Left and Right file names
+   -- represent the same file or directory on the target system. It is used
+   -- by tests CXAG001 and CXAG002.
+
+   function Equivalent_File_Names (Left, Right : String) return Boolean;
+
+   -- The following string constant should be set to the simple name that is
+   -- the symbolic representation of the parent directory. For this name,
+   -- Is_Parent_Directory_Name returns True. If package
+   -- Ada.Directories.Hierarchical_File_Names is not provided by the
+   -- implementation, the value of this constant will not be used and thus
+   -- can be anything.
+   --
+   -- The default value is appropriate for most systems including Windows,
+   -- Unix, Linux, and OSX; it should be rarely necessary to change this value.
+
+   Parent_Directory_Name : constant String := "..";
+   --        MODIFY HERE AS NEEDED ------------^^
+
+   -- The following string constant should be set to the simple name that is
+   -- the symbolic representation of the current directory. For this name,
+   -- Is_Current_Directory_Name returns True. If package
+   -- Ada.Directories.Hierarchical_File_Names is not provided by the
+   -- implementation, the value of this constant will not be used and thus
+   -- can be anything.
+   --
+   -- The default value is appropriate for most systems including Windows,
+   -- Unix, Linux, and OSX; it should be rarely necessary to change this value.
+
+   Current_Directory_Name : constant String := ".";
+   --        MODIFY HERE AS NEEDED -------------^
+
+--=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
+
+   -- The following string constant should be set to an environment variable
+   -- that will exist with a non-empty value during the execution of test
+   -- CXAH001. This variable will only be read (it will not be modified by
+   -- the test). If no such variable is available (including if the execution
+   -- environment does not support environment variables), this string should
+   -- be set to the null string (""). (The default value should be sufficient
+   -- for Windows and Linux targets.)
+
+   Existing_Environment_Variable_To_Read : constant String := "PATH";
+   --                          MODIFY HERE AS NEEDED ----------^^^^
+
+   -- The following string constant should be set to an environment variable
+   -- that will not exist at the start of the execution of tests CXAH002
+   -- and CXAH003. (If it does exist, the tests will fail.) This variable will
+   -- be created, modified, and deleted during the execution of the tests. If
+   -- no such variable is available (including if the execution environment
+   -- does not support environment variables), this string should be set to
+   -- the null string ("").
+
+   Unused_Environment_Variable_To_Modify : constant String := "ACATSVAR";
+   --                          MODIFY HERE AS NEEDED ----------^^^^^^^^
+
+--=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
+
    -- The following string constants must be the external names resulting
-   -- from the C compilation of CXB30040.C, CXB30060.C, CXB30130.C, and
-   -- CXB30131.C.  The strings will be used as arguments to pragma Import.
+   -- from the C compilation of CXB30040.C, CXB30060.C, CXB30130.C,
+   -- CXB30131.C, CXB30170.C, and CXB30230.C.  The strings will be used as
+   -- arguments to pragma Import.
 
    CXB30040_External_Name : constant String := "CXB30040";
    --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
@@ -248,6 +327,50 @@ package ImpDef is
 
    CXB30131_External_Name : constant String := "CXB30131";
    --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
+
+   CXB30170_External_Name : constant String := "CXB30170";
+   --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
+
+   CXB30230_External_Name : constant String := "CXB30230";
+   --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
+
+--=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
+
+   -- The following string constants must be the external names that the
+   -- C compilation of CXB30170.C will use for the items exported from
+   -- CXB30171.A. The strings will be used as arguments
+   -- to pragma Export.
+
+   CXB30171_Global_External_Name : constant String := "CXB30171_Global";
+   --                        MODIFY HERE AS NEEDED --- ^^^^^^^^^^^^^^^
+
+   CXB30171_Proc_External_Name : constant String := "CXB30171_Ada_Doubler";
+   --                      MODIFY HERE AS NEEDED --- ^^^^^^^^^^^^^^^^^^^^
+
+--=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
+
+   -- The following string constants must be the external names that result
+   -- from the C compilation of CXB30180 and CXB30240. The strings will be
+   -- used as the argument to aspect External_Name.
+
+   CXB30180_External_Name : constant String := "CXB30180";
+   --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
+
+   CXB30240_External_Name : constant String := "CXB30240";
+   --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
+
+--=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
+
+   -- The following string constants must be the external names that the
+   -- C compilation of CXB30180.C will use for the items exported from
+   -- CXB30181.A. The strings will be used as arguments to aspect
+   -- External_Name.
+
+   CXB30181_Global_External_Name : constant String := "CXB30181_Global";
+   --                        MODIFY HERE AS NEEDED --- ^^^^^^^^^^^^^^^
+
+   CXB30181_Proc_External_Name : constant String := "CXB30181_Ada_Doubler";
+   --                      MODIFY HERE AS NEEDED --- ^^^^^^^^^^^^^^^^^^^^
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
 
@@ -309,25 +432,6 @@ package ImpDef is
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
 
-   -- The following string constant must be the path name for the .AW
-   -- files that will be processed by the Wide Character processor to
-   -- create the C250001 and C250002 tests.  The Wide Character processor
-   -- will expect to find the files to process at this location.
-
-   Test_Path_Root : constant String :=
-     "ACATS4GNATDIR/tests/c2/";
-   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ --- MODIFY HERE AS NEEDED
-
-   -- The following two strings must not be modified unless the .AW file
-   -- names have been changed.  The Wide Character processor will use
-   -- these strings to find the .AW files used in creating the C250001
-   -- and C250002 tests.
-
-  Wide_Character_Test : constant String := Test_Path_Root & "c250001";
-  Upper_Latin_Test    : constant String := Test_Path_Root & "c250002";
-
---=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
-
    -- The following instance of Integer_IO or Modular_IO must be supplied
    -- in order for test CD72A02 to compile correctly.
    -- Depending on the choice of base type used for the type
@@ -342,8 +446,8 @@ package ImpDef is
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
 
-   One_Second : constant Duration := 0.001;
-   One_Long_Second : constant Duration := 0.1;
+   One_Nominal_Second : constant Duration := 0.001;
+   One_Nominal_Long_Second : constant Duration := 0.1;
 
 end ImpDef;
 
@@ -362,7 +466,7 @@ package body ImpDef is
    -- time slice unit on implementations which use time slicing.  For
    -- implementations which do not use time slicing the body can be null.
 
-   Procedure Exceed_Time_Slice is
+   procedure Exceed_Time_Slice is
       T : Integer := 0;
       Loop_Max : constant Integer := 4_000;
    begin
@@ -370,6 +474,31 @@ package body ImpDef is
          T := Report.Ident_Int (1) * Report.Ident_Int (2);
       end loop;
    end Exceed_Time_Slice;
+
+--=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
+
+   -- The following function returns true if Left and Right file names
+   -- represent the same file or directory on the target system.
+   --
+   -- For many systems, directly comparing the file names will be sufficient.
+   -- However, if the target supports alternative forms of file names, a
+   -- more complex function may be required. For instance, on a case
+   -- insensitive or case preserving target, the case of the file names
+   -- may vary without changing the meaning of the file name. In that case,
+   -- this function should take that into account.
+   --
+   -- This does not need to be a perfect file name comparison for the
+   -- target system; the file names to be compared will come from
+   -- Ada language-defined packages like Ada.Text_IO (from the Name
+   -- function) and Ada.Directories, as well as from Report.Legal_File_Name.
+   -- For instance, on Windows, the Ada runtime will probably use either
+   -- '/' or '\', but probably not both, so it isn't necessary to implement
+   -- that equivalence in this function.
+
+   function Equivalent_File_Names (Left, Right : String) return Boolean is
+   begin
+       return Left = Right;
+   end Equivalent_File_Names;
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
 

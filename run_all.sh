@@ -77,10 +77,24 @@ clean_dir () {
 }
 
 find_main () {
-  ls ${i}?.adb > ${i}.lst 2> /dev/null
-  ls ${i}*m.adb >> ${i}.lst 2> /dev/null
-  ls ${i}.adb >> ${i}.lst 2> /dev/null
-  main=`tail -1 ${i}.lst`
+  # Must handle the cases that aren't correctly identified (ACATS 4.1)
+  case ${i} in
+     c3a1003)
+       main=c3a10032
+       ;;
+     c3a1004)
+       main=c3a10042
+       ;;
+     ca11023)
+       main=ca110232
+       ;;
+     *)
+       ls ${i}?.adb > ${i}.lst 2> /dev/null
+       ls ${i}*m.adb >> ${i}.lst 2> /dev/null
+       ls ${i}.adb >> ${i}.lst 2> /dev/null
+       main=`tail -1 ${i}.lst`
+       ;;
+  esac
 }
 
 EXTERNAL_OBJECTS=""
@@ -168,7 +182,7 @@ mkdir -p $dir/run
 
 cp -pr $testdir/tests $dir/
 
-for i in $dir/support/*.ada $dir/support/*.a; do 
+for i in $dir/support/*.ada $dir/support/*.a; do
    host_gnatchop $i >> $dir/acats.log 2>&1
 done
 
@@ -183,15 +197,8 @@ fi
 ./macrosub > macrosub.out 2>&1
 
 gcc -c cd300051.c
-host_gnatmake -q -gnatws widechr.adb
-if [ $? -ne 0 ]; then
-   display "**** Failed to compile widechr"
-   exit 1
-fi
-./widechr > widechr.out 2>&1
 
 rm -f $dir/support/macrosub
-rm -f $dir/support/widechr
 rm -f $dir/support/*.ali
 rm -f $dir/support/*.o
 
@@ -220,7 +227,8 @@ fi
 display "		=== acats tests ==="
 
 if [ $# -eq 0 ]; then
-   chapters=`cd $dir/tests; echo [a-z]*`
+   # only run the tests that are supposed to succeed
+   chapters=`cd $dir/tests; echo a* c* d* e*`
 else
    chapters=$*
 fi
@@ -245,13 +253,14 @@ for chapter in $chapters; do
    fi
 
    cd $dir/tests/$chapter
-   ls *.a *.ada *.adt *.am *.dep 2> /dev/null | sed -e 's/\(.*\)\..*/\1/g' | \
-   cut -c1-7 | sort | uniq | comm -23 - $dir_support/norun.lst \
-     > $dir/tests/$chapter/${chapter}.lst 
+   ls *.a *.ada *.adt *.am *.au *.dep 2> /dev/null | \
+       sed -e 's/\(.*\)\..*/\1/g' | \
+       cut -c1-7 | sort | uniq | comm -23 - $dir_support/norun.lst \
+     > $dir/tests/$chapter/${chapter}.lst
    countn=`wc -l < $dir/tests/$chapter/${chapter}.lst`
    as_fn_arith $glob_countn + $countn
    glob_countn=$as_val
-   for i in `cat $dir/tests/$chapter/${chapter}.lst`; do 
+   for i in `cat $dir/tests/$chapter/${chapter}.lst`; do
 
       # If running multiple run_all.sh jobs in parallel, decide
       # if we should run this test in the current instance.
@@ -283,7 +292,7 @@ for chapter in $chapters; do
 	 fi
       fi
 
-      extraflags="-gnat95"
+      extraflags="-gnat2012"
       grep $i $testdir/overflow.lst > /dev/null 2>&1
       if [ $? -eq 0 ]; then
          extraflags="$extraflags -gnato"
@@ -310,7 +319,7 @@ for chapter in $chapters; do
          continue
       fi
 
-      target_gnatchop -c -w `ls ${test}*.a ${test}*.ada ${test}*.adt ${test}*.am ${test}*.dep 2> /dev/null` >> $dir/acats.log 2>&1
+      target_gnatchop -c -w `ls ${test}*.a ${test}*.ada ${test}*.au ${test}*.adt ${test}*.am ${test}*.dep 2> /dev/null` >> $dir/acats.log 2>&1
       main=""
       find_main
       if [ -z "$main" ]; then
@@ -321,7 +330,7 @@ for chapter in $chapters; do
       echo "BUILD $main" >> $dir/acats.log
       EXTERNAL_OBJECTS=""
       case $i in
-        cxb30*) EXTERNAL_OBJECTS="$dir_support/cxb30040.o $dir_support/cxb30060.o $dir_support/cxb30130.o $dir_support/cxb30131.o";;
+        cxb30*) EXTERNAL_OBJECTS="$dir_support/cxb30040.o $dir_support/cxb30060.o $dir_support/cxb30130.o $dir_support/cxb30131.o $dir_support/cxb30170.o $dir_support/cxb30180.o";;
         ca1020e) rm -f ca1020e_func1.adb ca1020e_func2.adb ca1020e_proc1.adb ca1020e_proc2.adb > /dev/null 2>&1;;
         ca14028) rm -f ca14028_func2.ads ca14028_func3.ads ca14028_proc1.ads ca14028_proc3.ads > /dev/null 2>&1;;
       esac
