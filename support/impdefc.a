@@ -104,6 +104,7 @@ end ImpDef.Annex_C;
 
      --==================================================================--
 
+with GNAT.OS_Lib;
 
 package body ImpDef.Annex_C is
 
@@ -144,13 +145,18 @@ package body ImpDef.Annex_C is
    -- possibility.
 
    procedure Generate_Interrupt is
-      function Raise_Signal (The_Signal : Integer) return Integer;
-      pragma Import (C, Raise_Signal, "raise");
+      Args : GNAT.OS_Lib.String_List (0 .. -1);
+      Success : Boolean := False;
    begin
       Report.Comment (". >>>>> GENERATING THE INTERRUPT NOW <<<<< ");
-      if Raise_Signal (Integer (Ada.Interrupts.Names.SIGINT)) /= 0 then
-         raise Program_Error with "failed to raise SIGINT";
+      GNAT.OS_Lib.Spawn
+        (Program_Name => "ACATS4GNATDIR/support/send_sigint_to_parent",
+         Args         => Args,
+         Success      => Success);
+      if not Success then
+         raise Program_Error with "Generating interrupt: Spawn failed";
       end if;
+      delay 0.5;
    end Generate_Interrupt;
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--

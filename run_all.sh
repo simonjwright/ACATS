@@ -162,8 +162,18 @@ case "$target" in
 esac
 echo target_insn="$target_insn" >> $dir/acats.log
 
+# This program is used to support Annex C tests via impdefc.a.
+target_gnatmake $testdir/support/send_sigint_to_parent.adb \
+                >> $dir/acats.log 2>&1
+if [ $? -ne 0 ]; then
+   display "**** Failed to compile send_sigint_to_parent"
+   exit 1
+fi
+
 sed -e "s,ACATS4GNATDIR,$dir,g" \
   < $testdir/support/impdef.a > $dir/support/impdef.a
+sed -e "s,ACATS4GNATDIR,$dir,g" \
+  < $testdir/support/impdefc.a > $dir/support/impdefc.a
 sed -e "s,ACATS4GNATDIR,$dir,g" \
   -e "s,ACATS4GNATBIT,$target_bit,g" \
   -e "s,ACATS4GNATINSN,$target_insn,g" \
@@ -200,7 +210,7 @@ rm -f $dir/support/macrosub
 rm -f $dir/support/*.ali
 rm -f $dir/support/*.o
 
-gcc -c cd300051.c
+gcc -c cd300051.c >> $dir/acats.log 2>&1
 
 display " done."
 
@@ -232,6 +242,7 @@ if [ $# -eq 0 ]; then
 else
    chapters=$*
 fi
+chapters="cxc"
 
 glob_countn=0
 glob_countok=0
