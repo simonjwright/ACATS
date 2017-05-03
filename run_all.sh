@@ -162,14 +162,6 @@ case "$target" in
 esac
 echo target_insn="$target_insn" >> $dir/acats.log
 
-# This program is used to support Annex C tests via impdefc.a.
-target_gnatmake $testdir/support/send_sigint_to_parent.adb \
-                >> $dir/acats.log 2>&1
-if [ $? -ne 0 ]; then
-   display "**** Failed to compile send_sigint_to_parent"
-   exit 1
-fi
-
 sed -e "s,ACATS4GNATDIR,$dir,g" \
   < $testdir/support/impdef.a > $dir/support/impdef.a
 sed -e "s,ACATS4GNATDIR,$dir,g" \
@@ -210,15 +202,21 @@ rm -f $dir/support/macrosub
 rm -f $dir/support/*.ali
 rm -f $dir/support/*.o
 
-gcc -c cd300051.c >> $dir/acats.log 2>&1
-
 display " done."
 
 # From here, all compilations will be made by the target compiler
 
 display_noeol "Compiling support files..."
 
-target_gcc -c *.c
+# This program is used to support Annex C tests via impdefc.a.
+target_gnatmake $testdir/support/send_sigint_to_parent.adb \
+                >> $dir/acats.log 2>&1
+if [ $? -ne 0 ]; then
+   display "**** Failed to compile send_sigint_to_parent"
+   exit 1
+fi
+
+target_gcc -c *.c >> $dir/acats.log 2>&1
 if [ $? -ne 0 ]; then
    display "**** Failed to compile C code"
    exit 1
@@ -242,11 +240,12 @@ if [ $# -eq 0 ]; then
 else
    chapters=$*
 fi
-chapters="cxc"
 
 glob_countn=0
 glob_countok=0
 glob_countu=0
+
+# These for possible parallel execution, see below
 par_count=0
 par_countm=0
 par_last=

@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -39,6 +39,7 @@
 --                  EXCEPTION.
 -- PWN 01/31/95     REMOVED PRAGMA PRIORITY FOR ADA 9X.
 
+with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C94001A IS
@@ -56,7 +57,8 @@ PROCEDURE C94001A IS
           ACCEPT E (I : INTEGER) DO
                LOCAL := I;
           END E;
-          DELAY 30.0;    -- SINCE THE PARENT UNIT HAS HIGHER PRIORITY
+          DELAY 30.0 * Impdef.One_Nominal_Second;
+                         -- SINCE THE PARENT UNIT HAS HIGHER PRIORITY
                          -- AT THIS POINT, IT WILL RECEIVE CONTROL AND
                          -- TERMINATE IF THE ERROR IS PRESENT.
           GLOBAL := LOCAL;
@@ -194,7 +196,7 @@ BEGIN
      BEGIN -- (E)
 
           WHILE NOT TSK'TERMINATED AND LOOP_COUNT < CUT_OFF LOOP
-               DELAY 1.0;
+               DELAY 1.0 * Impdef.One_Nominal_Second;
                LOOP_COUNT := LOOP_COUNT + 1;
           END LOOP;
 
@@ -238,7 +240,7 @@ BEGIN
      BEGIN -- (F)
 
           WHILE NOT TSK'TERMINATED AND LOOP_COUNT < CUT_OFF LOOP
-               DELAY 1.0;
+               DELAY 1.0 * Impdef.One_Nominal_Second;
                LOOP_COUNT := LOOP_COUNT + 1;
           END LOOP;
 
