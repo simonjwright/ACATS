@@ -130,6 +130,8 @@ gnatls -v >> $dir/acats.log
 display ""
 
 if [ -n "$GCC_RUNTEST_PARALLELIZE_DIR" ]; then
+  echo "can't run parallelized tests."
+  exit 1
   dir_support=$dir/../acats/support
 
   rm -rf $dir/run
@@ -141,108 +143,112 @@ if [ -n "$GCC_RUNTEST_PARALLELIZE_DIR" ]; then
 else
   dir_support=$dir/support
 
-display "		=== acats support ==="
-display_noeol "Generating support files..."
+  # Only build support if needed
+  if [ ! -d $dir_support ] || [ $# -eq 0 ] || [ $1 = "NONE" ]; then
 
-rm -rf $dir/support
-mkdir -p $dir/support
-cd $dir/support
+    display "		=== acats support ==="
+    display_noeol "Generating support files..."
 
-cp $testdir/support/*.ada $testdir/support/*.a $testdir/support/*.tst $dir/support
+    rm -rf $dir/support
+    mkdir -p $dir/support
+    cd $dir/support
 
-# Find out the size in bit of an address on the target
-target_gnatmake $testdir/support/impbit.adb >> $dir/acats.log 2>&1
-if [ $? -ne 0 ]; then
-   display "**** Failed to compile impbit"
-   exit 1
-fi
-target_run $dir/support/impbit > $dir/support/impbit.out 2>&1
-target_bit=`cat $dir/support/impbit.out`
-echo target_bit="$target_bit" >> $dir/acats.log
+    cp $testdir/support/*.ada $testdir/support/*.a $testdir/support/*.tst $dir/support
 
-# Find out a suitable asm statement
-# Adapted from configure.ac gcc_cv_as_dwarf2_debug_line
-case "$target" in
-  ia64*-*-* | s390*-*-*)
-    target_insn="nop 0"
-    ;;
-  mmix-*-*)
-    target_insn="swym 0"
-    ;;
-  *)
-    target_insn="nop"
-    ;;
-esac
-echo target_insn="$target_insn" >> $dir/acats.log
+    # Find out the size in bit of an address on the target
+    target_gnatmake $testdir/support/impbit.adb >> $dir/acats.log 2>&1
+    if [ $? -ne 0 ]; then
+      display "**** Failed to compile impbit"
+      exit 1
+    fi
+    target_run $dir/support/impbit > $dir/support/impbit.out 2>&1
+    target_bit=`cat $dir/support/impbit.out`
+    echo target_bit="$target_bit" >> $dir/acats.log
 
-sed -e "s,ACATS4GNATDIR,$dir,g" \
-  < $testdir/support/impdef.a > $dir/support/impdef.a
-sed -e "s,ACATS4GNATDIR,$dir,g" \
-  < $testdir/support/impdefc.a > $dir/support/impdefc.a
-sed -e "s,ACATS4GNATDIR,$dir,g" \
-  -e "s,ACATS4GNATBIT,$target_bit,g" \
-  -e "s,ACATS4GNATINSN,$target_insn,g" \
-  < $testdir/support/macro.dfs > $dir/support/MACRO.DFS
-sed -e "s,ACATS4GNATDIR,$dir,g" \
-  < $testdir/support/tsttests.dat > $dir/support/TSTTESTS.DAT
+    # Find out a suitable asm statement
+    # Adapted from configure.ac gcc_cv_as_dwarf2_debug_line
+    case "$target" in
+      ia64*-*-* | s390*-*-*)
+        target_insn="nop 0"
+        ;;
+      mmix-*-*)
+        target_insn="swym 0"
+        ;;
+      *)
+        target_insn="nop"
+        ;;
+    esac
+    echo target_insn="$target_insn" >> $dir/acats.log
 
-cp $testdir/tests/cd/*.c $dir/support
-cp $testdir/tests/cxb/*.c $dir/support
-grep -v '^#' $testdir/norun.lst | sort > $dir/support/norun.lst
+    sed -e "s,ACATS4GNATDIR,$dir,g" \
+        < $testdir/support/impdef.a > $dir/support/impdef.a
+    sed -e "s,ACATS4GNATDIR,$dir,g" \
+        < $testdir/support/impdefc.a > $dir/support/impdefc.a
+    sed -e "s,ACATS4GNATDIR,$dir,g" \
+        -e "s,ACATS4GNATBIT,$target_bit,g" \
+        -e "s,ACATS4GNATINSN,$target_insn,g" \
+        < $testdir/support/macro.dfs > $dir/support/MACRO.DFS
+    sed -e "s,ACATS4GNATDIR,$dir,g" \
+        < $testdir/support/tsttests.dat > $dir/support/TSTTESTS.DAT
 
-rm -rf $dir/run
-mv $dir/tests $dir/tests.$$ 2> /dev/null
-rm -rf $dir/tests.$$ &
-mkdir -p $dir/run
+    cp $testdir/tests/cd/*.c $dir/support
+    cp $testdir/tests/cxb/*.c $dir/support
+    grep -v '^#' $testdir/norun.lst | sort > $dir/support/norun.lst
 
-cp -pr $testdir/tests $dir/
+    rm -rf $dir/run
+    mv $dir/tests $dir/tests.$$ 2> /dev/null
+    rm -rf $dir/tests.$$ &
+    mkdir -p $dir/run
 
-for i in $dir/support/*.ada $dir/support/*.a; do
-   host_gnatchop $i >> $dir/acats.log 2>&1
-done
+    cp -pr $testdir/tests $dir/
 
-# These tools are used to preprocess some ACATS sources.
-# They need to be compiled native on the host.
+    for i in $dir/support/*.ada $dir/support/*.a; do
+      host_gnatchop $i >> $dir/acats.log 2>&1
+    done
 
-host_gnatmake -q -gnatws macrosub.adb
-if [ $? -ne 0 ]; then
-   display "**** Failed to compile macrosub"
-   exit 1
-fi
-./macrosub >> $dir/acats.log 2>&1
+    # These tools are used to preprocess some ACATS sources.
+    # They need to be compiled native on the host.
 
-rm -f $dir/support/macrosub
-rm -f $dir/support/*.ali
-rm -f $dir/support/*.o
+    host_gnatmake -q -gnatws macrosub.adb
+    if [ $? -ne 0 ]; then
+      display "**** Failed to compile macrosub"
+      exit 1
+    fi
+    ./macrosub >> $dir/acats.log 2>&1
 
-display " done."
+    rm -f $dir/support/macrosub
+    rm -f $dir/support/*.ali
+    rm -f $dir/support/*.o
 
-# From here, all compilations will be made by the target compiler
+    display " done."
 
-display_noeol "Compiling support files..."
+    # From here, all compilations will be made by the target compiler
 
-# This program is used to support Annex C tests via impdefc.a.
-target_gnatmake $testdir/support/send_sigint_to_parent.adb \
-                >> $dir/acats.log 2>&1
-if [ $? -ne 0 ]; then
-   display "**** Failed to compile send_sigint_to_parent"
-   exit 1
-fi
+    display_noeol "Compiling support files..."
 
-target_gcc -c *.c >> $dir/acats.log 2>&1
-if [ $? -ne 0 ]; then
-   display "**** Failed to compile C code"
-   exit 1
-fi
+    # This program is used to support Annex C tests via impdefc.a.
+    target_gnatmake $testdir/support/send_sigint_to_parent.adb \
+                    >> $dir/acats.log 2>&1
+    if [ $? -ne 0 ]; then
+      display "**** Failed to compile send_sigint_to_parent"
+      exit 1
+    fi
 
-target_gnatchop *.adt >> $dir/acats.log 2>&1
+    target_gcc -c *.c >> $dir/acats.log 2>&1
+    if [ $? -ne 0 ]; then
+      display "**** Failed to compile C code"
+      exit 1
+    fi
 
-target_gnatmake -c -gnato -gnatE *.ads >> $dir/acats.log 2>&1
-target_gnatmake -c -gnato -gnatE *.adb >> $dir/acats.log 2>&1
+    target_gnatchop *.adt >> $dir/acats.log 2>&1
 
-display " done."
-display ""
+    target_gnatmake -c -gnato -gnatE *.ads >> $dir/acats.log 2>&1
+    target_gnatmake -c -gnato -gnatE *.adb >> $dir/acats.log 2>&1
 
+    display " done."
+    display ""
+
+  fi
 fi
 
 display "		=== acats tests ==="
@@ -422,3 +428,9 @@ fi
 display "$0 completed at `date`"
 
 exit 0
+
+# for Emacs
+# Local Variables:
+# sh-indentation: 2
+# sh-basic-offset: 2
+# End:
