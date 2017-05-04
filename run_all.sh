@@ -53,15 +53,28 @@ if [ "$dir" = "$testdir" ]; then
   exit 1
 fi
 
-GCC="$BASE/xgcc -B$BASE/"
+if [ "$BASE" ]; then
+  GCC="$BASE/xgcc -B$BASE/"
+else
+  GCC="${GCC-`which gcc`}"
+fi
 
 target_gnatchop () {
-  $BASE/gnatchop --GCC="$BASE/xgcc" $*
+  if [ "$BASE" ]; then
+    $BASE/gnatchop --GCC="$BASE/xgcc" $*
+  else
+    host_gnatchop $*
+  fi
 }
 
 target_gnatmake () {
-  echo $BASE/gnatmake --GNATBIND=$BASE/gnatbind --GNATLINK=$BASE/gnatlink --GCC="$GCC" $gnatflags $gccflags $* -largs $EXTERNAL_OBJECTS --GCC="$GCC"
-  $BASE/gnatmake --GNATBIND=$BASE/gnatbind --GNATLINK=$BASE/gnatlink --GCC="$GCC" $gnatflags $gccflags $* -largs $EXTERNAL_OBJECTS --GCC="$GCC"
+  if [ "$BASE" ]; then
+    echo $BASE/gnatmake --GNATBIND=$BASE/gnatbind --GNATLINK=$BASE/gnatlink --GCC="$GCC" $gnatflags $gccflags $* -largs $EXTERNAL_OBJECTS --GCC="$GCC"
+    $BASE/gnatmake --GNATBIND=$BASE/gnatbind --GNATLINK=$BASE/gnatlink --GCC="$GCC" $gnatflags $gccflags $* -largs $EXTERNAL_OBJECTS --GCC="$GCC"
+  else
+    echo gnatmake $gnatflags $gccflags $* -largs $EXTERNAL_OBJECTS
+    host_gnatmake $gnatflags $gccflags $* -largs $EXTERNAL_OBJECTS
+  fi
 }
 
 target_gcc () {
@@ -340,7 +353,11 @@ for chapter in $chapters; do
       echo "BUILD $main" >> $dir/acats.log
       EXTERNAL_OBJECTS=""
       case $i in
-        cxb30*) EXTERNAL_OBJECTS="$dir_support/cxb30040.o $dir_support/cxb30060.o $dir_support/cxb30130.o $dir_support/cxb30131.o $dir_support/cxb30170.o $dir_support/cxb30180.o";;
+        cxb3004) EXTERNAL_OBJECTS="$dir_support/cxb30040.o";;
+        cxb3006) EXTERNAL_OBJECTS="$dir_support/cxb30060.o";;
+        cxb3013) EXTERNAL_OBJECTS="$dir_support/cxb30130.o $dir_support/cxb30131.o";;
+        cxb3017) EXTERNAL_OBJECTS="$dir_support/cxb30170.o";;
+        cxb3018) EXTERNAL_OBJECTS="$dir_support/cxb30180.o";;
         ca1020e) rm -f ca1020e_func1.adb ca1020e_func2.adb ca1020e_proc1.adb ca1020e_proc2.adb > /dev/null 2>&1;;
         ca14028) rm -f ca14028_func2.ads ca14028_func3.ads ca14028_proc1.ads ca14028_proc3.ads > /dev/null 2>&1;;
       esac
