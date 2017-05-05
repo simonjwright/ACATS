@@ -339,6 +339,7 @@ for chapter in $chapters; do
          extraflags="$extraflags -fstack-check"
       fi
       test=$dir/tests/$chapter/$i
+      rm -rf $test
       mkdir $test && cd $test >> $dir/acats.log 2>&1
 
       if [ $? -ne 0 ]; then
@@ -374,12 +375,25 @@ for chapter in $chapters; do
          continue
       fi
 
-      target_gnatmake $extraflags -I$dir_support $main >> $dir/acats.log 2>&1
-      if [ $? -ne 0 ]; then
-         display "FAIL:	$i"
-         failed="${failed}${i} "
-         clean_dir
-         continue
+      target_gnatmake $extraflags -I$dir_support $main \
+                      > $dir/tests/$chapter/${i}/${i}.log 2>&1
+      compilation_status=$?
+      cat $dir/tests/$chapter/${i}/${i}.log >> $dir/acats.log
+      if [ $compilation_status -ne 0 ]; then
+        grep 'not supported in this configuration' \
+             $dir/tests/$chapter/${i}/${i}.log > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+          log "UNSUPPORTED: $i"
+          as_fn_arith $glob_countn - 1
+          glob_countn=$as_val
+          as_fn_arith $glob_countu + 1
+          glob_countu=$as_val
+        else
+          display "FAIL:	$i"
+          failed="${failed}${i} "
+        fi
+        clean_dir
+        continue
       fi
 
       echo "RUN $binmain" >> $dir/acats.log
