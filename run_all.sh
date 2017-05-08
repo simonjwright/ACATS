@@ -110,6 +110,114 @@ find_main () {
   esac
 }
 
+run_one_test () {
+  tst=$1
+
+  extraflags="-gnat2012"
+  grep $tst $testdir/overflow.lst > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    extraflags="$extraflags -gnato"
+  fi
+  grep $tst $testdir/elabd.lst > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    extraflags="$extraflags -gnatE"
+  fi
+  grep $tst $testdir/floatstore.lst > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    extraflags="$extraflags -ffloat-store"
+  fi
+  grep $tst $testdir/stackcheck.lst > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    extraflags="$extraflags -fstack-check"
+  fi
+  test=$dir/tests/$chapter/$tst
+  rm -rf $test
+  mkdir $test && cd $test >> $dir/acats.log 2>&1
+
+  if [ $? -ne 0 ]; then
+    display "FAIL:	$tst"
+    failed="${failed}${tst} "
+    clean_dir
+    return
+  fi
+
+  target_gnatchop -c -w `ls ${test}*.a ${test}*.ada ${test}*.au ${test}*.adt ${test}*.am ${test}*.dep 2> /dev/null` >> $dir/acats.log 2>&1
+  main=""
+  find_main
+  if [ -z "$main" ]; then
+    sync
+    find_main
+  fi
+  binmain=`echo $main | sed -e 's/\(.*\)\..*/\1/g'`
+  echo "BUILD $main" >> $dir/acats.log
+  EXTERNAL_OBJECTS=""
+  case $tst in
+    cxb3004) EXTERNAL_OBJECTS="$dir_support/cxb30040.o";;
+    cxb3006) EXTERNAL_OBJECTS="$dir_support/cxb30060.o";;
+    cxb3013) EXTERNAL_OBJECTS="$dir_support/cxb30130.o $dir_support/cxb30131.o";;
+    cxb3017) EXTERNAL_OBJECTS="$dir_support/cxb30170.o";;
+    cxb3018) EXTERNAL_OBJECTS="$dir_support/cxb30180.o";;
+    ca1020e) rm -f ca1020e_func1.adb ca1020e_func2.adb ca1020e_proc1.adb ca1020e_proc2.adb > /dev/null 2>&1;;
+    ca14028) rm -f ca14028_func2.ads ca14028_func3.ads ca14028_proc1.ads ca14028_proc3.ads > /dev/null 2>&1;;
+  esac
+  if [ "$main" = "" ]; then
+    display "FAIL:	$tst"
+    failed="${failed}${tst} "
+    clean_dir
+    return
+  fi
+
+  target_gnatmake $extraflags -I$dir_support $main \
+                  > $dir/tests/$chapter/${tst}/${tst}.log 2>&1
+  compilation_status=$?
+  cat $dir/tests/$chapter/${tst}/${tst}.log >> $dir/acats.log
+  if [ $compilation_status -ne 0 ]; then
+    grep 'not supported in this configuration' \
+         $dir/tests/$chapter/${tst}/${tst}.log > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+      log "UNSUPPORTED: $tst"
+      as_fn_arith $glob_countn - 1
+      glob_countn=$as_val
+      as_fn_arith $glob_countu + 1
+      glob_countu=$as_val
+    else
+      display "FAIL:	$tst"
+      failed="${failed}${tst} "
+    fi
+    clean_dir
+    return
+  fi
+
+  echo "RUN $binmain" >> $dir/acats.log
+  cd $dir/run
+  if [ ! -x $dir/tests/$chapter/$tst/$binmain ]; then
+    sync
+  fi
+  target_run $dir/tests/$chapter/$tst/$binmain > $dir/tests/$chapter/$tst/${tst}.log 2>&1
+  cd $dir/tests/$chapter/$tst
+  cat ${tst}.log >> $dir/acats.log
+  egrep -e '(==== |\+\+\+\+ |\!\!\!\! )' ${tst}.log > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    grep 'tasking not implemented' ${tst}.log > /dev/null 2>&1
+
+    if [ $? -ne 0 ]; then
+      display "FAIL:	$tst"
+      failed="${failed}${tst} "
+    else
+      log "UNSUPPORTED:	$tst"
+      as_fn_arith $glob_countn - 1
+      glob_countn=$as_val
+      as_fn_arith $glob_countu + 1
+      glob_countu=$as_val
+    fi
+  else
+    log "PASS:	$tst"
+    as_fn_arith $glob_countok + 1
+    glob_countok=$as_val
+  fi
+  clean_dir
+}
+
 EXTERNAL_OBJECTS=""
 # Global variable to communicate external objects to link with.
 
@@ -323,109 +431,8 @@ for chapter in $chapters; do
 	 fi
       fi
 
-      extraflags="-gnat2012"
-      grep $i $testdir/overflow.lst > /dev/null 2>&1
-      if [ $? -eq 0 ]; then
-         extraflags="$extraflags -gnato"
-      fi
-      grep $i $testdir/elabd.lst > /dev/null 2>&1
-      if [ $? -eq 0 ]; then
-         extraflags="$extraflags -gnatE"
-      fi
-      grep $i $testdir/floatstore.lst > /dev/null 2>&1
-      if [ $? -eq 0 ]; then
-         extraflags="$extraflags -ffloat-store"
-      fi
-      grep $i $testdir/stackcheck.lst > /dev/null 2>&1
-      if [ $? -eq 0 ]; then
-         extraflags="$extraflags -fstack-check"
-      fi
-      test=$dir/tests/$chapter/$i
-      rm -rf $test
-      mkdir $test && cd $test >> $dir/acats.log 2>&1
+      run_one_test $i
 
-      if [ $? -ne 0 ]; then
-         display "FAIL:	$i"
-         failed="${failed}${i} "
-         clean_dir
-         continue
-      fi
-
-      target_gnatchop -c -w `ls ${test}*.a ${test}*.ada ${test}*.au ${test}*.adt ${test}*.am ${test}*.dep 2> /dev/null` >> $dir/acats.log 2>&1
-      main=""
-      find_main
-      if [ -z "$main" ]; then
-         sync
-         find_main
-      fi
-      binmain=`echo $main | sed -e 's/\(.*\)\..*/\1/g'`
-      echo "BUILD $main" >> $dir/acats.log
-      EXTERNAL_OBJECTS=""
-      case $i in
-        cxb3004) EXTERNAL_OBJECTS="$dir_support/cxb30040.o";;
-        cxb3006) EXTERNAL_OBJECTS="$dir_support/cxb30060.o";;
-        cxb3013) EXTERNAL_OBJECTS="$dir_support/cxb30130.o $dir_support/cxb30131.o";;
-        cxb3017) EXTERNAL_OBJECTS="$dir_support/cxb30170.o";;
-        cxb3018) EXTERNAL_OBJECTS="$dir_support/cxb30180.o";;
-        ca1020e) rm -f ca1020e_func1.adb ca1020e_func2.adb ca1020e_proc1.adb ca1020e_proc2.adb > /dev/null 2>&1;;
-        ca14028) rm -f ca14028_func2.ads ca14028_func3.ads ca14028_proc1.ads ca14028_proc3.ads > /dev/null 2>&1;;
-      esac
-      if [ "$main" = "" ]; then
-         display "FAIL:	$i"
-         failed="${failed}${i} "
-         clean_dir
-         continue
-      fi
-
-      target_gnatmake $extraflags -I$dir_support $main \
-                      > $dir/tests/$chapter/${i}/${i}.log 2>&1
-      compilation_status=$?
-      cat $dir/tests/$chapter/${i}/${i}.log >> $dir/acats.log
-      if [ $compilation_status -ne 0 ]; then
-        grep 'not supported in this configuration' \
-             $dir/tests/$chapter/${i}/${i}.log > /dev/null 2>&1
-        if [ $? -eq 0 ]; then
-          log "UNSUPPORTED: $i"
-          as_fn_arith $glob_countn - 1
-          glob_countn=$as_val
-          as_fn_arith $glob_countu + 1
-          glob_countu=$as_val
-        else
-          display "FAIL:	$i"
-          failed="${failed}${i} "
-        fi
-        clean_dir
-        continue
-      fi
-
-      echo "RUN $binmain" >> $dir/acats.log
-      cd $dir/run
-      if [ ! -x $dir/tests/$chapter/$i/$binmain ]; then
-         sync
-      fi
-      target_run $dir/tests/$chapter/$i/$binmain > $dir/tests/$chapter/$i/${i}.log 2>&1
-      cd $dir/tests/$chapter/$i
-      cat ${i}.log >> $dir/acats.log
-      egrep -e '(==== |\+\+\+\+ |\!\!\!\! )' ${i}.log > /dev/null 2>&1
-      if [ $? -ne 0 ]; then
-         grep 'tasking not implemented' ${i}.log > /dev/null 2>&1
-
-         if [ $? -ne 0 ]; then
-            display "FAIL:	$i"
-            failed="${failed}${i} "
-         else
-            log "UNSUPPORTED:	$i"
-            as_fn_arith $glob_countn - 1
-            glob_countn=$as_val
-            as_fn_arith $glob_countu + 1
-            glob_countu=$as_val
-         fi
-      else
-         log "PASS:	$i"
-         as_fn_arith $glob_countok + 1
-         glob_countok=$as_val
-      fi
-      clean_dir
    done
 done
 
