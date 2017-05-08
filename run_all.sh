@@ -136,6 +136,8 @@ run_one_test () {
 
   if [ $? -ne 0 ]; then
     display "FAIL:	$tst"
+    as_fn_arith $glob_countf + 1
+    glob_countf=$as_val
     failed="${failed}${tst} "
     clean_dir
     return
@@ -162,6 +164,8 @@ run_one_test () {
   esac
   if [ "$main" = "" ]; then
     display "FAIL:	$tst"
+    as_fn_arith $glob_countf + 1
+    glob_countf=$as_val
     failed="${failed}${tst} "
     clean_dir
     return
@@ -175,13 +179,13 @@ run_one_test () {
     grep 'not supported in this configuration' \
          $dir/tests/$chapter/${tst}/${tst}.log > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-      log "UNSUPPORTED: $tst"
-      as_fn_arith $glob_countn - 1
-      glob_countn=$as_val
+      log "UNSUP:	$tst"
       as_fn_arith $glob_countu + 1
       glob_countu=$as_val
     else
       display "FAIL:	$tst"
+      as_fn_arith $glob_countf + 1
+      glob_countf=$as_val
       failed="${failed}${tst} "
     fi
     clean_dir
@@ -196,24 +200,41 @@ run_one_test () {
   target_run $dir/tests/$chapter/$tst/$binmain > $dir/tests/$chapter/$tst/${tst}.log 2>&1
   cd $dir/tests/$chapter/$tst
   cat ${tst}.log >> $dir/acats.log
-  egrep -e '(==== |\+\+\+\+ |\!\!\!\! )' ${tst}.log > /dev/null 2>&1
+
+  # check for a status report from execution
+  status=`egrep -e '(==== |\+\+\+\+ |\!\!\!\! )' ${tst}.log`
   if [ $? -ne 0 ]; then
     grep 'tasking not implemented' ${tst}.log > /dev/null 2>&1
 
     if [ $? -ne 0 ]; then
       display "FAIL:	$tst"
+      as_fn_arith $glob_countf + 1
+      glob_countf=$as_val
       failed="${failed}${tst} "
     else
-      log "UNSUPPORTED:	$tst"
-      as_fn_arith $glob_countn - 1
-      glob_countn=$as_val
+      log "UNSUP:	$tst"
       as_fn_arith $glob_countu + 1
       glob_countu=$as_val
     fi
   else
-    log "PASS:	$tst"
-    as_fn_arith $glob_countok + 1
-    glob_countok=$as_val
+    case `echo $status | cut -c1-4` in
+      "====")
+        log "PASS:	$tst"
+        as_fn_arith $glob_countok + 1
+        glob_countok=$as_val;;
+      "++++")
+        log "N/A:       $tst"
+        as_fn_arith $glob_countna + 1
+        glob_countna=$as_val;;
+      "!!!!")
+        log "TENT:	$tst"
+        as_fn_arith $glob_counti + 1
+        glob_counti=$as_val;;
+      *)
+        log "????:	$tst"
+        as_fn_arith $glob_counti + 1
+        glob_counti=$as_val;;
+    esac
   fi
   clean_dir
 }
@@ -370,9 +391,20 @@ else
    chapters=$*
 fi
 
-glob_countn=0
+# number of passed tests
 glob_countok=0
+
+# number of tests that should be inspected
+glob_counti=0
+
+# number of unsupported tests, as reported by the compiler
 glob_countu=0
+
+# number of not-applicable tests, as determined by running the test.
+glob_countna=0
+
+# number of failures
+glob_countf=0
 
 # These for possible parallel execution, see below
 par_count=0
@@ -396,9 +428,7 @@ for chapter in $chapters; do
        sed -e 's/\(.*\)\..*/\1/g' | \
        cut -c1-7 | sort | uniq | comm -23 - $dir_support/norun.lst \
      > $dir/tests/$chapter/${chapter}.lst
-   countn=`wc -l < $dir/tests/$chapter/${chapter}.lst`
-   as_fn_arith $glob_countn + $countn
-   glob_countn=$as_val
+
    for i in `cat $dir/tests/$chapter/${chapter}.lst`; do
 
       # If running multiple run_all.sh jobs in parallel, decide
@@ -425,8 +455,6 @@ for chapter in $chapters; do
 	       fi;;
 	 esac
 	 if [ -z "$par_last" ]; then
-	    as_fn_arith $glob_countn - 1
-	    glob_countn=$as_val
 	    continue
 	 fi
       fi
@@ -437,14 +465,19 @@ for chapter in $chapters; do
 done
 
 display "		=== acats Summary ==="
-display "# of expected passes		$glob_countok"
-display "# of unexpected failures	`expr $glob_countn - $glob_countok`"
-
+display "# of expected passes           $glob_countok"
+display "# of unexpected failures       $glob_countf"
+if [ $glob_counti -ne 0 ]; then
+  display "# of visual checks needed      $glob_counti"
+fi
 if [ $glob_countu -ne 0 ]; then
-   display "# of unsupported tests		$glob_countu"
+  display "# of unsupported tests         $glob_countu"
+fi
+if [ $glob_countna -ne 0 ]; then
+  display "# of inapplicable tests        $glob_countna"
 fi
 
-if [ $glob_countok -ne $glob_countn ]; then
+if [ $glob_countf -ne 0 ]; then
    display "*** FAILURES: $failed"
 fi
 
