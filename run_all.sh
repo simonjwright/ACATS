@@ -254,8 +254,10 @@ fi
 display "		=== acats tests ==="
 
 if [ $# -eq 0 ]; then
-   # only run the tests that are supposed to succeed
-   chapters=`cd $dir/tests; echo a* c* d* e*`
+   # only run the tests that are supposed to succeed, omitting cxe
+   # (Annex E is the Distributed Systems annex, not straightforward to
+   # script here)
+   chapters=`cd $dir/tests; echo a* cz c[^z] cx[^e] d* e*`
 else
    chapters=$*
 fi
