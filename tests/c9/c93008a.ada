@@ -3,30 +3,31 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
--- CHECK THAT FOR A TASK CREATED BY AN OBJECT DECLARATION, EXECUTION 
+-- CHECK THAT FOR A TASK CREATED BY AN OBJECT DECLARATION, EXECUTION
 -- DOES NOT PROCEED IN PARALLEL WITH ACTIVATION.
 
 -- R.WILLIAMS 8/20/86
 
+with Impdef;
 WITH REPORT; USE REPORT;
 PROCEDURE C93008A IS
 
@@ -46,7 +47,7 @@ PROCEDURE C93008A IS
                     END FINIT_POS;
                OR
                     TERMINATE;
-               END SELECT;          
+               END SELECT;
           END LOOP;
      END T;
 
@@ -71,7 +72,7 @@ BLOCK:
 
                PACKAGE BODY DUMMY IS
                BEGIN
-                    DELAY 2.0;
+                    DELAY 2.0 * Impdef.One_Nominal_Second;
                     T.FINIT_POS(1);
                END DUMMY;
           BEGIN
@@ -84,13 +85,13 @@ BLOCK:
 
                PACKAGE BODY DUMMY IS
                BEGIN
-                    DELAY 2.0;
+                    DELAY 2.0 * Impdef.One_Nominal_Second;
                     T.FINIT_POS(2);
                END DUMMY;
           BEGIN
                NULL;
           END TT2;
-          
+
 
      BEGIN               -- TASKS ACTIVATED NOW.
 

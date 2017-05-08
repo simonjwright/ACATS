@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -36,6 +36,7 @@
 -- TBN  9/22/86
 -- PWN 11/30/94 REMOVED PRAGMA PRIORITY INSTANCES FOR ADA 9X.
 
+with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C94010A IS
@@ -70,14 +71,14 @@ PROCEDURE C94010A IS
      PACKAGE BODY P IS
           TASK BODY LIM_PRI_TASK IS
           BEGIN
-               DELAY 30.0;
+               DELAY 30.0 * Impdef.One_Nominal_Second;
                GLOBAL_INT := IDENT_INT (2);
           END LIM_PRI_TASK;
      END P;
 
      TASK BODY TT IS
      BEGIN
-          DELAY 30.0;
+          DELAY 30.0 * Impdef.One_Nominal_Second;
           GLOBAL_INT := IDENT_INT (1);
      END TT;
 
@@ -118,7 +119,7 @@ BEGIN
           PROC1 (0);
           IF GLOBAL_INT = IDENT_INT (0) THEN
                FAILED ("TASK NOT DEPENDENT ON MASTER - 1");
-               DELAY 35.0;
+               DELAY 35.0 * Impdef.One_Nominal_Second;
           END IF;
      END;
 
@@ -134,7 +135,7 @@ BEGIN
           WHEN MY_EXCEPTION =>
                IF GLOBAL_INT = IDENT_INT (0) THEN
                     FAILED ("TASK NOT DEPENDENT ON MASTER - 2");
-                    DELAY 35.0;
+                    DELAY 35.0 * Impdef.One_Nominal_Second;
                END IF;
           WHEN OTHERS =>
                FAILED ("UNEXPECTED EXCEPTION RAISED - 2");
@@ -152,7 +153,7 @@ BEGIN
           WHEN MY_EXCEPTION =>
                IF GLOBAL_INT = IDENT_INT (0) THEN
                     FAILED ("TASK NOT DEPENDENT ON MASTER - 3");
-                    DELAY 35.0;
+                    DELAY 35.0 * Impdef.One_Nominal_Second;
                END IF;
           WHEN OTHERS =>
                FAILED ("UNEXPECTED EXCEPTION RAISED - 3");
@@ -167,7 +168,7 @@ BEGIN
           PROC4 (0);
           IF GLOBAL_INT = IDENT_INT (0) THEN
                FAILED ("TASK NOT DEPENDENT ON MASTER - 4");
-               DELAY 35.0;
+               DELAY 35.0 * Impdef.One_Nominal_Second;
           END IF;
      END;
 
@@ -184,7 +185,7 @@ BEGIN
           WHEN MY_EXCEPTION =>
                IF GLOBAL_INT = IDENT_INT (0) THEN
                     FAILED ("TASK NOT DEPENDENT ON MASTER - 5");
-                    DELAY 35.0;
+                    DELAY 35.0 * Impdef.One_Nominal_Second;
                END IF;
           WHEN OTHERS =>
                FAILED ("UNEXPECTED EXCEPTION RAISED - 5");
@@ -200,7 +201,7 @@ BEGIN
           A := FUNC2 (0);
           IF GLOBAL_INT = IDENT_INT (0) THEN
                FAILED ("TASK NOT DEPENDENT ON MASTER - 6");
-               DELAY 35.0;
+               DELAY 35.0 * Impdef.One_Nominal_Second;
           END IF;
      END;
 
@@ -214,7 +215,7 @@ BEGIN
           A := FUNC3 (0);
           IF GLOBAL_INT = IDENT_INT (0) THEN
                FAILED ("TASK NOT DEPENDENT ON MASTER - 7");
-               DELAY 35.0;
+               DELAY 35.0 * Impdef.One_Nominal_Second;
           END IF;
      END;
 
@@ -237,6 +238,6 @@ BEGIN
      END;
 
      -------------------------------------------------------------------
-          
+
      RESULT;
 END C94010A;

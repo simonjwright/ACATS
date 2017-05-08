@@ -53,7 +53,7 @@ PROCEDURE C94007B IS
           ACCEPT ID (C : CHARACTER) DO
                ID_C := C;
           END ID;
-          DELAY 1.0;
+          DELAY 1.0 * Impdef.One_Nominal_Second;
           SELECT
                ACCEPT OUTER;
           OR

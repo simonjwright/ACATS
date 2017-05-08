@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -33,6 +33,7 @@
 -- JBG 8/29/86 ELIMINATED SHARED VARIABLES; ADDED GENERIC UNIT
 -- PWN 11/30/94 REMOVED PRAGMA PRIORITY INSTANCES FOR ADA 9X.
 
+with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C94008C IS
@@ -198,10 +199,10 @@ BEGIN -- C94008C
                     OR WHEN ENTER_TERMINATE => TERMINATE;
                     END SELECT;
 
-                    DELAY 10.0;
+                    DELAY 10.0 * Impdef.One_Nominal_Second;
 
                     IF TERMINATE_COUNT.GET /= 1 THEN
-                         DELAY 20.0;
+                         DELAY 20.0 * Impdef.One_Nominal_Second;
                     END IF;
 
                     IF TERMINATE_COUNT.GET /= 1 THEN
@@ -239,10 +240,11 @@ BEGIN -- C94008C
 
      BEGIN
 
-          DELAY 10.0; -- WAIT FOR T1, T2, AND T3 TO GET TO SELECT STMTS.
+           DELAY 10.0 * Impdef.One_Nominal_Second;
+                             -- WAIT FOR T1, T2, AND T3 TO GET TO SELECT STMTS.
 
            IF TERMINATE_COUNT.GET /= 3 THEN
-                DELAY 20.0;
+                DELAY 20.0 * Impdef.One_Nominal_Second;
            END IF;
 
            IF TERMINATE_COUNT.GET /= 3 THEN

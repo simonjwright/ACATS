@@ -66,7 +66,7 @@ PROCEDURE C9A011B IS
      BEGIN
           ACCEPT START DO
                WHILE SELF_ABORT'COUNT = 0 LOOP
-                    DELAY 1.0;
+                    DELAY 1.0 * Impdef.One_Nominal_Second;
                END LOOP;
           END START;
 
@@ -84,7 +84,7 @@ BEGIN
                      "WHEN THE CALL IS FIRST EXECUTED");
 
      OWNER.START;
-     DELAY 5.0;
+     DELAY 5.0 * Impdef.One_Nominal_Second;
 
      IF TIMED_ENTRY'CALLABLE THEN
           TIMED_ENTRY.WAIT_AROUND;

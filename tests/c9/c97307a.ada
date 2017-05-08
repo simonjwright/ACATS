@@ -161,7 +161,7 @@ BEGIN
                          EXPIRED.READ (EXPIRED_CALLS);
                     EXIT WHEN E'COUNT >= DESIRED_QUEUE_LENGTH -
                                          EXPIRED_CALLS;
-                         DELAY 2.0;
+                         DELAY 2.0 * Impdef.One_Nominal_Second;
                     END LOOP;
                EXIT WHEN DESIRED_QUEUE_LENGTH = 5;
                     DISPATCH.READY;
@@ -172,7 +172,7 @@ BEGIN
                -- LET THE TIMED ENTRY CALLS ISSUED BY CALLER1,
                -- CALLER3, AND CALLER5 EXPIRE:
 
-               DELAY DELAY_TIME + 10.0;
+               DELAY DELAY_TIME + 10.0 * Impdef.One_Nominal_Second;
 
                -- AT THIS POINT, ALL THE TIMED ENTRY CALLS MUST HAVE
                -- EXPIRED AND BEEN REMOVED FROM THE ENTRY QUEUE FOR E,
