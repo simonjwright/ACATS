@@ -114,7 +114,10 @@ find_main () {
 handle_pass () {
   # check that a pass for test $1 wasn't supposed to fail
   grep ${1} $testdir/xfail.lst >/dev/null 2>&1
-  if [ $? -ne 0 ]; then
+  inlist=$?
+  echo ${1} | egrep '^[bl]' >/dev/null 2>&1
+  b_or_l=$?
+  if [ $inlist -ne 0 -a $b_or_l -ne 0 ]; then
     # OK to have passed
     log "PASS:	$1"
     as_fn_arith $glob_countok + 1
@@ -130,7 +133,10 @@ handle_pass () {
 handle_fail () {
   # check that a fail for test $1 wasn't supposed to pass
   grep ${1} $testdir/xfail.lst >/dev/null 2>&1
-  if [ $? -eq 0 ]; then
+  inlist=$?
+  echo ${1} | egrep '^[bl]' >/dev/null 2>&1
+  b_or_l=$?
+  if [ $inlist -eq 0 -o $b_or_l -eq 0 ]; then
     # OK to have failed
     log "XFAIL:	$1"
     as_fn_arith $glob_countxf + 1
