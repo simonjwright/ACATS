@@ -91,7 +91,8 @@ clean_dir () {
 
 find_main () {
   # Must handle the cases that aren't correctly identified (ACATS 4.1)
-  case ${i} in
+  # $1 is the test
+  case ${1} in
      c3a1003)
        main=c3a10032
        ;;
@@ -102,12 +103,45 @@ find_main () {
        main=ca110232
        ;;
      *)
-       ls ${i}?.adb > ${i}.lst 2> /dev/null
-       ls ${i}*m.adb >> ${i}.lst 2> /dev/null
-       ls ${i}.adb >> ${i}.lst 2> /dev/null
-       main=`tail -1 ${i}.lst`
+       ls ${1}?.adb > ${1}.lst 2> /dev/null
+       ls ${1}*m.adb >> ${1}.lst 2> /dev/null
+       ls ${1}.adb >> ${1}.lst 2> /dev/null
+       main=`tail -1 ${1}.lst`
        ;;
   esac
+}
+
+handle_pass () {
+  # check that a pass for test $1 wasn't supposed to fail
+  grep ${1} $testdir/xfail.lst >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    # OK to have passed
+    log "PASS:	$1"
+    as_fn_arith $glob_countok + 1
+    glob_countok=$as_val
+  else
+    # should have failed
+    log "XPASS:	$1"
+    as_fn_arith $glob_countxp + 1
+    glob_countxp=$as_val
+  fi
+}
+
+handle_fail () {
+  # check that a fail for test $1 wasn't supposed to pass
+  grep ${1} $testdir/xfail.lst >/dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    # OK to have failed
+    log "XFAIL:	$1"
+    as_fn_arith $glob_countxf + 1
+    glob_countxf=$as_val
+  else
+    # should have passed
+    display "FAIL:	$1"
+    as_fn_arith $glob_countf + 1
+    glob_countf=$as_val
+    failed="${failed}${tst} "
+  fi
 }
 
 run_one_test () {
@@ -135,38 +169,30 @@ run_one_test () {
   mkdir $test && cd $test >> $dir/acats.log 2>&1
 
   if [ $? -ne 0 ]; then
-    display "FAIL:	$tst"
-    as_fn_arith $glob_countf + 1
-    glob_countf=$as_val
-    failed="${failed}${tst} "
+    handle_fail $tst
     clean_dir
     return
   fi
 
   target_gnatchop -c -w `ls ${test}*.a ${test}*.ada ${test}*.au ${test}*.adt ${test}*.am ${test}*.dep 2> /dev/null` >> $dir/acats.log 2>&1
   main=""
-  find_main
+  find_main $i
   if [ -z "$main" ]; then
     sync
-    find_main
+    find_main $i
   fi
   binmain=`echo $main | sed -e 's/\(.*\)\..*/\1/g'`
   echo "BUILD $main" >> $dir/acats.log
-  EXTERNAL_OBJECTS=""
   case $tst in
     cxb3004) EXTERNAL_OBJECTS="$dir_support/cxb30040.o";;
     cxb3006) EXTERNAL_OBJECTS="$dir_support/cxb30060.o";;
     cxb3013) EXTERNAL_OBJECTS="$dir_support/cxb30130.o $dir_support/cxb30131.o";;
     cxb3017) EXTERNAL_OBJECTS="$dir_support/cxb30170.o";;
     cxb3018) EXTERNAL_OBJECTS="$dir_support/cxb30180.o";;
-    ca1020e) rm -f ca1020e_func1.adb ca1020e_func2.adb ca1020e_proc1.adb ca1020e_proc2.adb > /dev/null 2>&1;;
-    ca14028) rm -f ca14028_func2.ads ca14028_func3.ads ca14028_proc1.ads ca14028_proc3.ads > /dev/null 2>&1;;
+    *)       EXTERNAL_OBJECTS="";;
   esac
   if [ "$main" = "" ]; then
-    display "FAIL:	$tst"
-    as_fn_arith $glob_countf + 1
-    glob_countf=$as_val
-    failed="${failed}${tst} "
+    handle_fail $tst
     clean_dir
     return
   fi
@@ -183,10 +209,7 @@ run_one_test () {
       as_fn_arith $glob_countu + 1
       glob_countu=$as_val
     else
-      display "FAIL:	$tst"
-      as_fn_arith $glob_countf + 1
-      glob_countf=$as_val
-      failed="${failed}${tst} "
+      handle_fail $tst
     fi
     clean_dir
     return
@@ -207,10 +230,7 @@ run_one_test () {
     grep 'tasking not implemented' ${tst}.log > /dev/null 2>&1
 
     if [ $? -ne 0 ]; then
-      display "FAIL:	$tst"
-      as_fn_arith $glob_countf + 1
-      glob_countf=$as_val
-      failed="${failed}${tst} "
+      handle_fail $tst
     else
       log "UNSUP:	$tst"
       as_fn_arith $glob_countu + 1
@@ -219,9 +239,7 @@ run_one_test () {
   else
     case `echo $status | cut -c1-4` in
       "====")
-        log "PASS:	$tst"
-        as_fn_arith $glob_countok + 1
-        glob_countok=$as_val;;
+        handle_pass $tst;;
       "++++")
         log "N/A:       $tst"
         as_fn_arith $glob_countna + 1
@@ -406,6 +424,12 @@ glob_countna=0
 # number of failures
 glob_countf=0
 
+# number of expected failures
+glob_countxf=0
+
+# number of unexpected passes
+glob_countxp=0
+
 # These for possible parallel execution, see below
 par_count=0
 par_countm=0
@@ -467,6 +491,12 @@ done
 display "		=== acats Summary ==="
 display "# of expected passes           $glob_countok"
 display "# of unexpected failures       $glob_countf"
+if [ $glob_countxf -ne 0 ]; then
+  display "# of expected failures         $glob_countxf"
+fi
+if [ $glob_countxp -ne 0 ]; then
+  display "# of unexpected passes         $glob_countxp"
+fi
 if [ $glob_counti -ne 0 ]; then
   display "# of visual checks needed      $glob_counti"
 fi
