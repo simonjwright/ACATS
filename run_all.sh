@@ -247,7 +247,7 @@ run_one_test () {
       "====")
         handle_pass $tst;;
       "++++")
-        log "N/A:       $tst"
+        log "N/A:	$tst"
         as_fn_arith $glob_countna + 1
         glob_countna=$as_val;;
       "!!!!")
@@ -283,8 +283,6 @@ gnatls -v >> $dir/acats.log
 display ""
 
 if [ -n "$GCC_RUNTEST_PARALLELIZE_DIR" ]; then
-  echo "can't run parallelized tests."
-  exit 1
   dir_support=$dir/../acats/support
 
   rm -rf $dir/run
@@ -410,7 +408,7 @@ if [ $# -eq 0 ]; then
    # only run the tests that are supposed to succeed, omitting cxe
    # (Annex E is the Distributed Systems annex, not straightforward to
    # script here)
-   chapters=`cd $dir/tests; echo a* cz c[^z] cx[^e] d* e*`
+   chapters=`cd $dir/tests; echo cz a* c[^z] cx[^e] d* e*`
 else
    chapters=$*
 fi
@@ -457,7 +455,7 @@ for chapter in $chapters; do
    ls *.a *.ada *.adt *.am *.au *.dep 2> /dev/null | \
        sed -e 's/\(.*\)\..*/\1/g' | \
        cut -c1-7 | sort | uniq | comm -23 - $dir_support/norun.lst \
-     > $dir/tests/$chapter/${chapter}.lst
+       > $dir/tests/$chapter/${chapter}.lst
 
    for i in `cat $dir/tests/$chapter/${chapter}.lst`; do
 
@@ -495,22 +493,36 @@ for chapter in $chapters; do
 done
 
 display "		=== acats Summary ==="
-display "# of expected passes           $glob_countok"
-display "# of unexpected failures       $glob_countf"
+# text must be as expected by contrib/dg-extract-results.py (including
+# tabs)
+display "# of expected passes		$glob_countok"
+display "# of unexpected failures	$glob_countf"
 if [ $glob_countxf -ne 0 ]; then
-  display "# of expected failures         $glob_countxf"
+  display "# of expected failures		$glob_countxf"
 fi
 if [ $glob_countxp -ne 0 ]; then
-  display "# of unexpected passes         $glob_countxp"
+  display "# of unexpected successes	$glob_countxp"
 fi
-if [ $glob_counti -ne 0 ]; then
-  display "# of visual checks needed      $glob_counti"
-fi
-if [ $glob_countu -ne 0 ]; then
-  display "# of unsupported tests         $glob_countu"
-fi
-if [ $glob_countna -ne 0 ]; then
-  display "# of inapplicable tests        $glob_countna"
+if [ $# -eq 0 ]; then
+  # preparing output for standard run; must only use names supported
+  # by contrib/dg-extract-results.py
+  if [ $glob_counti -ne 0 ]; then
+    display "# of unresolved testcases	$glob_counti"
+  fi
+  unsupported=[expr $glob_countu + $glob_countna]
+  if [ $unsupported -ne 0 ]; then
+    display "# of inapplicable tests	$unsorted"
+  fi
+else
+  if [ $glob_counti -ne 0 ]; then
+    display "# of visual checks needed	$glob_counti"
+  fi
+  if [ $glob_countu -ne 0 ]; then
+    display "# of unsupported tests		$glob_countu"
+  fi
+  if [ $glob_countna -ne 0 ]; then
+    display "# of inapplicable tests	$glob_countna"
+  fi
 fi
 
 if [ $glob_countf -ne 0 ]; then
