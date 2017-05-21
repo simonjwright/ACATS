@@ -211,7 +211,7 @@ run_one_test () {
     grep 'not supported in this configuration' \
          $dir/tests/$chapter/${tst}/${tst}.log > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-      log "UNSUP:	$tst"
+      log "UNSUPPORTED:	$tst"
       as_fn_arith $glob_countu + 1
       glob_countu=$as_val
     else
@@ -238,7 +238,7 @@ run_one_test () {
     if [ $? -ne 0 ]; then
       handle_fail $tst
     else
-      log "UNSUP:	$tst"
+      log "UNSUPPORTED:	$tst"
       as_fn_arith $glob_countu + 1
       glob_countu=$as_val
     fi
@@ -247,15 +247,15 @@ run_one_test () {
       "====")
         handle_pass $tst;;
       "++++")
-        log "N/A:	$tst"
+        log "UNSUPPORTED:	$tst"
         as_fn_arith $glob_countna + 1
         glob_countna=$as_val;;
       "!!!!")
-        log "TENT:	$tst"
+        log "UNRESOLVED:	$tst"
         as_fn_arith $glob_counti + 1
         glob_counti=$as_val;;
       *)
-        log "????:	$tst"
+        log "ERROR:	$tst"
         as_fn_arith $glob_counti + 1
         glob_counti=$as_val;;
     esac
@@ -503,26 +503,15 @@ fi
 if [ $glob_countxp -ne 0 ]; then
   display "# of unexpected successes	$glob_countxp"
 fi
-if [ $# -eq 0 ]; then
-  # preparing output for standard run; must only use names supported
-  # by contrib/dg-extract-results.py
-  if [ $glob_counti -ne 0 ]; then
-    display "# of unresolved testcases	$glob_counti"
-  fi
-  unsupported=[expr $glob_countu + $glob_countna]
-  if [ $unsupported -ne 0 ]; then
-    display "# of unsupported tests		$unsupported"
-  fi
-else
-  if [ $glob_counti -ne 0 ]; then
-    display "# of visual checks needed	$glob_counti"
-  fi
-  if [ $glob_countu -ne 0 ]; then
-    display "# of unsupported tests		$glob_countu"
-  fi
-  if [ $glob_countna -ne 0 ]; then
-    display "# of inapplicable tests		$glob_countna"
-  fi
+# preparing output for standard run; must only use names supported
+# by contrib/dg-extract-results.py
+if [ $glob_counti -ne 0 ]; then
+  display "# of unresolved testcases	$glob_counti"
+fi
+as_fn_arith $glob_countu + $glob_countna
+unsupported=$as_val
+if [ $unsupported -ne 0 ]; then
+  display "# of unsupported tests		$unsupported"
 fi
 
 if [ $glob_countf -ne 0 ]; then
