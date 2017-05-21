@@ -511,7 +511,7 @@ if [ $# -eq 0 ]; then
   fi
   unsupported=[expr $glob_countu + $glob_countna]
   if [ $unsupported -ne 0 ]; then
-    display "# of inapplicable tests	$unsorted"
+    display "# of unsupported tests		$unsupported"
   fi
 else
   if [ $glob_counti -ne 0 ]; then
@@ -521,7 +521,7 @@ else
     display "# of unsupported tests		$glob_countu"
   fi
   if [ $glob_countna -ne 0 ]; then
-    display "# of inapplicable tests	$glob_countna"
+    display "# of inapplicable tests		$glob_countna"
   fi
 fi
 
