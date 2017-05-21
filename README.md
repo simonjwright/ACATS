@@ -28,7 +28,7 @@ You can also run the tests, or individual chapters of the tests, by using the `r
 
 will run just chapters CXD, CXE (execution tests on Annexes D and E).
 
-The above command will only build the support code if it isn't already build. To force a rebuild, say
+The above command will only build the support code if it isn't already built. To force a rebuild, say
 
     ~/ACATS/run_local.sh NONE cxd cxe
 
