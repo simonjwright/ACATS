@@ -220,7 +220,7 @@ BEGIN
      BEGIN -- (C)
 
           WHILE NOT TSK'TERMINATED AND LOOP_COUNT < CUT_OFF LOOP
-               DELAY 2.0 * Impdef.One_Nominal_Second;
+               DELAY 2.0 * Impdef.One_Nominal_Long_Second;
                LOOP_COUNT := LOOP_COUNT + 1;
           END LOOP;
 
