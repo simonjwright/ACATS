@@ -2,9 +2,9 @@
 
 This repository contains a version of the
 [Ada Conformity Assessment Test Suite][Ada-Auth] customised for use
-with FSF GCC.
+with FSF GCC. Eventually it's hoped they will replace the current GCC tests (based on ACATS 2.5).
 
-The current version is 4.1.
+The current version here is 4.1.
 
 ## Notes ##
 
@@ -63,5 +63,15 @@ The summary is reported in the form
 
 (this is from a run for GCC 7.1.0 on macOS).
 
+## Approach ##
+
+If running locally, all the chapters are testable on request. If no chapters are specified, a default set will be run: this excludes chapters all of whose tests are expected to fail (B-tests and L-tests).
+
+Some individual tests are in any case suppressed (by inclusion in the file `norun.lst`), mainly  because
+
+  * they involve more than one copy of the same unit; _gnatchop_ is run with `-w`, so that phase won't fail, but it's not obvious that the last copy of the unit is in fact the one required, and it would be very awkward to automate the process of _chop one file/build/repeat until done_, or
+  * they involve another language (Fortran, Cobol).
+
+The ACATS tests that involve timing mostly include very long timeouts (up to an hour in some cases). These have been scaled by multiplying by `One_Nominal_Second` (0.001 seconds) or `One_Nominal_Long_Second` (0.1 seconds), in line with the changes in the GCC version of the tests.
 
 [Ada-Auth]: http://www.ada-auth.org/acats.html
