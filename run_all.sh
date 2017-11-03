@@ -65,6 +65,7 @@ target_gnatchop () {
   else
     host_gnatchop $*
   fi
+  return $?
 }
 
 target_gnatmake () {
@@ -180,7 +181,17 @@ run_one_test () {
     return
   fi
 
-  target_gnatchop -c -w `ls ${test}*.a ${test}*.ada ${test}*.au ${test}*.adt ${test}*.am ${test}*.dep 2> /dev/null` >> $dir/acats.log 2>&1
+  target_gnatchop -c `ls ${test}*.a ${test}*.ada ${test}*.au ${test}*.adt ${test}*.am ${test}*.dep 2> /dev/null` >> $dir/acats.log 2>&1
+  chopped=$?
+
+  # If gnatchop failed, handle as UNSUPPORTED.
+  if [ $chopped -ne 0 ]; then
+    log "UNSUPPORTED:	$tst"
+    as_fn_arith $glob_countu + 1
+    glob_countu=$as_val
+    return
+  fi
+
   main=""
   find_main $i
   if [ -z "$main" ]; then
