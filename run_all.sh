@@ -181,15 +181,22 @@ run_one_test () {
     return
   fi
 
-  target_gnatchop -c `ls ${test}*.a ${test}*.ada ${test}*.au ${test}*.adt ${test}*.am ${test}*.dep 2> /dev/null` >> $dir/acats.log 2>&1
+  target_gnatchop -c `ls ${test}*.a ${test}*.ada ${test}*.au ${test}*.adt ${test}*.am ${test}*.dep 2> /dev/null` > chop.log 2>&1
   chopped=$?
+  cat chop.log >>$dir/acats.log
 
-  # If gnatchop failed, handle as UNSUPPORTED.
+  # If gnatchop failed because the same unit appears more than once in
+  # the sources, handle as UNSUPPORTED. Otherwise, let the compiler
+  # report any problems.
   if [ $chopped -ne 0 ]; then
-    log "UNSUPPORTED:	$tst"
-    as_fn_arith $glob_countu + 1
-    glob_countu=$as_val
-    return
+    grep 'use -w to overwrite' chop.log > /dev/null 2>$1
+    if [ $? -eq 0 ]; then
+      log "UNSUPPORTED:	$tst"
+      as_fn_arith $glob_countu + 1
+      glob_countu=$as_val
+      clean_dir
+      return
+    fi
   fi
 
   main=""
@@ -416,10 +423,9 @@ fi
 display "		=== acats tests ==="
 
 if [ $# -eq 0 ]; then
-   # only run the tests that are supposed to succeed, omitting cxe
-   # (Annex E is the Distributed Systems annex, not straightforward to
-   # script here)
-   chapters=`cd $dir/tests; echo cz a* c[^z] cx[^e] d* e*`
+   # Run all the tests, omitting cxe (Annex E is the Distributed
+   # Systems annex, not straightforward to script here)
+   chapters=`cd $dir/tests; echo cz b* a* c[^z] cx[^e] d* e* l*`
 else
    chapters=$*
 fi
