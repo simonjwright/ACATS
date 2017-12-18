@@ -201,7 +201,7 @@ BEGIN
                TSK1.ENT1 (ARA1);     -- ARA1.T BECOMES ALIAS FOR ARA2.T.
 
                WHILE NOT TSK1'TERMINATED AND LOOP_COUNT1 < CUT_OFF1 LOOP
-                    DELAY 1.0;
+                    DELAY 1.0 * Impdef.One_Nominal_Long_Second;
                     LOOP_COUNT1 := LOOP_COUNT1 + 1;
                END LOOP;
 
