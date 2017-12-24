@@ -455,6 +455,8 @@ end ImpDef;
      --==================================================================--
 
 
+with Ada.Characters.Handling;
+
 package body ImpDef is
 
    -- NOTE: These are example bodies.  It is expected that implementors
@@ -496,8 +498,9 @@ package body ImpDef is
    -- that equivalence in this function.
 
    function Equivalent_File_Names (Left, Right : String) return Boolean is
+      use Ada.Characters.Handling;
    begin
-       return Left = Right;
+       return To_Lower (Left) = To_Lower (Right);
    end Equivalent_File_Names;
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
