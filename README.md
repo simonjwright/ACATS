@@ -16,8 +16,6 @@ You can run the GCC checks with this version of the tests (provided you have `de
 
 You can run the tests in parallel, which of course makes most sense if you have multiple cores, by for example `make -j4 check-acats`. If you do this, the screen output during execution is misleading; only `acats.log` and `acats.sum` are meaningful.
 
-The standard GCC tests don't include any B or L tests (which are expected to fail). These tests can be run in local testing, see below.
-
 ### Local testing ###
 
 You can also run the tests, or individual chapters of the tests, by using the `run_local.sh` script. For example,
@@ -36,7 +34,7 @@ The above command will only build the support code if it isn't already built. To
 
 The reports are in `acats.log` and `acats.sum`.
 
-`acats.log` is a full report of test compilation. build and execution.
+`acats.log` is a full report of test compilation, build and execution.
 
 `acats.sum` is a report of just the outcome of each test and a summary.
 
@@ -47,30 +45,27 @@ The outcomes are reported in the style `OUTCOME: test`, e.g. `PASS: a22006b`, wh
   * `XFAIL`: the test was expected to fail and did so
   * `XPASS`: the test was expected to fail but passed
   * `UNRESOLVED`: the test requires visual examination to finally determine pass/fail
-  * `UNSUPPORTED`: the test was either deemed not applicable by the test itself (for example, C45322A requires `Machine_Overflows` to be `True`) or not supported by the compiler (for example, CXAG002 will not compile because it requires support for `Hierarchical_File_Names`)
+  * `UNSUPPORTED`: the test was either deemed not applicable by the test itself (for example, C45322A requires `Machine_Overflows` to be `True`), not supported by the compiler (for example, CXAG002 will not compile because it requires support for `Hierarchical_File_Names`), or not compatible with simple use of _gnatchop_ (because the test contains the same unit in several source files, expecting them to be used in multiple passes).
 
-Note, these outcome names are not ideal, but they have to be chosen to match the requirements of the test infrastructure that supports parallel test execution.
+Note, these outcome names are not ideal, but they have to be chosen to match the requirements of the GCC test infrastructure that supports parallel test execution.
 
 The summary is reported in the form
 
             === acats Summary ===
-    # of expected passes		2463
-    # of unexpected failures	12
-    # of expected failures		1
+    # of expected passes		2476
+    # of unexpected failures	10
+    # of expected failures		1418
     # of unresolved testcases	11
-    # of unsupported tests		45
-    *** FAILURES: cxag001 cxd1003  c250002 c732b01 c732b02 c760015 cxd3001 cxd3002 cxh1001  cxd1004 cxd1005 cxd2006
+    # of unsupported tests		105
+    *** FAILURES: cxd2006 cxd3001 cxh1001 cde0002 cxd3002 c250002 cxd1003 cxd1004 cxd1005
 
-(this is from a run for GCC 7.1.0 on macOS).
+(this is from a run for GCC 8.0 on macOS).
 
 ## Approach ##
 
-If running locally, all the chapters are testable on request. If no chapters are specified, a default set will be run: this excludes chapters all of whose tests are expected to fail (B-tests and L-tests).
+If running locally, all the chapters are testable on request. If no chapters are specified, a default set will be run: this excludes CXE tests, related to the Distributed Systems Annex).
 
-Some individual tests are in any case suppressed (by inclusion in the file `norun.lst`), mainly  because
-
-  * they involve more than one copy of the same unit; _gnatchop_ is run with `-w`, so that phase won't fail, but it's not obvious that the last copy of the unit is in fact the one required, and it would be very awkward to automate the process of _chop one file/build/repeat until done_, or
-  * they involve another language (Fortran, Cobol).
+Some individual tests are in any case suppressed (by inclusion in the file `norun.lst`), because they involve another language (Fortran, Cobol).
 
 The ACATS tests that involve timing mostly include very long timeouts (up to an hour in some cases). These have been scaled by multiplying by `One_Nominal_Second` (0.001 seconds) or `One_Nominal_Long_Second` (0.1 seconds), in line with the changes in the GCC version of the tests.
 
