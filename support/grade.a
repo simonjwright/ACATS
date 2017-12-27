@@ -99,6 +99,14 @@
 --                        list uses.
 --     24 Jun 2016   RLB  Added smarter handling of units with exactly one
 --                        error.
+--     27 Jan 2017   RLB  Added manual grading to missing execution.
+--                        Corrected so the correct result is returned for
+--                        a binder crash.
+--      1 Feb 2017   RLB  Added summary totals for each class of results,
+--                        and "Progress" score.
+--      3 Feb 2017   RLB  Added manual grading to missing binding.
+--      6 Feb 2017   RLB  Corrected the single error cases to include errors
+--                        with no positions.
 
 with Ada.Command_Line;
 with Ada.Text_IO;
@@ -367,13 +375,13 @@ procedure Grade is
                   Trace.Line_Number_Type'
                      Image(Grading_Data.Event_Trace(Event).Error_Line) &
                   " in file " &
-                  Grading_Data.Summary_of_Tests(Item).Source_Name);
+                  Grading_Data.Event_Trace(Event).Name);
           elsif Event /= 0 and then
            (Grading_Data.Event_Trace(Event).Event = Trace.Compilation_Start
              or else
             Grading_Data.Event_Trace(Event).Event = Trace.Compilation_End) then
                Ada.Text_IO.Put_Line (" of file " &
-                  Grading_Data.Summary_of_Tests(Item).Source_Name);
+                  Grading_Data.Event_Trace(Event).Name);
            else
                Ada.Text_IO.New_Line;
            end if;
@@ -964,7 +972,8 @@ procedure Grade is
                -- we use the range of file (assuming an extra line at the end
                -- of the unit).
                Start_Line     := 0;
-               Start_Position := 1;
+               Start_Position := 0; -- Include any errors that are missing
+                                    -- positional information.
                End_Line       := Grading_Data.
                                  Summary_of_Tests(Unit_Item).End_Line + 2;
                End_Position   := Trace.Line_Position_Type'Last;
@@ -1001,7 +1010,7 @@ procedure Grade is
                -- two cases).
                if One_Unit_in_File then
                   Start_Line     := 0;
-                  Start_Position := 1;
+                  Start_Position := 0;
                   End_Line       := Grading_Data.
                                     Summary_of_Tests(Unit_Item).End_Line + 1;
                   End_Position   := Trace.Line_Position_Type'Last;
@@ -1037,7 +1046,7 @@ procedure Grade is
                -- the second and third cases for why we use these ranges).
                if One_Unit_in_File then
                   Start_Line     := 0;
-                  Start_Position := 1;
+                  Start_Position := 0;
                   End_Line       := Grading_Data.
                                     Summary_of_Tests(Unit_Item).End_Line + 1;
                   End_Position   := Trace.Line_Position_Type'Last;
@@ -1132,7 +1141,7 @@ procedure Grade is
                end if;
                if One_Unit_in_File then
                   Start_Line     := 0;
-                  Start_Position := 1;
+                  Start_Position := 0;
                   Single_Tag_in_Unit := True;
                   if DEBUG and Noise_Level = Verbose then
                      Ada.Text_IO.Put_Line ("== Single error with trailing OK "&
@@ -1189,7 +1198,7 @@ procedure Grade is
                      End_Line, End_Position, Single_Tag_in_Unit);
 
                   if not Use_Positions then
-                     Start_Position := 1;
+                     Start_Position := 0;
                      End_Position   := Trace.Line_Position_Type'Last;
                   end if;
                   -- Check for all matching compile_error events.
@@ -1390,6 +1399,44 @@ procedure Grade is
                            end;
                         -- else not some sort of test tag.
                         end if;
+                     elsif Debug and then Noise_Level = Verbose and then
+                        Grading_Data.Event_Trace(Ev).Event =
+                        Trace.Compile_Error and then
+                        Grading_Data.Event_Trace(Ev).Name =
+                        Grading_Data.Summary_of_Tests(Sum).Source_Name then
+                        -- Some compiler error item that is out of range.
+                        if Single_Tag_in_Unit then
+                            -- Should not be able to get here.
+                            Message_For_Event (Kind => Warning,
+                                               Item => Sum,
+                                               Event=> Ev,
+                                               Text =>
+                                             "skipped error item in " &
+                                             "single error case");
+                            --Ada.Text_IO.Put ("Start_Line=" &
+                            --   Trace.Line_Number_Type'Image(Start_Line));
+                            --Ada.Text_IO.Put ("; Start_Position=" &
+                            -- Trace.Line_Position_Type'Image(Start_Position));
+                            --Ada.Text_IO.Put ("; End_Line=" &
+                            --   Trace.Line_Number_Type'Image(End_Line));
+                            --Ada.Text_IO.Put ("; End_Position=" &
+                            --   Trace.Line_Position_Type'Image(End_Position));
+                            --Ada.Text_IO.New_Line;
+                            --Ada.Text_IO.Put ("In range=" &
+                            --  Boolean'Image(
+                            --   (Grading_Data.Event_Trace(Ev).Error_Line in
+                            --      Start_Line + 1 .. End_Line - 1 or else
+                            --   (Grading_Data.Event_Trace(Ev).Error_Line =
+                            --      Start_Line and then
+                            --   Grading_Data.Event_Trace(Ev).Error_Position >=
+                            --     Start_Position) or else
+                            --   (Grading_Data.Event_Trace(Ev).Error_Line =
+                            --      End_Line and then
+                            --   Grading_Data.Event_Trace(Ev).Error_Position <=
+                            --      End_Position))));
+                            --Ada.Text_IO.New_Line;
+                        -- else no trace yet.
+                        end if;
                      -- else not a matching Compile_Error event.
                      end if;
                   end loop;
@@ -1419,7 +1466,7 @@ procedure Grade is
                                  then
                            Message_For_Event (Kind => Special_Action,
                                               Item => Sum,
-                                              Event=> 0, -- No event, obviously.
+                                              Event=> 0, -- No event.
                                               Text =>
                               "did not report an error for an ERROR item " &
                               "at line" &
@@ -1432,7 +1479,7 @@ procedure Grade is
                         else
                            Message_For_Event (Kind => Failed,
                                               Item => Sum,
-                                              Event=> 0, -- No event, obviously.
+                                              Event=> 0, -- No event.
                                               Text =>
                               "failed by not reporting an " &
                               "error for an ERROR item at line" &
@@ -1519,8 +1566,8 @@ procedure Grade is
                                   " an NA test at line" &
                                   Trace.Line_Number_Type'Image(Grading_Data.
                                        Summary_of_Tests(Sum).End_Line) &
-                                  " in file " &
-                                  Grading_Data.Summary_of_Tests(Sum).Source_Name);
+                                  " in file " & Grading_Data.
+                                           Summary_of_Tests(Sum).Source_Name);
                                -- else no message wanted.
                                end if;
                            elsif
@@ -1538,8 +1585,8 @@ procedure Grade is
                                  Trace.Line_Number_Type'Image(Grading_Data.
                                       Summary_of_Tests(Sum).End_Line) &
                                  " in file " &
-                                 Grading_Data.Summary_of_Tests(Sum).
-                                    Source_Name & ", manual grading requested");
+                                 Grading_Data.Summary_of_Tests(Sum).Source_Name
+                                    & ", manual grading requested");
                               return Manual_Grading;
                            else
                               Message_For_Event (Kind => Failed,
@@ -1801,8 +1848,8 @@ procedure Grade is
                                            Event=> 0, -- No event.
                                            Text =>
                               "not all required units of file " &
-                                 Grading_Data.Summary_of_Tests(Itm).Source_Name &
-                                 " are compiled, manual grading requested");
+                                 Grading_Data.Summary_of_Tests(Itm).Source_Name
+                                 & " are compiled, manual grading requested");
                         return Manual_Grading;
                      else
                         Message_For_Event (Kind => Failed,
@@ -1828,8 +1875,8 @@ procedure Grade is
                                            Event=> 0, -- No event.
                                            Text =>
                               "not all required units of file " &
-                                 Grading_Data.Summary_of_Tests(Itm).Source_Name &
-                                 " are compiled, manual grading requested");
+                                 Grading_Data.Summary_of_Tests(Itm).Source_Name
+                                 & " are compiled, manual grading requested");
                         return Manual_Grading;
                      else
                         Message_For_Event (Kind => Failed,
@@ -1917,10 +1964,20 @@ procedure Grade is
          end loop;
          if Start = 0 then
             -- No binding found.
-            Ada.Text_IO.Put_Line ("** Binding of Test " &
-               Grading_Data.Summary_of_Tests(First_Item).Source_Name(1..7)
-               & " is missing");
-            return Fail_Bind_Missing;
+            if Grading_Data.Manual_Grading_Requested_for_Test (
+               Grading_Data.Summary_of_Tests(First_Item).Source_Name) then
+               Message_For_Event (Kind => Special_Action,
+                                  Item => First_Item,
+                                  Event=> 0, -- No event.
+                                  Text => "has no binding, manual " &
+                                          "grading requested");
+               return Manual_Grading;
+            else
+               Ada.Text_IO.Put_Line ("** Binding of Test " &
+                  Grading_Data.Summary_of_Tests(First_Item).Source_Name(1..7)
+                  & " is missing");
+               return Fail_Bind_Missing;
+            end if;
          -- else found exactly one binder start.
          end if;
 
@@ -1953,7 +2010,7 @@ procedure Grade is
                                Item => First_Item,
                                Event=> 0, -- No event.
                                Text => "binding crashed");
-            return Fail_Run_Crash;
+            return Fail_Bind_Crash;
          -- else found exactly one binder completion.
          end if;
 
@@ -2023,11 +2080,23 @@ procedure Grade is
          end loop;
          if Start = 0 then
             -- No execution found.
-            Message_For_Event (Kind => Failed,
-                               Item => First_Item,
-                               Event=> 0, -- No event.
-                               Text => "is missing execution");
-            return Fail_Run_Missing;
+            if Grading_Data.Manual_Grading_Requested_for_Test (
+               Grading_Data.Summary_of_Tests(First_Item).Source_Name) then
+               -- We allow this so that tests that require special linking
+               -- can be excluded from the results.
+               Message_For_Event (Kind => Special_Action,
+                                  Item => First_Item,
+                                  Event=> 0, -- No event.
+                                  Text =>  "is mising execution, manual " &
+                                           "grading requested");
+               return Manual_Grading;
+            else
+               Message_For_Event (Kind => Failed,
+                                  Item => First_Item,
+                                  Event=> 0, -- No event.
+                                  Text => "is missing execution");
+               return Fail_Run_Missing;
+            end if;
          -- else found exactly one execution start.
          end if;
 
@@ -2580,6 +2649,111 @@ begin
          Ada.Text_IO.New_Line;
       end if;
    end loop;
+   Ada.Text_IO.New_Line;
+   Ada.Text_IO.Put ("** Total Failed              ");
+   Int_IO.Put (Overall_Summary(Fail_Process) +
+               Overall_Summary(Fail_Compile_Missing) +
+               Overall_Summary(Fail_Compile_Crash) +
+               Overall_Summary(Fail_Compile_OK_Error) +
+               Overall_Summary(Fail_Compile_Error) +
+               Overall_Summary(Fail_Compile_Missing_Error) +
+               Overall_Summary(Fail_Bind_Missing) +
+               Overall_Summary(Fail_Bind_Crash) +
+               Overall_Summary(Fail_Bind_Error) +
+               Overall_Summary(Fail_Run_Missing) +
+               Overall_Summary(Fail_Run_Crash) +
+               Overall_Summary(Fail_Run_Message), 6);
+   Int_IO.Put (B_Test_Summary(Fail_Process) +
+               B_Test_Summary(Fail_Compile_Missing) +
+               B_Test_Summary(Fail_Compile_Crash) +
+               B_Test_Summary(Fail_Compile_OK_Error) +
+               B_Test_Summary(Fail_Compile_Error) +
+               B_Test_Summary(Fail_Compile_Missing_Error) +
+               B_Test_Summary(Fail_Bind_Missing) +
+               B_Test_Summary(Fail_Bind_Crash) +
+               B_Test_Summary(Fail_Bind_Error) +
+               B_Test_Summary(Fail_Run_Missing) +
+               B_Test_Summary(Fail_Run_Crash) +
+               B_Test_Summary(Fail_Run_Message), 9);
+   Int_IO.Put (C_Test_Summary(Fail_Process) +
+               C_Test_Summary(Fail_Compile_Missing) +
+               C_Test_Summary(Fail_Compile_Crash) +
+               C_Test_Summary(Fail_Compile_OK_Error) +
+               C_Test_Summary(Fail_Compile_Error) +
+               C_Test_Summary(Fail_Compile_Missing_Error) +
+               C_Test_Summary(Fail_Bind_Missing) +
+               C_Test_Summary(Fail_Bind_Crash) +
+               C_Test_Summary(Fail_Bind_Error) +
+               C_Test_Summary(Fail_Run_Missing) +
+               C_Test_Summary(Fail_Run_Crash) +
+               C_Test_Summary(Fail_Run_Message), 9);
+   Int_IO.Put (L_Test_Summary(Fail_Process) +
+               L_Test_Summary(Fail_Compile_Missing) +
+               L_Test_Summary(Fail_Compile_Crash) +
+               L_Test_Summary(Fail_Compile_OK_Error) +
+               L_Test_Summary(Fail_Compile_Error) +
+               L_Test_Summary(Fail_Compile_Missing_Error) +
+               L_Test_Summary(Fail_Bind_Missing) +
+               L_Test_Summary(Fail_Bind_Crash) +
+               L_Test_Summary(Fail_Bind_Error) +
+               L_Test_Summary(Fail_Run_Missing) +
+               L_Test_Summary(Fail_Run_Crash) +
+               L_Test_Summary(Fail_Run_Message), 9);
+   Int_IO.Put (Other_Test_Summary(Fail_Process) +
+               Other_Test_Summary(Fail_Compile_Missing) +
+               Other_Test_Summary(Fail_Compile_Crash) +
+               Other_Test_Summary(Fail_Compile_OK_Error) +
+               Other_Test_Summary(Fail_Compile_Error) +
+               Other_Test_Summary(Fail_Compile_Missing_Error) +
+               Other_Test_Summary(Fail_Bind_Missing) +
+               Other_Test_Summary(Fail_Bind_Crash) +
+               Other_Test_Summary(Fail_Bind_Error) +
+               Other_Test_Summary(Fail_Run_Missing) +
+               Other_Test_Summary(Fail_Run_Crash) +
+               Other_Test_Summary(Fail_Run_Message), 9);
+   Ada.Text_IO.New_Line;
+   Ada.Text_IO.Put ("++ Total Not-Applicable      ");
+   Int_IO.Put (Overall_Summary(NA_Run_Message) +
+               Overall_Summary(NA_Compile_Error) +
+               Overall_Summary(NA_Annex_C_Error), 6);
+   Int_IO.Put (B_Test_Summary(NA_Run_Message) +
+               B_Test_Summary(NA_Compile_Error) +
+               B_Test_Summary(NA_Annex_C_Error), 9);
+   Int_IO.Put (C_Test_Summary(NA_Run_Message) +
+               C_Test_Summary(NA_Compile_Error) +
+               C_Test_Summary(NA_Annex_C_Error), 9);
+   Int_IO.Put (L_Test_Summary(NA_Run_Message) +
+               L_Test_Summary(NA_Compile_Error) +
+               L_Test_Summary(NA_Annex_C_Error), 9);
+   Int_IO.Put (Other_Test_Summary(NA_Run_Message) +
+               Other_Test_Summary(NA_Compile_Error) +
+               Other_Test_Summary(NA_Annex_C_Error), 9);
+   Ada.Text_IO.New_Line;
+   Ada.Text_IO.Put ("!! Total Special             ");
+   Int_IO.Put (Overall_Summary(SH_Run_Message) +
+               Overall_Summary(Manual_Grading), 6);
+   Int_IO.Put (B_Test_Summary(SH_Run_Message) +
+               B_Test_Summary(Manual_Grading), 9);
+   Int_IO.Put (C_Test_Summary(SH_Run_Message) +
+               C_Test_Summary(Manual_Grading), 9);
+   Int_IO.Put (L_Test_Summary(SH_Run_Message) +
+               L_Test_Summary(Manual_Grading), 9);
+   Int_IO.Put (Other_Test_Summary(SH_Run_Message) +
+               Other_Test_Summary(Manual_Grading), 9);
+   Ada.Text_IO.New_Line;
+   Ada.Text_IO.Put ("== Total Passed              ");
+   Int_IO.Put (Overall_Summary(Pass_Run) + Overall_Summary(Pass_Compile_Error)
+               + Overall_Summary(Pass_Bind_Error), 6);
+   Int_IO.Put (B_Test_Summary(Pass_Run) + B_Test_Summary(Pass_Compile_Error)
+               + B_Test_Summary(Pass_Bind_Error), 9);
+   Int_IO.Put (C_Test_Summary(Pass_Run) + C_Test_Summary(Pass_Compile_Error)
+               + C_Test_Summary(Pass_Bind_Error), 9);
+   Int_IO.Put (L_Test_Summary(Pass_Run) + L_Test_Summary(Pass_Compile_Error)
+               + L_Test_Summary(Pass_Bind_Error), 9);
+   Int_IO.Put (Other_Test_Summary(Pass_Run) +
+               Other_Test_Summary(Pass_Compile_Error) +
+               Other_Test_Summary(Pass_Bind_Error), 9);
+   Ada.Text_IO.New_Line;
    Ada.Text_IO.Put_Line ("=======================================");
    Ada.Text_IO.New_Line;
    if Overall_Summary(Total) =
@@ -2609,6 +2783,39 @@ begin
    else
       Ada.Text_IO.Put_Line ("Overall result for " &
          Ada.Command_Line.Argument(4) & " is **FAILED**");
+      if Overall_Summary(Total) -
+         (Overall_Summary(NA_Run_Message) +
+          Overall_Summary(NA_Compile_Error) +
+          Overall_Summary(NA_Annex_C_Error) +
+          Overall_Summary(SH_Run_Message)) > 100 then
+         -- Calculate a "progress" score. This score is on a scale of 0 to
+         -- 100, and judges how close to perfect a non-passing implementation
+         -- is to passing. The score ignores Not Applicable and runtime
+         -- Special_Handling tests and gives 1/2 credit to manual graded tests
+         -- (one should prefer to reduce the number of those if possible).
+         -- We only give this score when many tests are run (it's mainly
+         -- intended to give a progress score to the ACATS as a whole).
+         declare
+            package Flt_IO is new Ada.Text_IO.Float_IO (Float);
+            Total_Float : Float;
+            Passed_Float : Float;
+         begin
+            Total_Float := Float(Overall_Summary(Total) -
+                                 (Overall_Summary(NA_Run_Message) +
+                                 Overall_Summary(NA_Compile_Error) +
+                                 Overall_Summary(NA_Annex_C_Error) +
+                                 Overall_Summary(SH_Run_Message)));
+            Passed_Float := Float (Overall_Summary(Pass_Run) +
+                                   Overall_Summary(Pass_Compile_Error) +
+                                   Overall_Summary(Pass_Bind_Error)) +
+                            Float (Overall_Summary(Manual_Grading))*0.5;
+            Ada.Text_IO.New_Line;
+            Ada.Text_IO.Put ("  Progress Score (on a 0 to 100 scale) for " &
+                             "this implementation is");
+            Flt_IO.Put ((Passed_Float/Total_Float)*100.0, 5, 2, 0);
+            Ada.Text_IO.New_Line;
+         end;
+      end if;
    end if;
 
 exception

@@ -49,6 +49,10 @@
 --                        breaking tests like C611006 and CD30008).
 --     28 Jun 2016   RLB  Added recognition of "OPTIONAL ERR MESSAGE:" as
 --                        some legacy tests use this (incorrect) form.
+--     25 Jan 2017   RLB  Corrected bug in the handling of main subprogram
+--                        names.
+--     27 Jan 2017   RLB  Changed the unit_name for a subunit to include the
+--                        parent information.
 
 with Ada.Command_Line;
 with Ada.Text_IO;
@@ -350,10 +354,12 @@ procedure Summary is
          Check_for_Range_Indicators_then_Write_Result;
 
       elsif The_Comment'Length >= 21 and then
-         The_Comment(The_Comment'First..The_Comment'First+20) =
-            "OPTIONAL ERR MESSAGE:" then
+         The_Comment(The_Comment'First..The_Comment'First+19) =
+            "OPTIONAL ERR MESSAGE" and then
+            (The_Comment(The_Comment'First+20) = ':' or else
+             The_Comment(The_Comment'First+20) = '.') then
          -- Note: Some ancient tests (esp. chapter 8, for example B83001A.ADA)
-         -- use this form.
+         -- use this form (followed by a period or colon).
          -- If there is no Range indicator, then we just use the first
          -- significant position on this line.
          Result := (Kind => Test_Summary.Optional_Error,
@@ -1697,14 +1703,23 @@ procedure Summary is
          -- procedure that matches the test name.
          Result.Is_Main := Simple_Source_Name (1..7) & "   " =
             Result.Unit_Name (1..10);
-      elsif Simple_Source_Name (9..12) = ".A   " then
+      elsif Simple_Source_Name (9..12) = ".A  " then
          -- A modern test in multiple parts. The main is not in this file.
          Result.Is_Main := False;
-      elsif Simple_Source_Name (9..12) = ".AM  " then
+      elsif Simple_Source_Name (9..12) = ".AM " then
          -- A modern test in multiple parts. The main is a procedure that
          -- matches the file name (sans extension).
          Result.Is_Main := Simple_Source_Name (1..8) & "  " =
             Result.Unit_Name (1..10);
+         if not Result.Is_Main then
+             Ada.Text_IO.Put_Line ("?? Not Main in main file with SSN=" &
+                Simple_Source_Name (1..8) & "  ; Unit_Name=" &
+                Result.Unit_Name (1..10) & "; Is_Main=" &
+                Boolean'Image(Result.Is_Main));
+             -- This can be OK if there are multiple units in this .AM
+             -- file, but usually it means that the main subprogram has
+             -- the wrong name.
+         end if;
       elsif Simple_Source_Name (8..12) = ".ADA " or else
             Simple_Source_Name (8..12) = ".DEP " or else
             Simple_Source_Name (8..12) = ".ADT " then
@@ -2443,7 +2458,7 @@ procedure Summary is
       Result.Source_Name    := Simple_Source_Name;
       Result.Start_Line     := First_Tok.Line_Num;
       Result.Start_Position := First_Tok.First;
-      Result.Is_Main        := False; -- No main subunits!
+      Result.Is_Main        := False; -- No main generics!
       -- End_Line and End_Position TBD.
       -- Unit_Kind and Unit_Name TBD.
       -- Optional TBD.
@@ -2581,6 +2596,7 @@ procedure Summary is
       Tok    : Token;
       Semi   : Token;
       Result : Test_Summary.Info_Record(Test_Summary.Compilation_Unit);
+      Parent_Name : Test_Summary.Comp_Unit_Name;
    begin
       -- Set up the parts of the Result that we know:
       Result.Source_Name    := Simple_Source_Name;
@@ -2596,10 +2612,17 @@ procedure Summary is
       --          and task are allowed.)
       Tok := Get_Next_Token; -- Get next token.
       if Tok.Kind = LParen then
-         -- There is a family or formal part; it has semicolons that will
-         -- confuse us, so we skip the entire family or formal part.
-         Skip_to_Closing_Paren; -- RParen is consumed.
-         Tok := Get_Next_Token;
+         Tok := Get_Next_Token; -- Get next token.
+         Get_Identifier (Tok, Parent_Name); -- Identifier or expanded name.
+         Tok := Get_Next_Token; -- Get next token.
+         if Tok.Kind = RParen then
+             Tok := Get_Next_Token; -- Get next token.
+         else
+             Debug_Info ("Not rparen?", Tok => Tok);
+             raise Parse_Error with "missing closing for parent name of " &
+                "subunit, on line" &
+                Trace.Line_Number_Type'Image(Tok.Line_Num);
+         end if;
       else
          Debug_Info ("Not lparen?", Tok => Tok);
          raise Parse_Error with "missing parent name for subunit" &
@@ -2636,6 +2659,15 @@ procedure Summary is
          raise Parse_Error with "not a kind of body for subunit," &
             "on line" & Trace.Line_Number_Type'Image(Tok.Line_Num);
       end if;
+
+      -- Combine the Parent_Name and Unit_Name into a single expanded name.
+      -- The name is not unique without that, and we may need to know the
+      -- parent in usage. It's easy to just get the unit name if we need
+      -- it from the expanded name, the reverse isn't possible.
+      Ada.Strings.Fixed.Move (Target => Result.Unit_Name,
+                              Source =>
+         Ada.Strings.Fixed.Trim (Parent_Name, Ada.Strings.Both) & '.' &
+         Ada.Strings.Fixed.Trim (Result.Unit_Name, Ada.Strings.Both));
 
       -- Here, Semi contains the ending semicolon of the unit.
       Result.End_Line := Semi.Line_Num;

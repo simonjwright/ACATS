@@ -41,23 +41,23 @@
 --
 -- CHANGE HISTORY:
 --      14 Sep 99   RLB     Created test.
---
+--      02 Feb 17   RLB     Fixed case of error tags, add location indicators.
 --!
 
 package body B730006_0.Child2 is
    procedure Create (Bay : in out Dock) is
    begin
-      B730006_0.Child1.Create (B730006_0.Child1.Bar(Bay)); -- OK.
-      Bay.C := 1.0; -- OK.
-      if Bay.B then -- Error: Component not visible.
+      B730006_0.Child1.Create (B730006_0.Child1.Bar(Bay)); -- OK. {32;2}
+      Bay.C := 1.0;                 -- OK. {7;8}
+      if Bay.B then                 -- ERROR: Component not visible. {10;5}
          null;
       end if;
-      if Bay.I = 2 then -- Error: Component not visible.
-                        -- (Hidden view in between).
+      if Bay.I = 2 then             -- ERROR: Component not visible. {10;9}
+                                    -- (Hidden view in between).
          null;
       end if;
-      B730006_0.Root(Bay).I := 3; -- OK. (Root's components are visible here.)
-      B730006_0.Root(Bay).C := 'A'; -- OK.
+      B730006_0.Root(Bay).I := 3;   -- OK. {7;6}   (Root's components are
+      B730006_0.Root(Bay).C := 'A'; -- OK. {7;8}    visible here.)
    end Create;
 end B730006_0.Child2;
 

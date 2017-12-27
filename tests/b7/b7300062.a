@@ -41,22 +41,22 @@
 --
 -- CHANGE HISTORY:
 --      14 Sep 99   RLB     Created test.
---
+--      02 Feb 17   RLB     Fixed case of error tags, add location indicators.
 --!
 
 package body B730006_0.Child3 is
    procedure Pound (Claw : in out Hammer) is
    begin
-      Claw.D := 1.0; -- OK.
-      if Claw.B then -- OK.
+      Claw.D := 1.0;                 -- OK. {7;8)
+      if Claw.B then                 -- OK. {10;5}
          null;
       end if;
-      if Claw.I = 2 then -- Error: Component not visible.
+      if Claw.I = 2 then             -- ERROR: Component not visible. {10;9}
          null;
       end if;
-      Claw.C := 'A'; -- Error: Component not visible.
-      B730006_0.Root(Claw).I := 3; -- OK. (Root's components are visible here.)
-      B730006_0.Root(Claw).C := 'A'; -- OK.
+      Claw.C := 'A';                 -- ERROR: Component not visible. {7;8}
+      B730006_0.Root(Claw).I := 3;   -- OK. {7;6}  (Root's components are
+      B730006_0.Root(Claw).C := 'A'; -- OK. {7;8}   visible here.)
    end Pound;
 end B730006_0.Child3;
 

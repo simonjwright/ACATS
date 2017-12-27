@@ -1,4 +1,3 @@
---
 -- C352001.A
 --
 --                             Grant of Unlimited Rights
@@ -45,6 +44,7 @@
 --      27 Jan 96   SAIC    Revised for 2.1.  Hid values, added "del" case.
 --      26 Oct 07   RLB     Corrected language-defined names of non-graphic
 --                          characters to reflect changes made by Amendment 1.
+--      20 Mar 17   RLB     Corrected text of last Failed message.
 --
 --!
 
@@ -264,7 +264,7 @@ begin
 
 
    if Wide_Character'Image(Wide_Character'Last) /= "HEX_0000FFFF" then
-      Report.Failed ("Wide_Character'Last is not FFFF");
+      Report.Failed ("Wide_Character'Last is not HEX_0000FFFF");
    end if;
 
    Report.Result;

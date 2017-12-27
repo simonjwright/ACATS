@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -41,7 +41,7 @@
 --      This test is an example of test design "A".
 --
 --      Dashed lines indicate file boundaries.
---      
+--
 --    A:
 --      -----------------------------   This fails at link time.  (L test)
 --      | Config pragma             |
@@ -52,12 +52,12 @@
 --      - - - - - - - - - - - - - - -  > may be combined into one file
 --      | Main withs both units     | /
 --      -----------------------------
---      
+--
 --      Note that the above example may fail on compilation of the third file,
 --      depending on what the compiler considers the "compilation environment"
 --      to be. This shall be reflected in the applicability criteria for those
 --      tests.
---      
+--
 --    B:
 --      -----------------------------   This fails at link time.  (L test)
 --      | Unit that violates pragma |
@@ -68,7 +68,7 @@
 --      - - - - - - - - - - - - - - -
 --      | Main withs both units     |
 --      -----------------------------
---      
+--
 --    C:
 --      -----------------------------   This links and runs (C test)
 --      | Config pragma             |
@@ -80,14 +80,14 @@
 --      | unit that violates the    |
 --      | pragma                    |
 --      -----------------------------
---      
+--
 --    D:
 --      -----------------------------   This fails at compile time
 --      | Config pragma             |   (B Test)
 --      | Unit(s) that violate      |
 --      | pragma                    |
 --      -----------------------------
---      
+--
 --    E:
 --      -----------------------------   This fails at compile time
 --      | Config pragma             |   (B Test)
@@ -97,7 +97,7 @@
 --      | Unit that violates pragma |   However, the second file should
 --      -----------------------------   successfully compile
 --
---      
+--
 -- SPECIAL REQUIREMENTS:
 --      This test must be built in a single partition.
 --      To build this test:
@@ -134,6 +134,9 @@
 --                         checking.
 --      05 NOV 96   SAIC   Restructured for release 2.1
 --      29 JUN 98   EDS    Changed main procedure name.
+--      02 FEB 17   RLB    Corrected format of error tag (and added a location
+--                         indicator).
+--
 --!
 
 ------------------------------------------------------------------- LXH40012
@@ -141,9 +144,9 @@
 with LXH4001_0;
 procedure LXH40012 is
 
-  protected Should_Be_Illegal is                           -- OPTIONAL ERROR
-    entry Passeren;         -- protected types not allowed in this partition
-    entry Vrijgeven;  -- pragma Restrictions(No_Protected_Types) in LXH40010
+  protected Should_Be_Illegal is                   -- OPTIONAL ERROR: {3}
+    entry Passeren;     -- Protected types not allowed in this partition.
+    entry Vrijgeven;    -- pragma Restrictions(No_Protected_Types) in LXH40010.
   private
     In_Use : Boolean := False;
   end Should_Be_Illegal;
