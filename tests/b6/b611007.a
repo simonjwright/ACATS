@@ -44,6 +44,8 @@
 -- CHANGE HISTORY:
 --     24 Feb 2016   RLB   Created test.
 --     28 Mar 2016   RLB   Added error location codes.
+--     12 Dec 2017   RLB   Corrected test to avoid violating rule added by
+--                         Binding Interpretation AI12-0166-1.
 --
 --!
 package B611007 is
@@ -74,7 +76,7 @@ package B611007 is
 
       function Is_Open return Boolean;
 
-      function Mode return Natural with Pre => Is_Open;         -- OK. {41}
+      function Mode return Natural with Pre => D > 1;           -- OK. {41}
 
       function Foob (N : Natural) return Natural
          with Pre'Class => N > D;                               -- ERROR: {15}
@@ -107,7 +109,7 @@ package B611007 is
 
    private
 
-      function F1 return Natural with Pre => Is_Open;           -- OK. {39}
+      function F1 return Natural with Pre => D >= 12;           -- OK. {39}
 
       function F2 (N : Natural) return Natural
          with Pre'Class => N > D;                               -- ERROR: {15}
@@ -142,5 +144,3 @@ package B611007 is
    end Prot1;
 
 end B611007;
-
-

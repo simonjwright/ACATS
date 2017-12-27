@@ -69,13 +69,15 @@
 --
 -- CHANGE HISTORY:
 --      20 Mar 2014   RLB   Created test.
+--      13 Dec 2017   RLB   Corrected use of nonexistent parameter; added
+--                          location indicators.
 --
 --!
 procedure B680001 is
 
-   procedure F1 (A : Integer);                     -- POSSIBLE ERROR: [Set01] A
+   procedure F1 (A : Integer);                 -- POSSIBLE ERROR: [Set01] A {4}
 
-   function F1 (A : Integer) return Boolean is     -- POSSIBLE ERROR: [Set01] A
+   function F1 (A : Integer) return Boolean is -- POSSIBLE ERROR: [Set01] A {4}
        (A > 10);
 
    package P2 is
@@ -97,20 +99,22 @@ procedure B680001 is
 
    package body P2 is
 
-      function F2 (A : Integer) return Boolean is  -- ERROR: C
+      function F2 (A : Integer) return Boolean is  -- ERROR: C {7}
       begin
          return (A > 30);
       end F2;
 
-      function F3 (A : Integer) return Boolean is  -- POSSIBLE ERROR: [Set03] A
+      function F3 (A : Integer)
+         return Boolean is                   -- POSSIBLE ERROR: [Set03] A {1:7}
       begin
          return (A >= 12);
       end F3;
 
-      function F3 (A : Integer) return Boolean is  -- POSSIBLE ERROR: [Set03] A
+      function F3 (A : Integer)
+         return Boolean is                   -- POSSIBLE ERROR: [Set03] A {1:7}
           (A >= 12);
 
-      function F4 (A : Integer) return Boolean is  -- ERROR: A
+      function F4 (A : Integer) return Boolean is  -- ERROR: A {7}
           (A < 0);
 
       package body F5 is
@@ -118,7 +122,7 @@ procedure B680001 is
              (A in 1 .. 99);
       end F5;
 
-      function F5 (A : Integer) return Boolean is  -- ERROR: A
+      function F5 (A : Integer) return Boolean is  -- ERROR: A {7}
           (A in 1 .. 99);
 
    end P2;
@@ -137,23 +141,23 @@ procedure B680001 is
 
    private
 
-      function F06 (B : Integer) return Boolean is -- ERROR: B
-         (A > 75);
+      function F06 (B : Integer) return Boolean is -- ERROR: B {7}
+         (B > 75);
 
-      function F07 (A : Natural) return Boolean is -- ERROR: B
+      function F07 (A : Natural) return Boolean is -- ERROR: B {7}
          (A > 35);
 
-      function F08 (A : aliased Integer) return Boolean is -- ERROR: B
+      function F08 (A : aliased Integer) return Boolean is -- ERROR: B {7}
          (A > 60);
 
       function F09 (A : Integer) return Integer is
-         (F08 (A));                                -- ERROR: D
+         (F08 (A));                                -- ERROR: D {10;1}
 
       type Short is range 0 .. 99;
       Var : Short;
 
       function F10 (A : Integer) return Integer is
-         (if A > 0 then Short else 0);             -- ERROR: D
+         (if A > 0 then Short else 0);             -- ERROR: D {10;1}
 
    end P3;
 

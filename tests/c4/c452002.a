@@ -54,6 +54,7 @@
 -- CHANGE HISTORY:
 --    24 Mar 2017   RLB   Created test from overnight fever dream. :-)
 --    27 Mar 2017   RLB   Fixed subtest 7, which had reversed the condition.
+--    13 Dec 2017   RLB   Corrected the test number passed to Report.
 --!
 
 with Report;
@@ -86,7 +87,7 @@ procedure C452002 is
 begin
 
    Report.Test
-     ("C442002",
+     ("C452002",
       "Check that Ada 2012 memberships can be resolved even when there are " &
       "many choices that are overloaded");
 

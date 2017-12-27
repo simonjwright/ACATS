@@ -55,9 +55,19 @@
 --     try generic formal types here, as the predicates are not visible
 --     in the generic unit, and the rules are not rechecked in the instance.
 --
+--     For most case expression errors, we allow the error to be reported
+--     anywhere in the case expression, in order to allow the maximum
+--     flexibility for error handling. (Locating errors at the start, end, or
+--     on a particular label all may make sense for a particular
+--     implementation; it is not the job of the ACATS to emphasize one location
+--     over another.) The ERROR tag is found at the end of the case expression
+--     in this case, but the location indicator allows the entire case
+--     expression.
 --
 -- CHANGE HISTORY:
---      23 May 14   RLB     Created test from case statement version.
+--      23 May 2014   RLB   Created test from case statement version.
+--      13 Dec 2017   RLB   Corrected overlong lines and added location
+--                          indicators.
 --
 --!
 
@@ -76,9 +86,11 @@ procedure B457001 is
    subtype Non_Nil is Non_Zero;
    subtype Small is Integer range 0 .. 20;
    subtype Small_Even is Small
-      with Static_Predicate => Small_Even in 0 | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20;
+      with Static_Predicate => Small_Even in
+                               0 | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20;
    subtype Small_Odd is Small
-      with Static_Predicate => Small_Odd in 1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19;
+      with Static_Predicate => Small_Odd in
+                               1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19;
    subtype Small_Power_of_Two is Small
       with Static_Predicate => Small_Power_of_Two in 2 | 4 | 8 | 16;
    subtype Small_Power_of_Three is Small
@@ -144,53 +156,59 @@ procedure B457001 is
    procedure Full_Coverage_1 (X : Integer; Y : Colors; Z : Score_Base) is
       -- Check 3.8.1(10.1/4) using 5.4(9/3) and 5.4(10).
    begin
-      Sink (case X is                            -- OK.
+      Sink (case X is
               when Zero => False,
-              when Non_Zero => True);
-      Sink (case X is                            -- ERROR: Missing 0.
-             when Non_Zero => False);
-      Sink (case X is                            -- OK.
+              when Non_Zero => True);            -- OK. {2:12;1}
+      Sink (case X is
+             when Non_Zero => False);            -- ERROR: Missing 0. {1:12;1}
+      Sink (case X is
              when Nil => False,
-             when Non_Nil => True);
-      Sink (case X is                            -- ERROR: Missing negatives.
+             when Non_Nil => True);              -- OK. {2:12;1}
+      Sink (case X is
              when Nil => False,
-             when Positive => True);
-      Sink (case X is                            -- ERROR: 1 specified twice.
+             when Positive => True);             -- ERROR: Missing  {2:12;1}
+                                                 --        negatives.
+      Sink (case X is
              when Non_Zero => False,
-             when 0 | 1 => True);
-
-      Sink (case Y is                            -- OK.
+             when 0 | 1 => True);                -- ERROR: 1 specified {2:12;1}
+                                                 --        twice.
+      Sink (case Y is
              when Total_Color => False,
-             when Rainbow => True);
-      Sink (case Y is                            -- ERROR: Missing Black.
+             when Rainbow => True);              -- OK. {2:12;1}
+      Sink (case Y is
              when Primary_Color => True,
              when Secondary_Color => False,
-             when White => False);
-      Sink (case Y is                            -- ERROR: Red, Yellow, Blue specified twice.
+             when White => False);               -- ERROR: Missing  {3:12;1}
+                                                 --        Black.
+      Sink (case Y is
              when Primary => False,
              when Rainbow => True,
-             when Total_Color => False);
-      Sink (case Y is                            -- ERROR: Missing Blue.
+             when Total_Color => False);         -- ERROR: Red, Yellow,{3:12;1}
+                                                 --       Blue specified twice.
+      Sink (case Y is
              when Red | Yellow => False,
              when Secondary => True,
              when Black => False,
-             when White => False);
-
-      Sink (case Z is                            -- ERROR: Many overlapping scores.
+             when White => False);               -- ERROR: Missing  {4:12;1}
+                                                 --        Blue.
+      Sink (case Z is
              when Single => False,
              when Double => False,
              when Treble => False,
-             when others => True);
-      Sink (case Z is                            -- OK.
+             when others => True);               -- ERROR: Many   {4:12;1}
+                                                 --        overlapping scores.
+      Sink (case Z is
              when Score => False,
-             when 0 | 23 | 29 | 31 | 35 | 37 | 41 | 43 | 44 | 46 | 47 | 49 |
-                  52 | 53 | 55 | 56 | 58 | 59 | 61 | 62 | 63  => True);
-      Sink (case Z is                            -- ERROR: Primes over 20 missing.
+             when 0 | 23 | 29 | 31 | 35 | 37 | 41 | 43 | 44 |
+                  46 | 47 | 49 | 52 | 53 | 55 | 56 | 58 | 59 |
+                  61 | 62 | 63  => True);        -- OK.  {4:12;1}
+      Sink (case Z is
              when Single => False,
              when Double_Only => False,
              when Treble_Only => False,
              when 25 | 50 => True,
-             when 0 | 61 .. 63 => False);
+             when 0 | 61 .. 63 => False);        -- ERROR: Primes over {5:12;1}
+                                                 --        20 missing.
    end Full_Coverage_1;
 
 
@@ -200,39 +218,44 @@ procedure B457001 is
       -- Check 5.4(7/4), all of the values satisfied by the predicates of
       -- the case selecting expression must be covered.
    begin
-      Sink (case X is                            -- OK.
+      Sink (case X is
              when 0 | 2 | 4 => False,
              when 6 | 8 | 10 | 12 | 14 | 16 => False,
-             when 18 | 20 => True);
-      Sink (case X is                            -- ERROR: 0, 6, and 20 missing.
+             when 18 | 20 => True);              -- OK. {3:12;1}
+      Sink (case X is
              when Small_Power_of_Two => False,
-             when 10 | 12 | 14 | 18 => True);
+             when 10 | 12 | 14 | 18 => True);    -- ERROR: 0, 6, and  {2:12;1}
+                                                 -- 20 missing.
 
-      Sink (case Y is                            -- ERROR: Indigo missing.
+      Sink (case Y is
              when Orange => False,
              when Green => False,
              when Violet => False,
-             when Primary_Color => True);
-      Sink (case Y is                            -- ERROR: Blue missing.
+             when Primary_Color => True);        -- ERROR: Indigo  {4:12;1}
+                                                 --        missing.
+      Sink (case Y is
              when Secondary_Color => False,
              when Red => True,
-             when Yellow => True);
-      Sink (case Y is                            -- ERROR: Green missing.
+             when Yellow => True);               -- ERROR: Blue  {3:12;1}
+                                                 --        missing.
+      Sink (case Y is
              when Red .. Yellow => False,
-             when Blue .. Violet => True);
-
-      Sink (case Z is                            -- OK.
+             when Blue .. Violet => True);       -- ERROR: Green  {2:12;1}
+                                                 --        missing.
+      Sink (case Z is
              when Treble_Only => True,
              when 3 | 6 | 9 | 12 | 15 | 18 => False,
-             when 24 | 30 | 36 => False);
-      Sink (case Z is                            -- ERROR: 24, 30, 36 missing.
+             when 24 | 30 | 36 => False);        -- OK. {3:12;1}
+      Sink (case Z is
              when 3 | 6 | 9 => False,
              when Treble_Only => True,
-             when 12 | 15 | 18 => False);
-      Sink (case Z is                            -- ERROR: Values over 40 missing.
+             when 12 | 15 | 18 => False);        -- ERROR: 24, 30, 36  {3:12;1}
+                                                 --        missing.
+      Sink (case Z is
              when 3 | 6 | 9 | 12 | 15 | 18 => False,
              when 24 | 30 | 36 => False,
-             when 21 | 27 | 33 | 39 => True);
+             when 21 | 27 | 33 | 39 => True);    -- ERROR: Values   {3:12;1}
+                                                 --        over 40 missing.
    end Full_Coverage_2;
 
 
@@ -242,62 +265,62 @@ procedure B457001 is
       -- Check 5.4(7/4), no extra values outside of the subtype of the
       -- the case selecting expression.
    begin
-      Sink (case X is                            -- OK.
+      Sink (case X is
              when 2 | 4 => False,
-             when 8 | 16 => True);
+             when 8 | 16 => True);               -- OK. {2:12;1}
       Sink (case X is
-             when 2 | 4 | 6 => True,             -- ERROR: 6 not a power of two.
-             when 8 | 16 => False);
+             when 2 | 4 | 6 => True,             -- ERROR: 6 not a  {19;9}
+             when 8 | 16 => False);              --        power of two.
       Sink (case X is
-             when 2..4 => True,                  -- ERROR: 3 not a power of two.
-             when 8 | 16 => False);
+             when 2..4 => True,                  -- ERROR: 3 not a  {19;9}
+             when 8 | 16 => False);              --        power of two.
       Sink (case X is
-             when Small_Even => False,           -- ERROR: Many not allowed values.
-             when others => True);
+             when Small_Even => False,           -- ERROR: Many not  {19;10}
+             when others => True);               --        allowed values.
       Sink (case X is
-             when Small_Power_of_Two => True,    -- OK.
+             when Small_Power_of_Two => True,    -- OK.  {19;9}
              when others => False);
 
-      Sink (case Y is                            -- OK.
+      Sink (case Y is
              when Yellow => True,
              when Blue => False,
-             when Red => False);
+             when Red => False);                 -- OK. {3:12;1}
       Sink (case Y is
              when Yellow => False,
              when Blue => False,
              when Red => False,
-             when Green => True,                 -- ERROR: Not a primary_color.
-             when others => False);
+             when Green => True,                 -- ERROR: Not a  {19;9}
+             when others => False);              --        primary_color.
       Sink (case Y is
-             when Primary => False);             -- OK.
+             when Primary => False);             -- OK. {1:12;1}
       Sink (case Y is
-             when Red .. Yellow => False,        -- ERROR: Orange not a primary color.
-             when Blue => False);
+             when Red .. Yellow => False,        -- ERROR: Orange not  {19;10}
+             when Blue => False);                --        a primary color.
       Sink (case Y is
-             when Red | Yellow .. Blue => False, -- ERROR: Green not a primary color.
-             when others => False);
+             when Red | Yellow .. Blue => False, -- ERROR: Green not  {19;10}
+             when others => False);              --        a primary color.
       Sink (case Y is
              when Yellow => False,
              when Blue => False,
              when Red => False,
-             when Secondary_Color => True,       -- ERROR: Not primary colors.
-             when Total_Color => True);          -- ERROR: Not primary colors.
-
+             when Secondary_Color => True,       -- ERROR:   {19;9}
+             when Total_Color => True);          -- ERROR: Not   {19;10}
+                                                 --        primary colors.
       Sink (case Z is
-             when Single => False,               -- ERROR: Odd values included.
-             when Double_Only => False,          -- OK.
+             when Single => False,               -- ERROR: Odd values. {19;10}
+             when Double_Only => False,          -- OK.  {19;10}
              when others => True);
       Sink (case Z is
-             when 6 | 9 | 12 | 15 | 18 => False, -- ERROR: 9 and 15 not doubles.
-             when 2 | 4 => False,
+             when 6 | 9 | 12 | 15 | 18 => False, -- ERROR: 9 and 15  {19;10}
+             when 2 | 4 => False,                --        not doubles.
              when others => True);
       Sink (case Z is
-             when 2 .. 40 => True,               -- ERROR: Odd values not doubles.
-             when others => False);
+             when 2 .. 40 => True,               -- ERROR: Odd values  {19;9}
+             when others => False);              --        not doubles.
       Sink (case Z is
              when 2 | 4 | 8 | 10 | 14 | 16 | 20 | 22 | 26 | 28 => True,
-             when Treble => False,               -- ERROR: Odd values not doubles.
-             when others => False);
+             when Treble => False,               -- ERROR: Odd values  {19;10}
+             when others => False);              --        not doubles.
    end No_Extra_Values;
 
 
@@ -305,28 +328,29 @@ procedure B457001 is
       -- Check 5.4(5/3) for the case of subtypes that have a dynamic predicate.
    begin
       Sink (case X is
-             when Even => True,                  -- ERROR: Not static.
+             when Even => True,                  -- ERROR: Not static. {19;9}
              when others => False);
       Sink (case Small'(X) is
-             when Dyn_Small_Even => True,        -- ERROR: Not static.
-             when Small_Odd     => False);
+             when Dyn_Small_Even => True,        -- ERROR: Not static. {19;9}
+             when Small_Odd      => False);
       Sink (case Small'(X) is
-             when Small_Even_Still_Dyn => True,  -- ERROR: Not static.
-             when Small_Odd     => False);
+             when Small_Even_Still_Dyn => True,  -- ERROR: Not static. {19;9}
+             when Small_Odd => False);
 
       Sink (case Y is
              when Total_Color => False,
-             when Dyn_Rainbow => True);          -- ERROR: Not static.
+             when Dyn_Rainbow => True);          -- ERROR: Not static. {19;10}
       Sink (case Y is
              when Total_Color => False,
-             when Dyn_Primary => True,           -- ERROR: Not static.
+             when Dyn_Primary => True,           -- ERROR: Not static. {19;9}
              when Secondary   => False);
 
       Sink (case Z is
-             when Dyn_Treble | 0 | 25 | 50 => False, -- ERROR: Not static.
+             when Dyn_Treble |
+                  0 | 25 | 50 => False,          -- ERROR: Not static.{1:19;10}
              when others => True);
       Sink (case Z is
-             when Dyn_Treble_and_Single => True, -- ERROR: Not static.
+             when Dyn_Treble_and_Single => True, -- ERROR: Not static. {19;9}
              when Double_Only => False,
              when others => False);
    end Non_Static;
