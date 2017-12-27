@@ -53,6 +53,8 @@
 --      06 Jan 2015   RLB   Split test into individual files.
 --      17 Mar 2015   RLB   Moved body of CC51010_2 here.
 --      19 Mar 2015   RLB   Made parameter in out.
+--      12 Dec 2017   RLB   Corrected name of main subprogram to match
+--                          requirements outlined in User Guide section 4.3.3.
 --
 --!
 
@@ -212,7 +214,7 @@ end CC51010_1;
 
 with CC51010_2;
 with Report;
-procedure CC51010 is
+procedure CC510103 is
 
 begin
    Report.Test ("CC51010", "Check that a generic unit with a tagged " &
@@ -224,4 +226,4 @@ begin
    CC51010_2.Do_Test;
 
    Report.Result;
-end CC51010;
+end CC510103;

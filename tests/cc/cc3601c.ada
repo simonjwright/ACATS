@@ -3,31 +3,33 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
 -- CHECK THAT "/=" MAY BE PASSED AS A GENERIC ACTUAL FUNCTION
 -- PARAMETER.
 
--- DAT 10/6/81
--- SPS 10/27/82
--- JRK 2/9/83
+--  6/10/81 - DAT
+-- 27/10/82 - SPS
+--  9/ 2/83 - JRK
+--  8/ 8/17 - RLB - Repaired so "=" for Rec is not illegal by
+--                  Ada 2012 4.5.2(9.8/4).
 
 WITH REPORT; USE REPORT;
 
@@ -50,6 +52,8 @@ BEGIN
           TYPE REC IS RECORD
                C : LP;
           END RECORD;
+
+          FUNCTION "=" (Q, R : IN REC) RETURN BOOLEAN;
 
           R1, R2 : REC;
 
@@ -77,8 +81,6 @@ BEGIN
                VALUE : IN BOOLEAN; -- SHOULD BE VALUE OF NE(V1,V2).
                STR : STRING;
           PACKAGE GP IS END GP;
-
-          FUNCTION "=" (Q, R : IN REC) RETURN BOOLEAN;
 
           FUNCTION NE (Q : INT; R : IN INT) RETURN BOOLEAN
                RENAMES "/=";
@@ -131,7 +133,7 @@ BEGIN
           PACKAGE P12 IS NEW GP (INT, INT_3, INT_3, NE, FALSE, "12");
           PACKAGE P13 IS NEW GP (PK.INT, PK_INT_3, PK_INT_3, NE,
                                  FALSE, "13");
-          PACKAGE P14 IS NEW GP (PK.INT, PK_INT_M1, PK_INT_M2, NE, 
+          PACKAGE P14 IS NEW GP (PK.INT, PK_INT_M1, PK_INT_M2, NE,
                                  TRUE,  "14");
           PACKAGE P15 IS NEW GP (PK.INT, PK_INT_1, PK_INT_1, "/=",
                                  FALSE, "15");

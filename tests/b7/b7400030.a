@@ -71,20 +71,20 @@
 --     Files B7400030.A and B7400031.A contain errors.
 --     All errors in these files must be detected to pass the test.
 --
---     Files B7400030.A and B7400031.A contain several lines marked
---     POSSIBLE ERROR: [Setn].
+--     Files B7400030.A and B7400031.A contain several lines
+--     marked POSSIBLE ERROR: [Setn].
 --     For each value of n, the implementation must detect one or more of
 --     these possible errors. For instance, an error must be detected on
 --     at least one of the lines labeled POSSIBLE ERROR: [Set1] for an
 --     implementation to pass.
 --
 -- CHANGE HISTORY:
---      30 Apr 07   RLB   Created from ACATS 2.6 test.
---      17 Aug 07   RLB   Moved error indications based on implementer comments.
---      06 Sep 07   RLB   Added more flexibility in error indications.
---      29 May 08   RLB   Updated Pass/Fail criteria.
+--      30 Apr 07  RLB   Created from ACATS 2.6 test.
+--      17 Aug 07  RLB   Moved error indications based on implementer comments.
+--      06 Sep 07  RLB   Added more flexibility in error indications.
+--      29 May 08  RLB   Updated Pass/Fail criteria.
+--      29 Jun 16  RLB   Fixed so tools don't pick up markers in criteria.
 --!
-
 package B7400030 is
 
    type Priv_Comp is private;
@@ -152,4 +152,3 @@ package body B7400030 is
    end Dummy;
 
 end B7400030;
-
