@@ -154,6 +154,15 @@ handle_fail () {
 run_one_test () {
   tst=$1
 
+  grep $tst $testdir/norun.lst > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    log "UNSUPPORTED:	$tst"
+    as_fn_arith $glob_countu + 1
+    glob_countu=$as_val
+    clean_dir
+    return
+  fi
+
   extraflags="-gnat2012"
   grep $tst $testdir/overflow.lst > /dev/null 2>&1
   if [ $? -eq 0 ]; then
@@ -171,6 +180,11 @@ run_one_test () {
   if [ $? -eq 0 ]; then
     extraflags="$extraflags -fstack-check"
   fi
+  grep $tst $testdir/listing.lst > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    extraflags="$extraflags -gnatl"
+  fi
+
   test=$dir/tests/$chapter/$tst
   rm -rf $test
   mkdir $test && cd $test >> $dir/acats.log 2>&1
@@ -213,6 +227,8 @@ run_one_test () {
     cxb3013) EXTERNAL_OBJECTS="$dir_support/cxb30130.o $dir_support/cxb30131.o";;
     cxb3017) EXTERNAL_OBJECTS="$dir_support/cxb30170.o";;
     cxb3018) EXTERNAL_OBJECTS="$dir_support/cxb30180.o";;
+    cxb3023) EXTERNAL_OBJECTS="$dir_support/cxb30230.o";;
+    cxb3024) EXTERNAL_OBJECTS="$dir_support/cxb30240.o";;
     *)       EXTERNAL_OBJECTS="";;
   esac
   if [ "$main" = "" ]; then
@@ -362,7 +378,6 @@ else
 
     cp $testdir/tests/cd/*.c $dir/support
     cp $testdir/tests/cxb/*.c $dir/support
-    grep -v '^#' $testdir/norun.lst | sort > $dir/support/norun.lst
 
     rm -rf $dir/run
     mv $dir/tests $dir/tests.$$ 2> /dev/null
@@ -423,9 +438,8 @@ fi
 display "		=== acats tests ==="
 
 if [ $# -eq 0 ]; then
-   # Run all the tests, omitting cxe (Annex E is the Distributed
-   # Systems annex, not straightforward to script here)
-   chapters=`cd $dir/tests; echo cz b* a* c[^z] cx[^e] d* e* l*`
+   # Run all the tests.
+   chapters=`cd $dir/tests; echo *`
 else
    chapters=$*
 fi
@@ -471,7 +485,7 @@ for chapter in $chapters; do
    cd $dir/tests/$chapter
    ls *.a *.ada *.adt *.am *.au *.dep 2> /dev/null | \
        sed -e 's/\(.*\)\..*/\1/g' | \
-       cut -c1-7 | sort | uniq | comm -23 - $dir_support/norun.lst \
+       cut -c1-7 | sort | uniq \
        > $dir/tests/$chapter/${chapter}.lst
 
    for i in `cat $dir/tests/$chapter/${chapter}.lst`; do
