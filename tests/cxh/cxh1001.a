@@ -62,7 +62,7 @@
 
 ---------------------------- CONFIGURATION PRAGMAS -----------------------
 
-pragma Normalize_Scalars;                                         -- OK
+pragma Initialize_Scalars;                                         -- OK
                                                 -- configuration pragma
 
 ------------------------ END OF CONFIGURATION PRAGMAS --------------------
