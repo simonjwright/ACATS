@@ -111,7 +111,7 @@ package ImpDef is
    -- A duration of 0.0 would normally be sufficient but some number
    -- greater than that is expected.
 
-   Minimum_Task_Switch : constant Duration := 0.001;
+   Minimum_Task_Switch : constant Duration := 0.010;
    --                                         ^^^ --- MODIFY HERE AS NEEDED
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
@@ -123,7 +123,7 @@ package ImpDef is
    -- The main effect of specifying a longer delay than necessary will be an
    -- extension of the time needed to run the associated tests.
 
-   Switch_To_New_Task : constant Duration := 0.001;
+   Switch_To_New_Task : constant Duration := 0.010;
    --                                        ^^^ -- MODIFY HERE AS NEEDED
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
