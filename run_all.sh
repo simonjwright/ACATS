@@ -9,8 +9,8 @@
 # gccflags="-O3 -fomit-frame-pointer -funroll-all-loops -finline-functions"
 # gnatflags="-gnatN"
 
-gccflags="-O2"
-gnatflags="-gnatws"
+if [ "x$gccflags" = "x" ]; then gccflags="-O2 -g"; fi
+if [ "x$gnatflags" = "x" ]; then gnatflags="-gnatws"; fi
 
 # End of customization section.
 
