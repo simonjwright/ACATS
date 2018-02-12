@@ -42,13 +42,13 @@ do this, the screen output during execution is misleading; only the
 final `acats.log` and `acats.sum` in
 `<build-dir>/gcc/testsuite/ada/acats/` are meaningful.
 
-The default compiler options are `-O2 -g -gnatws` (`-gnat2012` is
+The default compiler options are `-gnatws -g -O2` (`-gnat2012` is
 always added). You can pass additional options using the
 `RUNTESTFLAGS` feature:
 
     make check-acats RUNTESTFLAGS="--target_board=unix/-O3/-gnatN"
 
-runs the tests with `-O3 -gnatN`.
+runs the tests with `-gnatws -gnatN -g -O2 -O3`.
 
 If you wish to pass any GNAT-specific options (e.g. `-gnat*`) you must
 only run this suite (`make check-acats`), because `-gnat*` will fail
