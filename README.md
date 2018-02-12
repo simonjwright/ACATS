@@ -38,13 +38,30 @@ or `make check-ada` for both).
 
 You can run the tests in parallel, which of course makes most sense if
 you have multiple cores, by for example `make -j4 check-acats`. If you
-do this, the screen output during execution is misleading; only
-`acats.log` and `acats.sum` are meaningful.
+do this, the screen output during execution is misleading; only the
+final `acats.log` and `acats.sum` in
+`<build-dir>/gcc/testsuite/ada/acats/` are meaningful.
+
+The default compiler options are `-O2 -g -gnatws` (`-gnat2012` is
+always added). You can pass additional options using the
+`RUNTESTFLAGS` feature:
+
+    make check-acats RUNTESTFLAGS="--target_board=unix/-O3/-gnatN"
+
+runs the tests with `-O3 -gnatN`.
+
+If you wish to pass any GNAT-specific options (e.g. `-gnat*`) you must
+only run this suite (`make check-acats`), because `-gnat*` will fail
+with most other tools (`unrecognized debug output level 'nat*'`).
+
+Don't use `RUNTESTFLAGS` with `-j<n>`: it doesn't get passed to
+sub-makes (as of 2018-02-10).
 
 ### Local testing ###
 
 You can also run the tests, or individual chapters of the tests, by
-using the `run_local.sh` script. For example,
+using the `run_local.sh` script (from a different directory). For
+example,
 
     mkdir ~/tmp/acats
     cd ~/tmp/acats

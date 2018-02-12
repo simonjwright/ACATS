@@ -6,9 +6,33 @@
 # tests requiring checks not turned on by default, this script
 # automatically adds the needed flags to pass (ie: -gnato or -gnatE).
 
-# gccflags="-O3 -fomit-frame-pointer -funroll-all-loops -finline-functions"
-# gnatflags="-gnatN"
+# As standard, you can pass options at runtime by using RUNTESTFLAGS:
+#
+#   make check-acats RUNTESTFLAGS="--target_board=unix/-O3/-gnatN"
+#
+# compiles with -O3 -gnatN (as well as other test-specific options).
+#
+# N.B. if you wish to pass any GNAT-specific options (e.g. -gnat*) you
+# must only run this suite (make check-acats), because -gnat* will
+# fail with most other tools ("unrecognized debug output level
+# 'nat*").
+# N.B. do not use RUNTESTFLAGS with -j<n>: it doesn't get passed to
+# sub-makes (at 2018-02-10).
+#
+# The default options are -g -O2 -gnatws.
 
+flags=`echo $RUNTESTFLAGS |
+    fmt -1 |
+    grep target_board=unix |
+    sed -E -e "s/^.*=unix//" -e "s;/; ;g"`
+for f in $flags; do
+    case $f in
+        -gnat*)
+            gnatflags="$gnatflags $f";;
+        *)
+            gccflags="$gccflags $f";;
+    esac;
+done;
 if [ "x$gccflags" = "x" ]; then gccflags="-O2 -g"; fi
 if [ "x$gnatflags" = "x" ]; then gnatflags="-gnatws"; fi
 
