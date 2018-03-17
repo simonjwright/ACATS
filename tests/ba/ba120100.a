@@ -51,9 +51,15 @@
 --         BA120105.A
 --
 -- PASS/FAIL CRITERIA:
---      Files BA120101.A, BA120102.A, BA120103.A, BA120104.A, and BA120105.A
---      contain errors. All errors in these files must be detected to pass
---      the test.
+--     Files BA120101.A, BA120102.A, BA120103.A, BA120104.A, and
+--     BA120105.A contain errors. All errors in these files must be
+--     detected to pass the test.
+--
+--     Some test files contain several lines marked POSSIBLE ERROR: [Setnn].
+--     For each value of n, the implementation must detect one or more of
+--     these possible errors. For instance, an error must be detected on
+--     at least one of the lines labeled POSSIBLE ERROR: [Set1] for an
+--     implementation to pass.
 --
 -- CHANGE HISTORY:
 --    29 Nov 2004   PHL   Initial version.
@@ -61,6 +67,8 @@
 --    06 Aug 2007   RLB   Removed limited with illegal by 10.1.2(18).
 --    28 Apr 2008   RLB   Moved test case from Pak9 to PakA to ensure the
 --                        proper test is made.
+--    06 Feb 2018   RLB   Revised Pass/Fail criteria.
+--
 --!
 
 package BA12010 is

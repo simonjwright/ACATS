@@ -54,15 +54,16 @@
 -- CHANGE HISTORY:
 --    29 Nov 2004   PHL   Initial version.
 --    26 Mar 2007   RLB   Created ACATS version from submitted test.
+--    06 Feb 2018   RLB   Revised to use Possible Error to better reflect
+--                        intent of test. Added error location indicators.
 --
 --!
 
-limited with BA12010.Pak3; -- OPTIONAL ERROR: The first error below could
-                           --                 reported here instead.
+limited with BA12010.Pak3; -- POSSIBLE ERROR: [Set1] {1;1}
 with BA12010.Pak2.Pak21;
-with BA12010.Renpak3;      -- ERROR: A limited with clause for the same unit
-                           --        was previously seen.
-limited with BA12010.Pak2; -- ERROR: A nonlimited with clause for the same unit
-                           --        was previously seen.
+with BA12010.Renpak3;      -- POSSIBLE ERROR: [Set1] {1;1} A limited with
+                           --    clause for the same unit was previously seen.
+limited with BA12010.Pak2; -- ERROR: {1;1} A nonlimited with clause for the
+                           --        same unit was previously seen.
 package BA12010_1 is
 end BA12010_1;

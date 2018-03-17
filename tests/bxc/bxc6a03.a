@@ -73,9 +73,12 @@
 -- CHANGE HISTORY:
 --      01 Feb 96   SAIC    Initial version for ACVC 2.1.
 --      25 Aug 96   SAIC    Added additional cases. Corrected prologue.
---      02 DEC 97   EDS     Removed application of Pragma Volatile to
+--      02 Dec 97   EDS     Removed application of Pragma Volatile to
 --                          type Volatile_Private.
 --      27 Aug 99   RLB     Repaired test comments.
+--      05 Feb 18   RLB     Commented out test case changed by AI05-0218-1.
+--                          Added error location indicators.
+--      06 Feb 18   RLB     Replaced test case, requiring AI05-0218-1 behavior.
 --
 --!
 
@@ -123,23 +126,25 @@ package BXC6A03 is
 
 
    package VolTagAct_NonVolAnc is new BXC6A03_0.Tagged_Type_Ancestor
-     ( FXC6A00.Volatile_Tagged );                                     -- ERROR:
+     ( FXC6A00.Volatile_Tagged );                       -- ERROR: {6;1}
                                -- Ancestor is a non-volatile by-reference type.
 
    package NonVolTagAct_NonVolAnc is new BXC6A03_0.Tagged_Type_Ancestor
-     ( FXC6A00.NonVolatile_Tagged );                                  -- OK.
+     ( FXC6A00.NonVolatile_Tagged );                    -- OK. {6;1}
                                -- Actual is a non-volatile type.
 
    package VolTagAct_VolAnc is new BXC6A03_0.Volatile_Tagged_Ancestor
-     ( FXC6A00.Volatile_Tagged );                                     -- OK.
+     ( FXC6A00.Volatile_Tagged );                       -- OK. {6;1}
                                -- Ancestor is a volatile type.
 
    package NonVolTagAct_VolAnc is new BXC6A03_0.Volatile_Tagged_Ancestor
-     ( FXC6A00.NonVolatile_Tagged );                                  -- ERROR:
+     ( FXC6A00.NonVolatile_Tagged );                    -- ERROR: {6;1}
                                -- Actual is a non-volatile type.
 
+   -- AI05-0218-1, a Binding Interpretation, removed the rule that allowed
+   -- the following.
    package VolAct_NonVolRecAnc is new BXC6A03_0.Record_Ancestor
-     ( Volatile_Record2 );                                            -- OK.
+     ( Volatile_Record2 );                              -- ERROR: {6;1}
                 -- Ancestor is a non-volatile type that allows pass-by-copy.
 
 end BXC6A03;

@@ -51,10 +51,12 @@
 --
 -- CHANGE HISTORY:
 --      21 Mar 2007   RLB   Created test from submitted test.
+--      13 Feb 2018   RLB   Added error location indicators.
 --
 --!
 
-private procedure BA11013A.Child2 is -- ERROR: body cannot be declared private.
+private procedure BA11013A.Child2 is -- ERROR: {1} Body cannot be declared
+                                     --            private.
 begin
     raise Program_Error;
 end BA11013A.Child2;

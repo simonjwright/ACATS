@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -32,6 +32,8 @@
 
 -- HISTORY:
 --     BCB 09/06/88  CREATED ORIGINAL TEST.
+--     RLB 02/06/18  CORRECTED FORMAT OF ERROR TAGS, ADDED ERROR LOCATION
+--                   INDICATORS.
 
 PROCEDURE B83027D IS
 
@@ -57,10 +59,10 @@ BEGIN
 
           PACKAGE P_ONE IS
                TYPE INNER (F : ENUM := ONE;
-                           Y : INTEGER := F) IS PRIVATE;  -- ERROR:
+                           Y : INTEGER := F) IS PRIVATE;  -- ERROR: {43;13}
           PRIVATE
                TYPE INNER (F : ENUM := ONE; Y : INTEGER := F) IS RECORD
-                                         -- OPTIONAL ERROR MESSAGE.
+                                                -- OPTIONAL ERROR: {1:16}
                     NULL;
                END RECORD;
           END P_ONE;
@@ -78,10 +80,10 @@ BEGIN
           FUNCTION F IS NEW GEN_FUN (INTEGER, INT);
 
           TYPE INNER (F : ENUM := ONE;
-                      Y : INTEGER := F);               -- ERROR:
+                      Y : INTEGER := F);               -- ERROR: {38;2}
 
           TYPE INNER (F : ENUM := ONE; Y : INTEGER := F) IS RECORD
-                                      -- OPTIONAL ERROR MESSAGE.
+                                                   -- OPTIONAL ERROR: {1:11}
                NULL;
           END RECORD;
 
@@ -99,7 +101,7 @@ BEGIN
 
           GENERIC
                TYPE INNER (F : ENUM;
-                           Y : F) IS PRIVATE;          -- ERROR:
+                           Y : F) IS PRIVATE;          -- ERROR: {32;13}
           PACKAGE P_THREE IS
           END P_THREE;
 

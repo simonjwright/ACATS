@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -52,36 +52,36 @@
 --      If X is a view conversion, its accessibility level is the same as that
 --      of its operand.
 --
---      This test declares a generic package which utilizes X'Access in its 
+--      This test declares a generic package which utilizes X'Access in its
 --      private part, where X is a generic formal object and the type A of
 --      X'Access is a generic formal type. The accessibility levels of X and
 --      A in an instance are those of the corresponding actual parameters.
 --      The test covers cases where the actual corresponding to X is a view
 --      defined by an object declaration, a renaming of an aliased view, and
---      a view conversion of an aliased view. 
+--      a view conversion of an aliased view.
 --
---      The test declares general access types and aliased objects in 
---      packages, subprograms and nested blocks.  These types and objects are 
---      passed as actuals to instantiations, which are attempted at various 
---      nesting levels. The test verifies that X'Access is illegal when X is 
+--      The test declares general access types and aliased objects in
+--      packages, subprograms and nested blocks.  These types and objects are
+--      passed as actuals to instantiations, which are attempted at various
+--      nesting levels. The test verifies that X'Access is illegal when X is
 --      declared at a nesting level deeper than that of the type of X'Access,
---      and legal otherwise. 
+--      and legal otherwise.
 --
 --      The nesting structure is as follows:
 --
---          - Library-level package         
+--          - Library-level package
 --         |                                                 (Level = 0)
 --          - end package
 --
---          - Main subprogram               
+--          - Main subprogram
 --         |      *** testing here                           (Level = 1)
 --         |
---         |     - Nested block statement   
+--         |     - Nested block statement
 --         |    |     *** testing here                       (Level = 2)
 --         |    |
 --         |    |     - Doubly-nested block statement
 --         |    |    |     *** testing here                  (Level = 3)
---         |    |    |                                                  
+--         |    |    |
 --         |    |    |  begin
 --         |    |     - end doubly-nested block statement
 --         |    |  begin
@@ -92,8 +92,10 @@
 --
 -- CHANGE HISTORY:
 --      24 JAN 95   SAIC    Initial prerelease version.
---      28 Mar 95   SAIC    Changed access-to-variable formal types to 
+--      28 Mar 95   SAIC    Changed access-to-variable formal types to
 --                          access-to-constant types.
+--      09 Feb 18   RLB     Added error location indicators to reflect common
+--                          error reporting strategies.
 --
 --!
 
@@ -125,7 +127,7 @@ generic
 
    type Gen_Tag is tagged private;
 
-   -- A formal object of a tagged type is aliased. 
+   -- A formal object of a tagged type is aliased.
 
    type FormalAccType_for_Obj is access constant Gen_Tag;
    An_Obj   : Gen_Tag;
@@ -135,12 +137,12 @@ generic
 
    type FormalAccType_for_Conv is access constant Gen_Tag;
    Conv_Obj : Gen_Tag;
-        
+
 
 package B3A2011_1 is
 
    -- The accessibility level of a derived access type is the same as that
-   -- of its ultimate ancestor. 
+   -- of its ultimate ancestor.
 
    type New_FormalAccType_for_Obj is new FormalAccType_for_Obj;
 
@@ -154,8 +156,8 @@ private
    ARen  : FormalAccType_for_Ren     := Ren'Access;
    AConv : FormalAccType_for_Conv    := Gen_Tag(Conv_Obj)'Access;
 
-   -- These declarations are OK in the generic, but won't necessarily be
-   -- OK in an instance.
+   -- These declarations are OK in the generic, but won't necessarily be OK
+   -- in an instance.
 
 end B3A2011_1;
 
@@ -165,14 +167,14 @@ end B3A2011_1;
 
 with B3A2011_0;
 with B3A2011_1;
-package B3A2011_2 is 
-  new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                 B3A2011_0.Acc_to_Tag_L0, 
+package B3A2011_2 is
+  new B3A2011_1 (B3A2011_0.Tag_Desig,
+                 B3A2011_0.Acc_to_Tag_L0,
                  B3A2011_0.TObj1_L0,
-                 B3A2011_0.Acc_to_Tag_L0, 
+                 B3A2011_0.Acc_to_Tag_L0,
                  B3A2011_0.TObj2_L0,
-                 B3A2011_0.Acc_to_Tag_L0, 
-                 B3A2011_0.TObj3_L0);                                -- OK.
+                 B3A2011_0.Acc_to_Tag_L0,
+                 B3A2011_0.TObj3_L0);                        -- OK. {7:1;1}
 
 
      --==================================================================--
@@ -186,30 +188,30 @@ procedure B3A2011 is
    TObj1_L1 : aliased B3A2011_0.Tag_Desig;                    -- Level = 1.
    TObj2_L1 : aliased B3A2011_0.Tag_Desig;                    -- Level = 1.
 
-   package Inst_L1_OK is 
-     new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                    Acc_to_Tag_L1, 
+   package Inst_L1_OK is
+     new B3A2011_1 (B3A2011_0.Tag_Desig,
+                    Acc_to_Tag_L1,
                     B3A2011_0.TObj1_L0,
-                    Acc_to_Tag_L1, 
+                    Acc_to_Tag_L1,
                     TObj1_L1,
-                    Acc_to_Tag_L1, 
-                    B3A2011_0.TObj2_L0);                             -- OK.
+                    Acc_to_Tag_L1,
+                    B3A2011_0.TObj2_L0);                     -- OK. {7:4;1}
    -- In the private part of Inst_L1_OK, after the above instantiation:
    -- GAcc1 : Acc_to_Tag_L1 := TObj1_L0'Access;
    -- GAcc2 : Acc_to_Tag_L1 := TObj1_L0'Access;
    -- ARen  : Acc_to_Tag_L1 := TObj1_L1'Access;
    -- AConv : Acc_to_Tag_L1 := B3A2011_0.Tag_Desig(TObj2_L0)'Access;
 
-   package Inst_L1_Obj is 
-     new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                    B3A2011_0.Acc_to_Tag_L0, 
-                    TObj1_L1,                                        -- ERROR:
-                             -- Accessibility level of TObj1_L1 is deeper than 
+   package Inst_L1_Obj is
+     new B3A2011_1 (B3A2011_0.Tag_Desig,
+                    B3A2011_0.Acc_to_Tag_L0,
+                    TObj1_L1,
+                             -- Accessibility level of TObj1_L1 is deeper than
                              -- that of B3A2011_0.Acc_to_Tag_L0.
-                    Acc_to_Tag_L1, 
+                    Acc_to_Tag_L1,
                     TObj2_L1,
-                    Acc_to_Tag_L1, 
-                    B3A2011_0.TObj2_L0);                       
+                    Acc_to_Tag_L1,
+                    B3A2011_0.TObj2_L0);                     -- ERROR: {9:4;1}
    -- In the private part of Inst_L1_Obj, after the above instantiation:
    -- GAcc1 : Acc_to_Tag_L0 := TObj1_L1'Access;                      <= Illegal
    -- GAcc2 : Acc_to_Tag_L0 := TObj1_L1'Access;                      <= Illegal
@@ -217,30 +219,30 @@ procedure B3A2011 is
    -- AConv : Acc_to_Tag_L1 := B3A2011_0.Tag_Desig(TObj2_L0)'Access;
 
 
-   package Inst_L1_Ren is 
-     new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                    Acc_to_Tag_L1, 
+   package Inst_L1_Ren is
+     new B3A2011_1 (B3A2011_0.Tag_Desig,
+                    Acc_to_Tag_L1,
                     B3A2011_0.TObj1_L0,
-                    B3A2011_0.Acc_to_Tag_L0, 
-                    TObj1_L1,                                        -- ERROR:
-                             -- Accessibility level of TObj1_L1 is deeper than 
-                             -- that of B3A2011_0.Acc_to_Tag_L0.     
-                    Acc_to_Tag_L1, 
-                    B3A2011_0.TObj2_L0);                                  
+                    B3A2011_0.Acc_to_Tag_L0,
+                    TObj1_L1,
+                             -- Accessibility level of TObj1_L1 is deeper than
+                             -- that of B3A2011_0.Acc_to_Tag_L0.
+                    Acc_to_Tag_L1,
+                    B3A2011_0.TObj2_L0);                     -- ERROR: {9:4;1}
    -- In the private part of Inst_L1_Ren, after the above instantiation:
    -- GAcc1 : Acc_to_Tag_L1 := TObj1_L0'Access;
    -- GAcc2 : Acc_to_Tag_L1 := TObj1_L0'Access;
    -- ARen  : Acc_to_Tag_L0 := TObj1_L1'Access;                      <= Illegal
    -- AConv : Acc_to_Tag_L1 := B3A2011_0.Tag_Desig(TObj2_L0)'Access;
 
-   package Inst_L1_Conv is 
-     new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                    Acc_to_Tag_L1, 
+   package Inst_L1_Conv is
+     new B3A2011_1 (B3A2011_0.Tag_Desig,
+                    Acc_to_Tag_L1,
                     B3A2011_0.TObj1_L0,
-                    Acc_to_Tag_L1, 
+                    Acc_to_Tag_L1,
                     TObj1_L1,
-                    B3A2011_0.Acc_to_Tag_L0, 
-                    TObj2_L1);                                       -- ERROR:
+                    B3A2011_0.Acc_to_Tag_L0,
+                    TObj2_L1);                               -- ERROR: {7:4;1}
                              -- Accessibility level of TObj2_L1 is deeper than
                              -- that of B3A2011_0.Acc_to_Tag_L0.
    -- In the private part of Inst_L1_Conv, after the above instantiation:
@@ -251,7 +253,7 @@ procedure B3A2011 is
 
 
 
-begin -- B3A2011 
+begin -- B3A2011
 
    First_Nested_Block:
    declare
@@ -261,60 +263,60 @@ begin -- B3A2011
       TObj2_L2 : aliased B3A2011_0.Tag_Desig;                     -- Level = 2.
 
 
-      package Inst_L2_OK is 
-        new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                       Acc_to_Tag_L2, 
+      package Inst_L2_OK is
+        new B3A2011_1 (B3A2011_0.Tag_Desig,
+                       Acc_to_Tag_L2,
                        TObj1_L2,
-                       Acc_to_Tag_L2, 
+                       Acc_to_Tag_L2,
                        B3A2011_0.TObj1_L0,
-                       Acc_to_Tag_L2, 
-                       TObj1_L1);                                    -- OK.
+                       Acc_to_Tag_L2,
+                       TObj1_L1);                            -- OK. {7:7;1}
       -- In the private part of Inst_L2_OK, after the above instantiation:
       -- GAcc1 : Acc_to_Tag_L2 := TObj1_L2'Access;
       -- GAcc2 : Acc_to_Tag_L2 := TObj1_L2'Access;
       -- ARen  : Acc_to_Tag_L2 := TObj1_L0'Access;
       -- AConv : Acc_to_Tag_L2 := B3A2011_0.Tag_Desig(TObj1_L1)'Access;
 
-      package Inst_L2_Obj is 
-        new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                       Acc_to_Tag_L1, 
-                       TObj1_L2,                                     -- ERROR:
+      package Inst_L2_Obj is
+        new B3A2011_1 (B3A2011_0.Tag_Desig,
+                       Acc_to_Tag_L1,
+                       TObj1_L2,
                              -- Accessibility level of TObj1_L2 is deeper than
-                             -- that of Acc_to_Tag_L1.                        
-                       Acc_to_Tag_L2, 
+                             -- that of Acc_to_Tag_L1.
+                       Acc_to_Tag_L2,
                        B3A2011_0.TObj1_L0,
-                       Acc_to_Tag_L2, 
-                       TObj1_L1);                                             
+                       Acc_to_Tag_L2,
+                       TObj1_L1);                            -- ERROR: {9:7;1}
       -- In the private part of Inst_L2_Obj, after the above instantiation:
       -- GAcc1 : Acc_to_Tag_L1 := TObj1_L2'Access;                   <= Illegal
       -- GAcc2 : Acc_to_Tag_L1 := TObj1_L2'Access;                   <= Illegal
       -- ARen  : Acc_to_Tag_L2 := TObj1_L0'Access;
       -- AConv : Acc_to_Tag_L2 := B3A2011_0.Tag_Desig(TObj1_L1)'Access;
 
-      package Inst_L2_Ren is 
-        new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                       Acc_to_Tag_L2, 
+      package Inst_L2_Ren is
+        new B3A2011_1 (B3A2011_0.Tag_Desig,
+                       Acc_to_Tag_L2,
                        TObj1_L2,
-                       B3A2011_0.Acc_to_Tag_L0, 
-                       TObj2_L2,                                     -- ERROR:
+                       B3A2011_0.Acc_to_Tag_L0,
+                       TObj2_L2,
                              -- Accessibility level of TObj2_L2 is deeper than
                              -- that of B3A2011_0.Acc_to_Tag_L0.
-                       Acc_to_Tag_L2, 
-                       TObj1_L1);                                       
+                       Acc_to_Tag_L2,
+                       TObj1_L1);                            -- ERROR: {9:7;1}
       -- In the private part of Inst_L2_Ren, after the above instantiation:
       -- GAcc1 : Acc_to_Tag_L2 := TObj1_L2'Access;
       -- GAcc2 : Acc_to_Tag_L2 := TObj1_L2'Access;
       -- ARen  : Acc_to_Tag_L0 := TObj2_L2'Access;                   <= Illegal
       -- AConv : Acc_to_Tag_L2 := B3A2011_0.Tag_Desig(TObj1_L1)'Access;
 
-      package Inst_L2_Conv is 
-        new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                       Acc_to_Tag_L2, 
+      package Inst_L2_Conv is
+        new B3A2011_1 (B3A2011_0.Tag_Desig,
+                       Acc_to_Tag_L2,
                        TObj1_L2,
-                       Acc_to_Tag_L2, 
+                       Acc_to_Tag_L2,
                        B3A2011_0.TObj1_L0,
-                       Acc_to_Tag_L1, 
-                       TObj2_L2);                                    -- ERROR:
+                       Acc_to_Tag_L1,
+                       TObj2_L2);                            -- ERROR: {7:7;1}
                              -- Accessibility level of TObj2_L2 is deeper than
                              -- that of Acc_to_Tag_L1.
       -- In the private part of Inst_L2_Conv, after the above instantiation:
@@ -325,69 +327,69 @@ begin -- B3A2011
       --                                      (TObj2_L2)'Access;     <= Illegal
 
 
-   begin -- First_Nested.   
+   begin -- First_Nested.
 
       Doubly_Nested_Block:
       declare
 
-         type Acc_to_Tag_L3 is access constant B3A2011_0.Tag_Desig;  
+         type Acc_to_Tag_L3 is access constant B3A2011_0.Tag_Desig;
                                                                 -- Level = 3.
          TObj1_L3 : aliased B3A2011_0.Tag_Desig;                -- Level = 3.
 
-         package Inst_L3_OK is 
-           new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                          Acc_to_Tag_L3, 
+         package Inst_L3_OK is
+           new B3A2011_1 (B3A2011_0.Tag_Desig,
+                          Acc_to_Tag_L3,
                           TObj1_L1,
-                          Acc_to_Tag_L3, 
+                          Acc_to_Tag_L3,
                           TObj1_L2,
-                          Acc_to_Tag_L3, 
-                          B3A2011_0.TObj1_L0);                       -- OK.
+                          Acc_to_Tag_L3,
+                          B3A2011_0.TObj1_L0);               -- OK. {7:10;1}
          -- In the private part of Inst_L3_OK, after the above instantiation:
          -- GAcc1 : Acc_to_Tag_L3 := TObj1_L1'Access;
          -- GAcc2 : Acc_to_Tag_L3 := TObj1_L1'Access;
          -- ARen  : Acc_to_Tag_L3 := TObj1_L2'Access;
          -- AConv : Acc_to_Tag_L3 := B3A2011_0.Tag_Desig(TObj1_L0)'Access;
 
-         package Inst_L3_Obj is 
-           new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                          B3A2011_0.Acc_to_Tag_L0, 
-                          TObj1_L3,                                  -- ERROR:
+         package Inst_L3_Obj is
+           new B3A2011_1 (B3A2011_0.Tag_Desig,
+                          B3A2011_0.Acc_to_Tag_L0,
+                          TObj1_L3,
                              -- Accessibility level of TObj1_L3 is deeper than
                              -- that of B3A2011_0.Acc_to_Tag_L0.
-                          Acc_to_Tag_L3, 
+                          Acc_to_Tag_L3,
                           TObj1_L2,
-                          Acc_to_Tag_L3, 
-                          B3A2011_0.TObj1_L0);                           
+                          Acc_to_Tag_L3,
+                          B3A2011_0.TObj1_L0);               -- ERROR: {9:10;1}
          -- In the private part of Inst_L3_Obj, after the above instantiation:
          -- GAcc1 : Acc_to_Tag_L0 := TObj1_L3'Access;                <= Illegal
          -- GAcc2 : Acc_to_Tag_L0 := TObj1_L3'Access;                <= Illegal
          -- ARen  : Acc_to_Tag_L3 := TObj1_L2'Access;
          -- AConv : Acc_to_Tag_L3 := B3A2011_0.Tag_Desig(TObj1_L0)'Access;
 
-         package Inst_L3_Ren is 
-           new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                          Acc_to_Tag_L3, 
+         package Inst_L3_Ren is
+           new B3A2011_1 (B3A2011_0.Tag_Desig,
+                          Acc_to_Tag_L3,
                           TObj1_L1,
-                          Acc_to_Tag_L1, 
-                          TObj1_L3,                                  -- ERROR:
+                          Acc_to_Tag_L1,
+                          TObj1_L3,
                              -- Accessibility level of TObj1_L3 is deeper than
                              -- that of Acc_to_Tag_L1.
-                          Acc_to_Tag_L3, 
-                          B3A2011_0.TObj1_L0);                 
+                          Acc_to_Tag_L3,
+                          B3A2011_0.TObj1_L0);               -- ERROR: {9:10;1}
          -- In the private part of Inst_L3_Ren, after the above instantiation:
          -- GAcc1 : Acc_to_Tag_L3 := TObj1_L1'Access;
          -- GAcc2 : Acc_to_Tag_L3 := TObj1_L1'Access;
          -- ARen  : Acc_to_Tag_L1 := TObj1_L3'Access;                <= Illegal
          -- AConv : Acc_to_Tag_L3 := B3A2011_0.Tag_Desig(TObj1_L0)'Access;
 
-         package Inst_L3_Conv is 
-           new B3A2011_1 (B3A2011_0.Tag_Desig, 
-                          Acc_to_Tag_L3, 
+         package Inst_L3_Conv is
+           new B3A2011_1 (B3A2011_0.Tag_Desig,
+                          Acc_to_Tag_L3,
                           TObj1_L1,
-                          Acc_to_Tag_L3, 
+                          Acc_to_Tag_L3,
                           TObj1_L2,
-                          Acc_to_Tag_L2, 
-                          TObj1_L3);                                 -- ERROR:
+                          Acc_to_Tag_L2,
+                          TObj1_L3);                         -- ERROR: {7:10;1}
                              -- Accessibility level of TObj1_L3 is deeper than
                              -- that of Acc_to_Tag_L2.
          -- In the private part of Inst_L3_Conv, after the above instantiation:
@@ -396,11 +398,11 @@ begin -- B3A2011
          -- ARen  : Acc_to_Tag_L3 := TObj1_L2'Access;
          -- AConv : Acc_to_Tag_L2 := B3A2011_0.Tag_Desig
          --                               (TObj1_L3)'Access;         <= Illegal
-   
 
-      begin -- Doubly_Nested_Block.  
+
+      begin -- Doubly_Nested_Block.
         null;
-      end Doubly_Nested_Block;  
+      end Doubly_Nested_Block;
 
    end First_Nested_Block;
 

@@ -52,11 +52,14 @@
 -- CHANGE HISTORY:
 --      21 Mar 2007   RLB   Created test from submitted test.
 --      17 Aug 2007   RLB   Moved parts from file 3.
+--      13 Feb 2018   RLB   Corrected name of (optional) main subprogram,
+--                          added error location indicators, fixed overlong
+--                          line.
 --
 --!
 
 with BA11013A.Child1;
-with BA11013A.Child2; -- OPTIONAL ERROR: no such unit (compilation failed)
+with BA11013A.Child2;-- OPTIONAL ERROR: {1;1} no such unit (compilation failed)
 package body BA11013A is
 begin
     Global_Result2 := 10;
@@ -65,12 +68,13 @@ end BA11013A;
 --------------------------
 
 with BA11013A, Ada.Text_Io;
-procedure BA11013 is
+procedure BA110134 is
     use Ada.Text_Io;
 begin
-    Put_Line ("--- BA11013 - Check that private child subprograms must have a specification.");
+    Put_Line ("--- BA11013 - Check that private child subprograms must " &
+                            "have a specification.");
     Put_Line ("*** BA11013 Failed");
-end BA11013;
+end BA110134;
 
 --------- END TEST ---------------
 

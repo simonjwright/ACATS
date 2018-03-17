@@ -55,14 +55,15 @@
 --    29 Nov 2004   PHL   Initial version.
 --    26 Mar 2007   RLB   Created ACATS version from submitted test.
 --    28 Apr 2008   RLB   Moved test case from previous file.
+--    06 Feb 2018   RLB   Added error location indicators.
 --
 --!
 
-limited with BA12010.Pak2; -- ERROR: A limited with clause in the scope of a
-                           -- a use clause that names an entity declared in
+limited with BA12010.Pak2; -- ERROR: {1;1} A limited with clause in the scope
+                           -- of a use clause that names an entity declared in
                            -- the unit.
-limited with BA12010.Pak4; -- ERROR: A limited with clause in the scope of a
-                           -- a use clause that names an entity declared in
+limited with BA12010.Pak4; -- ERROR: {1;1} A limited with clause in the scope
+                           -- of a use clause that names an entity declared in
                            -- the unit.
 package BA12010.PakA.PakA1 is
 end BA12010.PakA.PakA1;

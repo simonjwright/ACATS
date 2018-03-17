@@ -55,11 +55,16 @@
 --         BA110134.AM
 --
 -- PASS/FAIL CRITERIA:
---      Files BA110131.A, BA110132.A, and BA110133.A contain errors. All
---      errors in these files must be detected to pass the test.
+--      Files BA110131.A, BA110132.A, and BA110133.A contain errors.
+--      All errors in these files must be detected to pass the test. Compiling
+--      the body file BA110134.AM (which contains two bodies) is optional.
 --
 -- CHANGE HISTORY:
 --      21 Mar 2007   RLB   Created test from submitted test.
+--      13 Feb 2018   RLB   Updated Pass/Fail criteria to note that processing
+--                          the last source file is optional (it is unnecessary
+--                          to test the objective). Added error location
+--                          indicators.
 --
 --!
 package BA11013A is
@@ -67,7 +72,7 @@ package BA11013A is
     pragma Elaborate_Body (BA11013A); -- Force a body.
 
     package Pack1 is
-	Global_Result1 : Integer := 0;
+        Global_Result1 : Integer := 0;
     end Pack1;
 
     Global_Result2 : Integer := 0;
@@ -78,17 +83,17 @@ end BA11013A;
 
 --------------------------
 
-private procedure BA11013A.Child1; -- OK
+private procedure BA11013A.Child1;                -- OK. {1;1}
 
-procedure BA11013A.Child1 is -- OK
-    procedure Stub is Separate;
+procedure BA11013A.Child1 is                      -- OK. {1}
+    procedure Stub is separate;
 begin
     null;
 end BA11013A.Child1;
 
 --------------------------
 
-private package BA11013A.Child3 is -- OK
+private package BA11013A.Child3 is                -- OK. {1}
     procedure Dummy;
 end BA11013A.Child3;
 

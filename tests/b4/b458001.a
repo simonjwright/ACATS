@@ -182,7 +182,7 @@ begin
       (True, False, (for all I in Test'range => Test(I) < 20)));-- OK. {1:4;2}
 
    Utility_Sink (
-      (True, False, for all I in Test'range => Test(I) < 20)); -- ERROR: {21}
+      (True, False, for all I in Test'range => Test(I) < 20)); -- ERROR: {1:4}
 
    declare
       procedure I1 is new

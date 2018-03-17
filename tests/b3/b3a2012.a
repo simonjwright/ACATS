@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -52,36 +52,36 @@
 --      The accessibility level of the anonymous type of an access discriminant
 --      is that of the containing object.
 --
---      This test declares a generic package which utilizes X'Access in its 
+--      This test declares a generic package which utilizes X'Access in its
 --      visible part, where X is a generic formal object and the type A of
 --      X'Access is a generic formal type. The accessibility levels of X and
 --      A in an instance are those of the corresponding actual parameters.
 --      The test covers cases where the actual corresponding to X is a view
---      defined by an object declaration, a view denoted by a component, and 
+--      defined by an object declaration, a view denoted by a component, and
 --      a dereference of an access-to-object value.
 --
---      The test declares general access types and aliased objects in 
---      packages, subprograms and nested blocks.  These types and objects are 
---      passed as actuals to instantiations, which are attempted at various 
---      nesting levels. The test verifies that X'Access is illegal when X is 
+--      The test declares general access types and aliased objects in
+--      packages, subprograms and nested blocks.  These types and objects are
+--      passed as actuals to instantiations, which are attempted at various
+--      nesting levels. The test verifies that X'Access is illegal when X is
 --      declared at a nesting level deeper than that of the type of X'Access,
---      and legal otherwise. 
+--      and legal otherwise.
 --
 --      The nesting structure is as follows:
 --
---          - Library-level package         
+--          - Library-level package
 --         |                                                 (Level = 0)
 --          - end package
 --
---          - Main subprogram               
+--          - Main subprogram
 --         |      *** testing here                           (Level = 1)
 --         |
---         |     - Nested block statement   
+--         |     - Nested block statement
 --         |    |     *** testing here                       (Level = 2)
 --         |    |
 --         |    |     - Doubly-nested block statement
 --         |    |    |     *** testing here                  (Level = 3)
---         |    |    |                                                  
+--         |    |    |
 --         |    |    |  begin
 --         |    |     - end doubly-nested block statement
 --         |    |  begin
@@ -93,8 +93,10 @@
 -- CHANGE HISTORY:
 --      26 JAN 95   SAIC    Initial prerelease version.
 --      24 MAY 95   SAIC    Changed test code to reflect the test objectives.
---                          Changed access-to-variable types to 
+--                          Changed access-to-variable types to
 --                          access-to-constant types.
+--      09 Feb 18   RLB     Added error location indicators to reflect common
+--                          error reporting strategies.
 --
 --!
 
@@ -132,7 +134,7 @@ generic
 
    type FormalAccType_for_Obj is access constant Gen_Tag;
 
-   -- A formal object of a tagged type is aliased. 
+   -- A formal object of a tagged type is aliased.
    An_Obj    : Gen_Tag;
 
    type FormalAccType_for_Comp is access constant Gen_Tag;
@@ -150,8 +152,8 @@ package B3A2012_1 is
    AComp : FormalAccType_for_Comp    := Comp_Obj'Access;
    ADerf : FormalAccType_for_Derf    := Derf_Obj'Access;
 
-   -- These declarations are OK in the generic, but won't necessarily be
-   -- OK in an instance.
+   -- These declarations are OK in the generic, but won't necessarily be OK
+   -- in an instance.
 
 end B3A2012_1;
 
@@ -161,14 +163,14 @@ end B3A2012_1;
 
 with B3A2012_0;
 with B3A2012_1;
-package B3A2012_2 is 
-  new B3A2012_1 (B3A2012_0.Tag_Desig,     
-                 B3A2012_0.Acc_to_Tag_L0, 
+package B3A2012_2 is
+  new B3A2012_1 (B3A2012_0.Tag_Desig,
+                 B3A2012_0.Acc_to_Tag_L0,
                  B3A2012_0.TObj_L0,
-                 B3A2012_0.Acc_to_Tag_L0, 
+                 B3A2012_0.Acc_to_Tag_L0,
                  B3A2012_0.Comp_L0.C,
-                 B3A2012_0.Acc_to_Tag_L0, 
-                 B3A2012_0.Derf_L0.all);                              -- OK.
+                 B3A2012_0.Acc_to_Tag_L0,
+                 B3A2012_0.Derf_L0.all);                     -- OK. {7:1;1}
 
      --==================================================================--
 
@@ -182,60 +184,60 @@ procedure B3A2012 is
    Comp_L1 : B3A2012_0.Rec_With_Comp;                         -- Level = 1.
    Derf_L1 : B3A2012_0.Acc_To_Tag_L0;                         -- Level = 1.
 
-   package Inst_L1_OK is 
-     new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                    Acc_to_Tag_L1, 
+   package Inst_L1_OK is
+     new B3A2012_1 (B3A2012_0.Tag_Desig,
+                    Acc_to_Tag_L1,
                     B3A2012_0.TObj_L0,
-                    Acc_to_Tag_L1, 
+                    Acc_to_Tag_L1,
                     Comp_L1.C,
-                    Acc_to_Tag_L1, 
-                    B3A2012_0.Derf_L0.all);                           -- OK.
+                    Acc_to_Tag_L1,
+                    B3A2012_0.Derf_L0.all);                  -- OK. {7:4;1}
    -- After the above instantiation:
    -- GAcc1 : Acc_to_Tag_L1 := TObj_L0'Access;
    -- GAcc2 : Acc_to_Tag_L1 := TObj_L0'Access;
    -- AComp : Acc_to_Tag_L1 := Comp_L1.C'Access;
    -- ADerf : Acc_to_Tag_L1 := Derf_L0'Access;
 
-   package Inst_L1_Obj is 
-     new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                    B3A2012_0.Acc_to_Tag_L0, 
-                    TObj_L1,                                          -- ERROR:
-                               -- Accessibility level of TObj_L1 is deeper than 
+   package Inst_L1_Obj is
+     new B3A2012_1 (B3A2012_0.Tag_Desig,
+                    B3A2012_0.Acc_to_Tag_L0,
+                    TObj_L1,
+                               -- Accessibility level of TObj_L1 is deeper than
                                -- that of B3A2012_0.Acc_to_Tag_L0.
-                    Acc_to_Tag_L1, 
+                    Acc_to_Tag_L1,
                     Comp_L1.C,
-                    Acc_to_Tag_L1, 
-                    B3A2012_0.Derf_L0.all); 
+                    Acc_to_Tag_L1,
+                    B3A2012_0.Derf_L0.all);                  -- ERROR: {9:4;1}
    -- After the above instantiation:
    -- GAcc1 : Acc_to_Tag_L0 := TObj_L1'Access;                      <= Illegal
    -- GAcc2 : Acc_to_Tag_L0 := TObj_L1'Access;                      <= Illegal
    -- AComp : Acc_to_Tag_L1 := Comp_L1.C'Access;
    -- ADerf : Acc_to_Tag_L1 := Derf_L0'Access;
 
-   package Inst_L1_Comp is 
-     new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                    Acc_to_Tag_L1, 
+   package Inst_L1_Comp is
+     new B3A2012_1 (B3A2012_0.Tag_Desig,
+                    Acc_to_Tag_L1,
                     B3A2012_0.TObj_L0,
-                    B3A2012_0.Acc_to_Tag_L0, 
-                    Comp_L1.C,                                        -- ERROR:
-                             -- Accessibility level of Comp_L1.C is deeper than 
-                             -- that of B3A2012_0.Acc_to_Tag_L0.     
-                    Acc_to_Tag_L1, 
-                    B3A2012_0.Derf_L0.all); 
+                    B3A2012_0.Acc_to_Tag_L0,
+                    Comp_L1.C,
+                             -- Accessibility level of Comp_L1.C is deeper than
+                             -- that of B3A2012_0.Acc_to_Tag_L0.
+                    Acc_to_Tag_L1,
+                    B3A2012_0.Derf_L0.all);                  -- ERROR: {9:4;1}
    -- After the above instantiation:
    -- GAcc1 : Acc_to_Tag_L1 := TObj_L0'Access;
    -- GAcc2 : Acc_to_Tag_L1 := TObj_L0'Access;
    -- AComp : Acc_to_Tag_L0 := Comp_L1.C'Access;                    <= Illegal
    -- ADerf : Acc_to_Tag_L1 := Derf_L0'Access;
 
-   package Inst_L1_Derf is 
-     new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                    Acc_to_Tag_L1, 
+   package Inst_L1_Derf is
+     new B3A2012_1 (B3A2012_0.Tag_Desig,
+                    Acc_to_Tag_L1,
                     B3A2012_0.TObj_L0,
-                    Acc_to_Tag_L1, 
+                    Acc_to_Tag_L1,
                     Comp_L1.C,
-                    B3A2012_0.Acc_to_Tag_L0, 
-                    Derf_L1.all);                                     -- ERROR:
+                    B3A2012_0.Acc_to_Tag_L0,
+                    Derf_L1.all);                            -- ERROR: {7:4;1}
                                -- Accessibility level of Derf_L1 is deeper than
                                -- that of B3A2012_0.Acc_to_Tag_L0.
    -- After the above instantiation:
@@ -245,71 +247,71 @@ procedure B3A2012 is
    -- ADerf : Acc_to_Tag_L0 := Derf_L1'Access;                      <= Illegal
 
 
-begin -- B3A2012 
+begin -- B3A2012
 
    First_Nested_Block:
    declare
 
-      type Acc_to_Tag_L2 is access constant B3A2012_0.Tag_Desig;  
+      type Acc_to_Tag_L2 is access constant B3A2012_0.Tag_Desig;
                                                               -- Level = 2.
       TObj_L2 : aliased B3A2012_0.Tag_Desig;                  -- Level = 2.
       Comp_L2 : B3A2012_0.Rec_With_Comp;                      -- Level = 2.
       Derf_L2 : B3A2012_0.Acc_To_Tag_L0;                      -- Level = 2.
 
-      package Inst_L2_OK is 
-        new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                       Acc_to_Tag_L2, 
+      package Inst_L2_OK is
+        new B3A2012_1 (B3A2012_0.Tag_Desig,
+                       Acc_to_Tag_L2,
                        TObj_L2,
-                       Acc_to_Tag_L2, 
+                       Acc_to_Tag_L2,
                        B3A2012_0.Comp_L0.C,
-                       Acc_to_Tag_L2, 
-                       Derf_L1.all);                                  -- OK.
+                       Acc_to_Tag_L2,
+                       Derf_L1.all);                         -- OK. {7:7;1}
       -- After the above instantiation:
       -- GAcc1 : Acc_to_Tag_L2 := TObj_L2'Access;
       -- GAcc2 : Acc_to_Tag_L2 := TObj_L2'Access;
       -- AComp : Acc_to_Tag_L2 := Comp_L0.C'Access;
       -- ADerf : Acc_to_Tag_L2 := Derf_L1'Access;
 
-      package Inst_L2_Obj is 
-        new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                       Acc_to_Tag_L1, 
-                       TObj_L2,                                       -- ERROR:
+      package Inst_L2_Obj is
+        new B3A2012_1 (B3A2012_0.Tag_Desig,
+                       Acc_to_Tag_L1,
+                       TObj_L2,
                               -- Accessibility level of TObj_L2 is deeper than
-                              -- that of Acc_to_Tag_L1.                        
-                       Acc_to_Tag_L2, 
+                              -- that of Acc_to_Tag_L1.
+                       Acc_to_Tag_L2,
                        B3A2012_0.Comp_L0.C,
-                       Acc_to_Tag_L2, 
-                       Derf_L1.all); 
+                       Acc_to_Tag_L2,
+                       Derf_L1.all);                         -- ERROR: {9:7;1}
       -- After the above instantiation:
       -- GAcc1 : Acc_to_Tag_L1 := TObj_L2'Access;                   <= Illegal
       -- GAcc2 : Acc_to_Tag_L1 := TObj_L2'Access;                   <= Illegal
       -- AComp : Acc_to_Tag_L2 := Comp_L0.C'Access;
       -- ADerf : Acc_to_Tag_L2 := Derf_L1'Access;
 
-      package Inst_L2_Comp is 
-        new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                       Acc_to_Tag_L2, 
+      package Inst_L2_Comp is
+        new B3A2012_1 (B3A2012_0.Tag_Desig,
+                       Acc_to_Tag_L2,
                        TObj_L2,
-                       B3A2012_0.Acc_to_Tag_L0, 
-                       Comp_L2.C,                                     -- ERROR:
+                       B3A2012_0.Acc_to_Tag_L0,
+                       Comp_L2.C,
                              -- Accessibility level of Comp_L2.C is deeper than
                              -- that of B3A2012_0.Acc_to_Tag_L0.
-                       Acc_to_Tag_L2, 
-                       Derf_L1.all); 
+                       Acc_to_Tag_L2,
+                       Derf_L1.all);                         -- ERROR: {9:7;1}
       -- After the above instantiation:
       -- GAcc1 : Acc_to_Tag_L2 := TObj_L2'Access;
       -- GAcc2 : Acc_to_Tag_L2 := TObj_L2'Access;
       -- AComp : Acc_to_Tag_L0 := Comp_L2.C'Access;                 <= Illegal
       -- ADerf : Acc_to_Tag_L2 := Derf_L1'Access;
 
-      package Inst_L2_Derf is 
-        new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                       Acc_to_Tag_L2, 
+      package Inst_L2_Derf is
+        new B3A2012_1 (B3A2012_0.Tag_Desig,
+                       Acc_to_Tag_L2,
                        TObj_L2,
-                       Acc_to_Tag_L2, 
+                       Acc_to_Tag_L2,
                        B3A2012_0.Comp_L0.C,
-                       Acc_to_Tag_L1, 
-                       Derf_L2.all);                                  -- ERROR:
+                       Acc_to_Tag_L1,
+                       Derf_L2.all);                         -- ERROR: {7:7;1}
                                -- Accessibility level of Derf_L2 is deeper than
                                -- that of Acc_to_Tag_L1.
       -- After the above instantiation:
@@ -318,71 +320,71 @@ begin -- B3A2012
       -- AComp : Acc_to_Tag_L2 := Comp_L0.C'Access;
       -- ADerf : Acc_to_Tag_L1 := Derf_L2'Access;                   <= Illegal
 
-   begin -- First_Nested.   
+   begin -- First_Nested.
 
       Doubly_Nested_Block:
       declare
 
-         type Acc_to_Tag_L3 is access constant B3A2012_0.Tag_Desig;  
+         type Acc_to_Tag_L3 is access constant B3A2012_0.Tag_Desig;
                                                               -- Level = 3.
          TObj_L3 : aliased B3A2012_0.Tag_Desig;               -- Level = 3.
          Comp_L3 : B3A2012_0.Rec_With_Comp;                   -- Level = 3.
          Derf_L3 : B3A2012_0.Acc_To_Tag_L0;                   -- Level = 3.
 
-         package Inst_L3_OK is 
-           new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                          Acc_to_Tag_L3, 
+         package Inst_L3_OK is
+           new B3A2012_1 (B3A2012_0.Tag_Desig,
+                          Acc_to_Tag_L3,
                           TObj_L1,
-                          Acc_to_Tag_L3, 
+                          Acc_to_Tag_L3,
                           Comp_L2.C,
-                          Acc_to_Tag_L3, 
-                          B3A2012_0.Derf_L0.all);                     -- OK.
+                          Acc_to_Tag_L3,
+                          B3A2012_0.Derf_L0.all);            -- OK. {7:10;1}
          -- After the above instantiation:
          -- GAcc1 : Acc_to_Tag_L3 := TObj_L1'Access;
          -- GAcc2 : Acc_to_Tag_L3 := TObj_L1'Access;
          -- AComp : Acc_to_Tag_L3 := Comp_L2.C'Access;
          -- ADerf : Acc_to_Tag_L3 := Derf_L0'Access;
 
-         package Inst_L3_Obj is 
-           new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                          B3A2012_0.Acc_to_Tag_L0, 
-                          TObj_L3,                                    -- ERROR:
+         package Inst_L3_Obj is
+           new B3A2012_1 (B3A2012_0.Tag_Desig,
+                          B3A2012_0.Acc_to_Tag_L0,
+                          TObj_L3,
                               -- Accessibility level of TObj_L3 is deeper than
                               -- that of B3A2012_0.Acc_to_Tag_L0.
-                          Acc_to_Tag_L3, 
+                          Acc_to_Tag_L3,
                           Comp_L2.C,
-                          Acc_to_Tag_L3, 
-                          B3A2012_0.Derf_L0.all);                           
+                          Acc_to_Tag_L3,
+                          B3A2012_0.Derf_L0.all);            -- ERROR: {9:10;1}
          -- After the above instantiation:
          -- GAcc1 : Acc_to_Tag_L0 := TObj_L3'Access;                <= Illegal
          -- GAcc2 : Acc_to_Tag_L0 := TObj_L3'Access;                <= Illegal
          -- AComp : Acc_to_Tag_L3 := Comp_L2.C'Access;
          -- ADerf : Acc_to_Tag_L3 := Derf_L0'Access;
 
-         package Inst_L3_Comp is 
-           new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                          Acc_to_Tag_L3, 
+         package Inst_L3_Comp is
+           new B3A2012_1 (B3A2012_0.Tag_Desig,
+                          Acc_to_Tag_L3,
                           TObj_L1,
-                          Acc_to_Tag_L1, 
-                          Comp_L3.C,                                  -- ERROR:
+                          Acc_to_Tag_L1,
+                          Comp_L3.C,
                             -- Accessibility level of Comp_L3.C is deeper than
                             -- that of Acc_to_Tag_L1.
-                          Acc_to_Tag_L3, 
-                          B3A2012_0.Derf_L0.all);                 
+                          Acc_to_Tag_L3,
+                          B3A2012_0.Derf_L0.all);            -- ERROR: {9:10;1}
          -- After the above instantiation:
          -- GAcc1 : Acc_to_Tag_L3 := TObj_L1'Access;
          -- GAcc2 : Acc_to_Tag_L3 := TObj_L1'Access;
          -- AComp : Acc_to_Tag_L1 := Comp_L3.C'Access;              <= Illegal
          -- ADerf : Acc_to_Tag_L3 := Derf_L0'Access;
 
-         package Inst_L3_Derf is 
-           new B3A2012_1 (B3A2012_0.Tag_Desig, 
-                          Acc_to_Tag_L3, 
+         package Inst_L3_Derf is
+           new B3A2012_1 (B3A2012_0.Tag_Desig,
+                          Acc_to_Tag_L3,
                           TObj_L1,
-                          Acc_to_Tag_L3, 
+                          Acc_to_Tag_L3,
                           Comp_L2.C,
-                          Acc_to_Tag_L2, 
-                          Derf_L3.all);                               -- ERROR:
+                          Acc_to_Tag_L2,
+                          Derf_L3.all);                      -- ERROR: {7:10;1}
                                -- Accessibility level of Derf_L3 is deeper than
                                -- that of Acc_to_Tag_L2.
          -- After the above instantiation:
@@ -392,9 +394,9 @@ begin -- B3A2012
          -- ADerf : Acc_to_Tag_L2 := Derf_L3'Access;                <= Illegal
 
 
-      begin -- Doubly_Nested_Block.  
+      begin -- Doubly_Nested_Block.
         null;
-      end Doubly_Nested_Block;  
+      end Doubly_Nested_Block;
 
    end First_Nested_Block;
 

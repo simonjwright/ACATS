@@ -56,7 +56,7 @@
 --      31 Aug 15  RLB   Created.
 --      22 Jan 16  RLB   Corrected objective.
 --      28 Mar 16  RLB   Added error location codes.
---
+--      06 Feb 18  RLB   Fixed error location codes for two-line expressions.
 --!
 
 with F750A00;
@@ -223,7 +223,7 @@ procedure B750A07 is
 
     function Func55 return F750A00.Lim_Tagged'Class is
         (F750A00.Lim_Tagged'Class'((
-                   F750A00.Func_Lim_Tagged (False))));         -- OK. {20;4}
+                   F750A00.Func_Lim_Tagged (False))));         -- OK. {1:10;4}
 
     function Func56 return F750A00.Lim_Tagged'Class is
             (F750A00.Func_Lim_Tagged_Access (False).all);      -- ERROR: {14;2}
@@ -233,7 +233,7 @@ procedure B750A07 is
 
     function Func58 return F750A00.Lim_Tagged'Class is
         (F750A00.Lim_Tagged'Class'(
-                   F750A00.Func_Lim_Tagged_Access (True).all));-- ERROR: {20;3}
+                 F750A00.Func_Lim_Tagged_Access (True).all));-- ERROR: {1:10;3}
 
     function Func59 return F750A00.Lim_Tagged'Class is
             (F750A00.Obj_Any_Tagged_Access.all);               -- ERROR: {14;2}
@@ -243,7 +243,7 @@ procedure B750A07 is
 
     function Func61 return F750A00.Lim_Tagged'Class is
             (F750A00.Lim_Tagged'Class'(
-                   F750A00.Obj_Any_Tagged_Access.all));        -- ERROR: {20;3}
+                   F750A00.Obj_Any_Tagged_Access.all));      -- ERROR: {1:14;3}
 
     function Func62 return F750A00.Lim_Rec is
             (F750A00.Func_Lim_Tagged_Access (False).R);        -- ERROR: {14;2}

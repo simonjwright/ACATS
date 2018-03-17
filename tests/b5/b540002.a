@@ -59,6 +59,8 @@
 -- CHANGE HISTORY:
 --      21 May 14   RLB     Created test from legacy tests (as described
 --                          above).
+--      08 Feb 18   RLB     Added error location indicators to reflect common
+--                          error reporting strategies.
 --
 --!
 
@@ -76,51 +78,51 @@ begin
 
    begin
       case A is
-          when 0 => null;                  -- ERROR: (A)
-          when 100 => null;                -- OK.
-          when others => null;             -- OK.
+          when 0 => null;                  -- ERROR: {11;9} (A)
+          when 100 => null;                -- OK. {11;9}
+          when others => null;             -- OK. {11;9}
       end case;
 
       case A is
-          when 1 => null;                  -- OK.
-          when 101 => null;                -- ERROR: (A)
-          when others => null;             -- OK.
+          when 1 => null;                  -- OK. {11;9}
+          when 101 => null;                -- ERROR: {11;9} (A)
+          when others => null;             -- OK. {11;9}
       end case;
 
       case B is
-          when 0 => null;                  -- ERROR: (A)
-          when 100 => null;                -- OK.
-          when others => null;             -- OK.
+          when 0 => null;                  -- ERROR: {11;9} (A)
+          when 100 => null;                -- OK. {11;9}
+          when others => null;             -- OK. {11;9}
       end case;
 
       case B is
-          when 1 => null;                  -- OK.
-          when 101 => null;                -- ERROR: (A)
-          when others => null;             -- OK.
+          when 1 => null;                  -- OK. {11;9}
+          when 101 => null;                -- ERROR: {11;9} (A)
+          when others => null;             -- OK. {11;9}
       end case;
 
       case Short'(50) is
-          when 0 => null;                  -- ERROR: (A)
-          when 100 => null;                -- OK.
-          when others => null;             -- OK.
+          when 0 => null;                  -- ERROR: {11;9} (A)
+          when 100 => null;                -- OK. {11;9}
+          when others => null;             -- OK. {11;9}
       end case;
 
       case Short'(50) is
-          when 1 => null;                  -- OK.
-          when 101 => null;                -- ERROR: (A)
-          when others => null;             -- OK.
+          when 1 => null;                  -- OK. {11;9}
+          when 101 => null;                -- ERROR: {11;9} (A)
+          when others => null;             -- OK. {11;9}
       end case;
 
       case Short(C) is
-          when 0 => null;                  -- ERROR: (A)
-          when 100 => null;                -- OK.
-          when others => null;             -- OK.
+          when 0 => null;                  -- ERROR: {11;9} (A)
+          when 100 => null;                -- OK. {11;9}
+          when others => null;             -- OK. {11;9}
       end case;
 
       case Short(C) is
-          when 1 => null;                  -- OK.
-          when 101 => null;                -- ERROR: (A)
-          when others => null;             -- OK.
+          when 1 => null;                  -- OK. {11;9}
+          when 101 => null;                -- ERROR: {11;9} (A)
+          when others => null;             -- OK. {11;9}
       end case;
 
    end;
@@ -140,7 +142,7 @@ begin
             case  I  is
                when  1 | 3  =>  null;
                when  2 | 4  =>  null;
-            end case;                      -- ERROR: (B)
+            end case;                      -- ERROR: {3:13;1} (B)
 
          when others  =>
             null;
@@ -150,7 +152,7 @@ begin
          when  2  =>
             case  Stat'( 2 )  is
                when  5 | 2..4  =>  null;
-            end case;                      -- ERROR: (B)
+            end case;                      -- ERROR: {2:13;1} (B)
          when others  =>
             null;
       end case;
@@ -160,7 +162,7 @@ begin
             case  Stat( J )  is
                when  5 | 2..3  =>  null;
                when  1         =>  null;
-            end case;                      -- ERROR: (B)
+            end case;                      -- ERROR: {3:13;1} (B)
          when others  =>
             null;
       end case;
@@ -188,63 +190,63 @@ begin
          when  3 | 5  =>  null;
          when  2 | 4  =>  null;
          when  0..0 | 6..Twiddle'Last  =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {4:7;1} (C)
 
       case  I  is
          when  3 | 5      =>  null;
          when  2 | 4      =>  null;
          when  1 | 6..50  =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {4:7;1} (C)
 
       case  J  is
          when  1 | 3 | 5  =>  null;
          when  2 | 4      =>  null;
          when  0 | 7..Twiddle'Last  =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {4:7;1} (C)
 
       case  J  is
          when  1 | 3 | 5  =>  null;
          when  2 | 4      =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {3:7;1} (C)
 
       case  Dyn'First  is
-         when  1..Stat'Last  =>  NULL;
-      end case;                            -- ERROR: (C)
+         when  1..Stat'Last  =>  null;
+      end case;                            -- ERROR: {2:7;1} (C)
 
       case  FF  is
          when  4..5  =>  null;
          when  6..Twiddle'Last  =>  null;
          when  1..3  =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {4:7;1} (C)
 
       case  Dyn'( 2 )  is
          when  6..Twiddle'Last  =>  null;
          when  5 | 1..4  =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {3:7;1} (C)
 
       case  Dyn( J )  is
          when  5 | 2..4  =>  null;
          when  1         =>  null;
          when  6..50     =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {4:7;1} (C)
 
       case  ( FF )  is
          when  1 | 5  =>  null;
          when  2 | 4  =>  null;
          when  3      =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {4:7;1} (C)
 
       case  ( Dyn'( I ) )  is
          when  4..5  =>  null;
          when  1..3  =>  null;
          when  0 | 6..50  =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {4:7;1} (C)
 
       case  ( Dyn( 2 ) )  is
          when  2..4  =>  null;
          when  1     =>  null;
          when  5..50 =>  null;
-      end case;                            -- ERROR: (C)
+      end case;                            -- ERROR: {4:7;1} (C)
 
    end;
 
@@ -252,29 +254,29 @@ begin
       type Byte is mod 2**8;
       subtype Tiny is Byte range 1 .. 10;
 
-      I1_10     : CONSTANT Byte := 10;
+      I1_10     : constant Byte := 10;
    begin
 
       case Tiny'(5) is
-         when 7 .. I1_10 => null;          -- OK.
-         when 4 .. 8 => null;              -- ERROR: (D)
+         when 7 .. I1_10 => null;          -- OK. {10;9}
+         when 4 .. 8 => null;              -- ERROR: {10;9} (D)
          when others => null;
       end case;
 
       case Tiny'(5) is
          when 7 .. 10 => null;
          when 1 .. 4 => null;
-         when 5 .. 7 => null;              -- ERROR: (D)
+         when 5 .. 7 => null;              -- ERROR: {10;9} (D)
       end case;
 
       case Byte'(5) is
-         when 1..4 | 10..13 | 3..5 => null;-- ERROR: (D)
+         when 1..4 | 10..13 | 3..5 => null;-- ERROR: {10;9} (D)
          when others => null;
       end case;
 
       case Tiny'(4) is
          when 1 | 3 | 7 | 5 | 9 | 8 => null;
-         when 2 | 4 | 6 | 8 | 10 => null;  -- ERROR: (D)
+         when 2 | 4 | 6 | 8 | 10 => null;  -- ERROR: {10;9} (D)
       end case;
 
    end;
