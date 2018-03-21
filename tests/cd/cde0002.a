@@ -55,23 +55,27 @@
 --      15 Nov 13   GRB     Initial version.
 --      27 Nov 13   RLB     Added headers and ANX-C RQMT.
 --      18 Apr 14   RLB     Renamed for ACATS 4.0.
+--      03 Apr 17   RLB     Redid aspect cases to use Storage_Size, so the
+--                          static freezing rule of 13.14(7.2/3) is not
+--                          triggered.
 --!
 
 with Report;
+with ImpDef;
 procedure CDE0002 is
 
    package Aspects is
       X : constant Integer;
 
-      type A is new Natural with Size => X; -- ANX-C RQMT; OK, doesn't freeze X
+      type A is new Natural
+         with Size => Integer'Size;         -- ANX-C RQMT {1:7;1}
 
-      type B is record
-          M, N : Integer;
-      end record with Size => 2 * A'Size;   -- ANX-C RQMT; OK, doesn't freeze A
+      type A_Ptr is access all A
+         with Storage_Size => X;            -- OK, doesn't freeze A or X.
 
    private
-      X : constant Integer := Integer'Size; -- OK not yet frozen
-      R : B := (1, 2);                      -- Freezes A, B, X
+      X : constant Integer := A'Size * 16;  -- OK, not yet frozen (freezes A).
+      P : A_Ptr := new A'(12);              -- Freezes A_Ptr & X.
    end Aspects;
 
    generic function G return Integer;
@@ -84,12 +88,13 @@ procedure CDE0002 is
       X : constant Integer;
 
       function FG return Integer is (RG);
-      function FX return Integer is (X); -- OK, does not freeze X
+      function FX return Integer is (X);    -- OK, does not freeze X
       function FA return access function return Integer is (FG'Access);
 
    private
-      X : constant Integer := C;         -- OK not yet frozen
-   end Expression_Functions;             -- End of unit freezes everything inside
+      X : constant Integer := C;            -- OK not yet frozen.
+   end Expression_Functions;                -- End of unit freezes everything
+                                            -- inside.
 
    function G return Integer is
    begin
@@ -124,8 +129,11 @@ begin
       Report.Failed ("Wrong size for type with explicit Size aspect");
    end if;
 
-   if not (Aspects.B'Size = 2 * Aspects.A'Size) then
-      Report.Failed ("Wrong size for record type with explicit Size aspect");
+   if Aspects.A_Ptr'Storage_Size not in Aspects.A'Size * 16 ..
+                                        Aspects.A'Size * 16 +
+                       ImpDef.Maximum_Adjustment_To_Specified_Storage_Size then
+      Report.Failed ("Wrong storage size for access type with explicit " &
+                     "Storage_Size aspect");
    end if;
 
    Check_Expression_Functions;
