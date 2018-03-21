@@ -1,4 +1,4 @@
--- C611B030.A
+-- BA210050.A
 --
 --                             Grant of Unlimited Rights
 --
@@ -30,48 +30,52 @@
 --     assessment of a language processor. This test suite should not be used
 --     to make claims of conformance unless used in accordance with
 --     ISO/IEC 18009 and any applicable ACAA procedures.
---*
 --
+--*
 -- OBJECTIVE:
---      For X'Old given in the postcondition for a subprogram S, check that
---      X'Old has the same tag as X when X is a parameter P of S, even if the
---      tag of X is different than the nominal subtype of P. (Part 3:
---      Post'Class of an interface)
+--     Check that the categorization aspects Pure and Preelaborate cannot
+--     be specified by a value declared in the same package.
+--
+--     Check that the categorization aspects Pure and Preelaborate cannot
+--     be specified by a nonstatic value.
+--
+--     Check that the categorization aspects Pure and Preelaborate are
+--     specified by a value of type Boolean.
 --
 -- TEST DESCRIPTION:
---      We declare an event counter type and an extension thereof. We include
---      function calls that are bound based on the type of the prefix, and
---      check which are called.
+--     We use the general organization of CA21002.
 --
---      To check the objective, we directly check the tag. It would have been
---      more usage-oriented to test dispatching instead, but that would have
---      added more complication to the test.
+--     The first objective comes from Corrigendum 1 (via AI12-0154-1);
+--     the actual wording is in 13.1.1(32/4). The second and third objective
+--     also comes from 13.1.1(32/4). We want to test these objectives for
+--     each aspect that corresponds to a library unit pragma.
 --
 -- TEST FILES:
 --      This test consists of the following files:
---      -> C611B030.A
---         C611B031.A
---         C611B032.A
---         C611B033.AM
+--      -> BA210050.A
+--         BA210051.A
+--         BA210052.A
+--         BA210053.A
+--         BA210054.A
+--         BA210055.A
+--         BA210056.A
+--         BA210057.AM
+--
+-- PASS/FAIL CRITERIA:
+--      Files BA210051.A, BA210052.A, BA210053.A, BA210054.A, BA210055.A,
+--      and BA210056.A contain errors. All errors in these files must be
+--      detected to pass the test. Compiling the body file BA210057.AM
+--      is optional.
 --
 -- CHANGE HISTORY:
---      27 Dec 16   JAC     Initial pre-release version.
---      18 Jan 17   RLB     Updated the objective to be different than C611B02.
---      24 Mar 17   RLB     Fixed too long lines.
+--     22 Mar 2017  RLB  Created test.
 --
 --!
-package C611B030 is
+package BA210050 with Preelaborate => True is
+   type New_Bool is new Boolean;
+   Is_Pure_Funny     : constant New_Bool := False;
+   Is_Pure_Dynamic   : Boolean := True;
+   Is_Preelab_Funny  : constant Integer := 1;
+   Is_Preelab_Dynamic: Boolean := True;
+end BA210050;
 
-   pragma Assertion_Policy (Check);
-
-   type Event_Record_IF is interface;
-
-   procedure Event_Occurred (Event : in out Event_Record_IF) is abstract
-      with Post'Class => Event.Count1 = Event'Old.Count2 + 1;
-
-   function  Count1         (Event : in     Event_Record_IF)
-                                            return Integer is abstract;
-   function  Count2         (Event : in     Event_Record_IF)
-                                            return Integer is abstract;
-
-end C611B030;

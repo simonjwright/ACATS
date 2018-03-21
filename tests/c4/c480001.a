@@ -54,6 +54,10 @@
 --    22 Jan 2016   RLB   Created test, using the similar B-Test (B480002)
 --                        and the similar return statement test (C650B04) as
 --                        bases.
+--    27 Mar 2017   RLB   Changed "Param" to an in parameter (two places) as
+--                        this is supposed to be an Ada 2005 test (and in out
+--                        parameters in functions are supported to be an
+--                        Ada 2012 feature).
 --!
 
 package C480001_0 is
@@ -99,8 +103,8 @@ procedure C480001 is
 
    R_Obj : C480001_0.Root;
 
-   function Test_Function (Subtest : in     Natural;
-                           Param   : in out C480001_0.Root'Class)
+   function Test_Function (Subtest : in Natural;
+                           Param   : in C480001_0.Root'Class)
       return C480001_0.Any_Root_Access is
 
       Id_Cnt : Natural := 1;
@@ -140,8 +144,8 @@ procedure C480001 is
       type Local_Any_Root_Access is access C480001_0.Root'Class;
       L : Local_Any_Root_Access;
 
-      function Nest_Test (N       : in     Natural;
-                          Param   : in out C480001_0.Root'Class)
+      function Nest_Test (N       : in Natural;
+                          Param   : in C480001_0.Root'Class)
          return C480001_0.Any_Root_Access is
          type Dbl is new C480001_0.Root with null record;
          D_Obj : Dbl;
@@ -186,7 +190,7 @@ procedure C480001 is
                           C480001_0.Root'Class(M_Obj));   -- Program_Error.
                return P;
             when 9 =>
-               -- Recursively pass D_Obj to the original test routine.
+               -- Recursively pass M_Obj to the original test routine.
                return Test_Function (
                          Subtest => 1,
                          Param => C480001_0.Root'Class(M_Obj));

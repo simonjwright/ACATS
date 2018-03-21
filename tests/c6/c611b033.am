@@ -48,6 +48,7 @@
 -- CHANGE HISTORY:
 --      27 Dec 16   JAC     Initial pre-release version.
 --      25 Jan 17   RLB     Corrected name of main subprogram.
+--      24 Mar 17   RLB     Corrected too long lines.
 --
 --!
 with Ada.Tags;
@@ -61,11 +62,12 @@ procedure C611B033 is
 
    use type Ada.Tags.Tag;
 
-   My_Root_Event             : C611B030.Child.Event_Record;
-   My_Annotated_Event        : C611B030.Child.Grandchild.Annotated_Event_Record;
-   My_First_Classwide_Event  : C611B030.Child.Event_Record'Class :=
+   My_Root_Event            : C611B030.Child.Event_Record;
+   My_Annotated_Event       : C611B030.Child.Grandchild.Annotated_Event_Record;
+   My_First_Classwide_Event : C611B030.Child.Event_Record'Class :=
                                   My_Annotated_Event;
-   My_Second_Classwide_Event : C611B030.Child.Event_Record'Class := My_Root_Event;
+   My_Second_Classwide_Event: C611B030.Child.Event_Record'Class :=
+                                  My_Root_Event;
 
 begin
 
@@ -78,7 +80,8 @@ begin
 
    F611B00.TC_Clear;
 
-   C611B030.Child.Event_Occurred (C611B030.Child.Event_Record (My_First_Classwide_Event));
+   C611B030.Child.Event_Occurred (
+      C611B030.Child.Event_Record (My_First_Classwide_Event));
 
    -- Tag of the parameter is of Annotated_Event_Record, but the call
    -- is statically bound to the primitive of type Event_Record.
@@ -123,7 +126,8 @@ begin
 
    F611B00.TC_Clear;
 
-   C611B030.Child.Event_Occurred (C611B030.Child.Event_Record (My_Second_Classwide_Event));
+   C611B030.Child.Event_Occurred (
+      C611B030.Child.Event_Record (My_Second_Classwide_Event));
 
    -- Here the Tag and nominal subtype are both Event_Record.
 

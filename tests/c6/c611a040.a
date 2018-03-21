@@ -105,6 +105,7 @@
 --
 -- CHANGE HISTORY:
 --    24 Dec 16   JAC     Initial pre-release version.
+--    24 Mar 17   RLB     Fixed too long lines.
 --
 --!
 with F611A00;
@@ -115,22 +116,22 @@ package C611A040 is
 
    type Point is interface;
 
-   function  Distance             (P : in     Point) return Float is abstract
+   function  Distance             (P : in Point) return Float is abstract
     with Pre'Class  => F611A00.TC_Log_Point_Distance_Pre_Class_Called
                        and then X_Coord (P) >= 0.0,
          Post'Class => F611A00.TC_Log_Point_Distance_Post_Class_Called
                        and then Distance_Is_Positive (P);
 
-   function  X_Coord              (P : in     Point) return Float is abstract;
+   function  X_Coord              (P : in Point) return Float is abstract;
 
-   function  Y_Coord              (P : in     Point) return Float is abstract;
+   function  Y_Coord              (P : in Point) return Float is abstract;
 
    -- Postcondition functions
-   function  Distance_Is_Positive (P : in     Point) return Boolean is abstract;
+   function  Distance_Is_Positive (P : in Point) return Boolean is abstract;
 
-   function  Not_Too_Far          (P : in     Point) return Boolean is abstract;
+   function  Not_Too_Far          (P : in Point) return Boolean is abstract;
 
-   function  Not_Too_Near         (P : in     Point) return Boolean is abstract;
+   function  Not_Too_Near         (P : in Point) return Boolean is abstract;
 
 end C611A040;
 

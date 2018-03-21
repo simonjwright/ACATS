@@ -298,7 +298,8 @@ procedure C611A043 is
          -- Statically bound call:
          --Inner_Distance := O.Distance;
          Inner_Distance :=
-            C611A040.Child.Distance (C611A040.Child.Object(TC_Eval_Object (O)));
+            C611A040.Child.Distance (
+               C611A040.Child.Object(TC_Eval_Object (O)));
 
          -- Check the objective:
          --    Check that an enabled class-wide postcondition of a subprogram S
@@ -560,10 +561,10 @@ begin
 
    -- Should fail Object's Pre'Class but pass Triangle's Pre'Class.
 
-   -- As the denoted program C611A040.Child.Distance is a primitive of Object, only
-   -- its Pre'Class should be checked, not the class-wide precondition of the
-   -- body dispatched to (C611A040.Child.Grandchild.Distance, whose class-wide
-   -- precondition is an 'or' of C611A040.Distance's and
+   -- As the denoted program C611A040.Child.Distance is a primitive of Object,
+   -- only its Pre'Class should be checked, not the class-wide precondition of
+   -- the body dispatched to (C611A040.Child.Grandchild.Distance, whose
+   -- class-wide precondition is an 'or' of C611A040.Distance's and
    -- C611A040.Child.Grandchild.Distance's Pre'Classes).
    -- Thus this precondition should fail. This checks the objective:
    --    Check that the class-wide precondition of a dispatching call is that
