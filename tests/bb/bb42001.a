@@ -40,7 +40,7 @@
 -- CHANGE HISTORY:
 --     25 Jan 2016   RLB   Created test.
 --     28 Mar 2016   RLB   Added error location codes.
---
+--     20 Jan 2017   RLB   Corrected two incorrect error location codes.
 --!
 procedure BB42001 is
 
@@ -82,7 +82,7 @@ procedure BB42001 is
       pragma Assert (Iters = Bound, Message => Iters);        -- ERROR: {48;2}
 
       pragma Assert (My_Obj and True,
-                     Message => Integer'Image(Iters));        -- OK. {1:22;2{
+                     Message => Integer'Image(Iters));        -- OK. {1:22;2}
 
    end Loop_Counter;
 
@@ -97,7 +97,7 @@ procedure BB42001 is
 
       pragma Assert (Result);                                 -- ERROR: {22;2}
 
-      pragma Assert (Roll, Message => "Oh boy");              -- ERROR: {25;23}
+      pragma Assert (Roll, Message => "Oh boy");              -- ERROR: {22;23}
 
       pragma Assert (Roll > Mess, Message => Float'Image(Roll));-- OK. {22;2}
 

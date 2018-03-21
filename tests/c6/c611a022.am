@@ -53,6 +53,7 @@
 --                        to ensure that statically bound calls also
 --                        evaluate their checks in the correct order.
 --     31 Mar 16   RLB    Removed duplicative suffixes.
+--     25 Jan 17   RLB    Corrected the name of the main subprogram.
 --
 --!
 with Ada.Assertions;
@@ -62,7 +63,7 @@ with C611A020;
 with C611A020.Child;
 with Report;
 
-procedure C611A02 is
+procedure C611A022 is
 
    pragma Assertion_Policy (Check);
 
@@ -434,4 +435,4 @@ begin
 
    Report.Result;
 
-end C611A02;
+end C611A022;

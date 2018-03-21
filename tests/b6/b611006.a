@@ -51,7 +51,7 @@
 --     These objectives descend from changes made by AI12-0113-1, part
 --     of Technical Corrigendum 1 (ISO/IEC 8652:2012/Corr1:2016).
 --     The purpose of these rules is to ensure that the interpretation of
---     class-wide precondition and postcondition expressions can be
+--     class-wide precondition and postcondition e xpressions can be
 --     meaningfully inherited. We don't want to allow calls to routines that
 --     don't have equivalents for a descendant type, nor parameters that
 --     wouldn't have a matching type for a descendant type. (The first two
@@ -67,6 +67,8 @@
 --     04 Feb 2016   RLB   Created test.
 --     22 Feb 2016   RLB   Corrected operations of Intf to be abstract.
 --     28 Mar 2016   RLB   Generalized error messages, added location codes.
+--     20 Jan 2017   RLB   Clarified error in Pack3.
+--      2 Feb 2017   RLB   Corrected Pack5, which is not illegal.
 --
 --!
 package B611006 is
@@ -206,7 +208,8 @@ package B611006 is
       procedure Proc1 (Obj : in out NAT2) is abstract;           -- OK. {7}
 
       -- Inherits procedure Proc2 (Obj : in out NAT2), which is illegal
-      -- for the same reason as above.       -- POSSIBLE ERROR: [Set1] {0;-1:0}
+      -- for the same reason as Pack2.Proc1 above.
+                                             -- POSSIBLE ERROR: [Set1] {0;-1:0}
    end Pack3;
 
    package Pack4 is
@@ -227,7 +230,7 @@ package B611006 is
 
    package Pack5 is
       type NAT4 is abstract new Root and Intf
-          with null record;                  -- POSSIBLE ERROR: [Set2] {1:7}
+          with null record;                                      -- OK. {1:7}
 
       function Is_OK (Obj : NAT4) return Boolean;
 
@@ -239,8 +242,9 @@ package B611006 is
 
       procedure Proc3 (Obj : in out NAT4) is abstract;           -- OK. {7}
 
-      -- Inherits procedure Proc4 (Obj : in out NAT4), which is illegal.
-                                             -- POSSIBLE ERROR: [Set2] {0;-1:0}
+      -- Inherits procedure Proc4 (Obj : in out NAT4), which is OK
+      -- despite Is_Old being used in its Pre'Class, as it is abstract.
+                                                                 -- OK.{0;-1:0}
    end Pack5;
 
 end B611006;

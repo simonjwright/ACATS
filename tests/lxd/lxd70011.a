@@ -37,6 +37,7 @@
 --      10 Nov 95   SAIC    ACVC 2.0.1 - added hierarchy to tasks
 --      30 Sep 96   SAIC    Multi-file prolog convention fix.
 --      17 Feb 00   RLB     Corrected so test runs correctly if not rejected.
+--      02 Feb 17   RLB     Added missing error tag (and location indicator).
 --
 --!
 
@@ -70,9 +71,10 @@ package body  LXD70011 is
       end Line_Driver;
 
       -- Create a group of Line_Driver tasks.  These tasks are children of
-      -- the Driver_Control and thus establish a hierarchy of tasks
+      -- the Driver_Control and thus establish a hierarchy of tasks. This
+      -- violates the restriction No_Task__Hierarchy.
       Driver_Array : array (Driver_Index) of acc_Driver :=
-                                           (Driver_Index => new Line_Driver);
+                   (Driver_Index => new Line_Driver); -- OPTIONAL ERROR: {1:7}
 
    begin
       select

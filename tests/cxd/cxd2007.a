@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -27,20 +27,20 @@
 --      Check that a new running task is selected whenever there
 --      is a nonempty ready queue with a higher priority than the
 --      priority of the running task.
---      Check that when a task is preempted it is added to the 
+--      Check that when a task is preempted it is added to the
 --      head of the ready queue for its active priority.
 --
 -- TEST DESCRIPTION:
 --      This test uses a variety of methods to make a high priority
 --      task ready to run so that it will preempt a running lower
 --      priority task.  We check that the preemption does occur and
---      that the preempted task is put at the head of the ready 
+--      that the preempted task is put at the head of the ready
 --      queue for its priority level.  This last check is accomplished
 --      by having another task at the same priority as the preempted
 --      task and checking that it did not get a chance to run.
 --
 -- SPECIAL REQUIREMENTS
---      The implementation must process configuration pragmas which 
+--      The implementation must process configuration pragmas which
 --      are not part of any Compilation Unit;  the method employed
 --      is implementation defined.
 --
@@ -56,6 +56,7 @@
 --      20 SEP 95   SAIC    Initial version
 --      26 OCT 95   SAIC    Incorporated change suggested by reviewers
 --      21 FEB 96   SAIC    New ImpDef; Smaller range of priorities used.
+--      03 Feb 17   RLB     Added missing N/A error tag.
 --
 --!
 
@@ -69,10 +70,10 @@ pragma Task_Dispatching_Policy (FIFO_Within_Priorities);
 
 with System;
 with Report;
-with ImpDef;        
+with ImpDef;
 with ImpDef.Annex_D;        use type ImpDef.Annex_D.Processor_Type;
 with Ada.Task_Identification;
-with Ada.Asynchronous_Task_Control;
+with Ada.Asynchronous_Task_Control;         -- N/A => ERROR. {1}
 with Ada.Synchronous_Task_Control;
 procedure CXD2007 is
   Verbose : constant Boolean := False;
@@ -117,7 +118,7 @@ procedure CXD2007 is
       return Has_Run (It);
     end Did_It_Run;
   end Registry;
-    
+
 ----------------------------------------------------------
 
   task Low_A_Task is
@@ -128,7 +129,7 @@ procedure CXD2007 is
   task body Low_A_Task is
   begin
     accept Do_Register do
-      Task_IDs (Low_A) := TID.Current_Task; 
+      Task_IDs (Low_A) := TID.Current_Task;
     end Do_Register;
 
     -- make sure we are at the end of the low priority queue
@@ -145,7 +146,7 @@ procedure CXD2007 is
       delay 0.0;
     end loop;
   end Low_A_Task;
-    
+
 ----------------------------------------------------------
 
   task Low_B_Task is
@@ -156,14 +157,14 @@ procedure CXD2007 is
   task body Low_B_Task is
   begin
     accept Do_Register do
-      Task_IDs (Low_B) := TID.Current_Task; 
+      Task_IDs (Low_B) := TID.Current_Task;
     end Do_Register;
 
     loop
       Registry.Running (Low_B);
     end loop;
   end Low_B_Task;
-    
+
 ----------------------------------------------------------
 
   task Hi_Task is
@@ -175,13 +176,13 @@ procedure CXD2007 is
   task body Hi_Task is
   begin
     accept Do_Register do
-      Task_IDs (High) := TID.Current_Task; 
+      Task_IDs (High) := TID.Current_Task;
     end Do_Register;
 
     loop
       Registry.Running (High);
       -- until we get ready to do the suspension test we don't
-      -- want to call Suspend_Until_True.  That is because 
+      -- want to call Suspend_Until_True.  That is because
       -- Suspend_Until_True is a potentially blocking operation
       -- and we don't want to do any potentially blocking operation
       -- until it is time to do so.
@@ -190,7 +191,7 @@ procedure CXD2007 is
       end if;
     end loop;
   end Hi_Task;
-    
+
 ----------------------------------------------------------
 
   -- verify that the tasks that were expected to run have
@@ -215,7 +216,7 @@ procedure CXD2007 is
       for I in Task_Flags'Range loop
         if Actual (I) /= Expected (I) then
           if Expected (I) then
-            Report.Failed (Names'Image (I) & 
+            Report.Failed (Names'Image (I) &
                            " was expected to run but didn't");
           else
             Report.Failed (Names'Image (I) &
@@ -227,7 +228,7 @@ procedure CXD2007 is
 
     -- prepare for the next test
     Registry.Clear;
-  end Check; 
+  end Check;
 
 ----------------------------------------------------------
 
@@ -251,7 +252,7 @@ begin
   Hi_Task.Do_Register;
 
   -- the tasks should not have proceeded past their accept statements
-  Check ((False, False, False), "elaboration and rendezvous");  
+  Check ((False, False, False), "elaboration and rendezvous");
 
   -- simple delay expiration
   delay ImpDef.Clear_Ready_Queue;
@@ -273,7 +274,7 @@ begin
 
   -- continuing the held task should not give anyone else a chance to run
   ATC.Continue (Task_IDs (High));
-  Check ((False, False, False), 
+  Check ((False, False, False),
          "continue should not be a blocking operation");
 
   -- make sure the continued task now runs
@@ -300,6 +301,6 @@ begin
   -- cleanup
   abort Hi_Task, Low_A_Task, Low_B_Task;
 
-  
+
   Report.Result;
 end CXD2007;

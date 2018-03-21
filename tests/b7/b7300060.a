@@ -45,8 +45,8 @@
 --      Subtest 2:
 --      Declare Tool, a visible extension of Root, in a non-child package, with
 --      component B.
---      Declare Hammer, a visible extension of Root, in a child package of Root's
---      package, with component D.
+--      Declare Hammer, a visible extension of Root, in a child package of
+--      Root's package, with component D.
 --      Check that within Hammer's package, components B and D are visible, but
 --      not C.
 --
@@ -65,7 +65,7 @@
 --
 -- CHANGE HISTORY:
 --      14 Sep 99   RLB     Created test.
---
+--      02 Feb 17   RLB     Fixed overlong line.
 --!
 
 package B730006_0 is

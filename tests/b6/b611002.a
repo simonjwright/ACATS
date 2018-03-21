@@ -41,7 +41,7 @@
 -- CHANGE HISTORY:
 --     03 Feb 2016   RLB   Created test.
 --     28 Mar 2016   RLB   Added error location codes.
---
+--     20 Jan 2017   RLB   Corrected several error location codes.
 --!
 package B611002P is
 
@@ -65,13 +65,13 @@ end B611002P;
 package body B611002P is
 
     procedure No_Spec1 (P : in out Natural)
-       with Pre => P mod 2 = 0 is                              -- OK. {13;1}
+       with Pre => P mod 2 = 0 is                              -- OK. {13;3}
     begin
        P := P * 2;
     end No_Spec1;
 
     procedure Spec1 (P : in out Natural)
-       with Pre => P mod 2 = 0 is                              -- ERROR: {13;1}
+       with Pre => P mod 2 = 0 is                              -- ERROR: {13;3}
     begin
        P := P * 2;
     end Spec1;
@@ -82,7 +82,7 @@ package body B611002P is
     procedure Spec3 (P : in out Natural);
 
     procedure Spec3 (P : in out Natural)
-       with Pre => P mod 2 = 0 is                              -- ERROR: {13;1}
+       with Pre => P mod 2 = 0 is                              -- ERROR: {13;3}
     begin
        P := P * 2;
     end Spec3;
@@ -95,13 +95,13 @@ package body B611002P is
 
 
     procedure No_Spec5 (P : in out Natural)
-       with Post => P mod 2 = 0 is                             -- OK. {13;1}
+       with Post => P mod 2 = 0 is                             -- OK. {13;3}
     begin
        P := P * 2;
     end No_Spec5;
 
     procedure Spec5 (P : in out Natural)
-       with Post => P mod 2 = 0 is                             -- ERROR: {13;1}
+       with Post => P mod 2 = 0 is                             -- ERROR: {13;3}
     begin
        P := P * 2;
     end Spec5;
@@ -112,7 +112,7 @@ package body B611002P is
     procedure Spec7 (P : in out Natural);
 
     procedure Spec7 (P : in out Natural)
-       with Post => P mod 2 = 0 is                             -- ERROR: {13;1}
+       with Post => P mod 2 = 0 is                             -- ERROR: {13;3}
     begin
        P := P * 2;
     end Spec7;

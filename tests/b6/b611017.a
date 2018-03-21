@@ -62,6 +62,12 @@
 --
 -- CHANGE HISTORY:
 --     17 Nov 2016   RLB   Created test.
+--     22 Nov 2016   RLB   Corrections: New_Proc never overrides anything, so
+--                         it is never subject to this rule. The private
+--                         declarations in Gen2 never overriding anything by
+--                         12.3(18), so instances of it are never subject
+--                         to this rule. Added Gen4 to check that this
+--                         check is made on generic derived types.
 --
 --!
 package B611017A is
@@ -148,7 +154,8 @@ package B611017A is
 
       procedure Shine (M : in out Mix_In)
          with Pre'Class => Is_Smooth (M);
-
+         -- Note: 12.3(18) says that this never overrides any subprogram
+         -- of the actual type.
    end Gen2;
 
    generic
@@ -355,7 +362,7 @@ package B611017 is
       with Pre'Class => Is_Hard (A_T08, N);                    -- ERROR: {12;1}
 
    procedure New_Proc (A_T08 : in out T08; N : in Natural)
-      with Pre'Class => Is_Hard (A_T08, N);                    -- ERROR: {12;1}
+      with Pre'Class => Is_Hard (A_T08, N);                    -- OK. {12;1}
 
 
    -- Instances:
@@ -393,7 +400,7 @@ package B611017 is
 
    package Inst07 is new B611017A.Gen1 (T12);                  -- ERROR: {4;1}
 
-   package Inst08 is new B611017A.Gen2 (T12);                  -- ERROR: {4;1}
+   package Inst08 is new B611017A.Gen2 (T12);                  -- OK. {4;1}
 
    package Inst09 is new B611017A.Gen3 (T12);                  -- OK. {4;1}
 
@@ -423,9 +430,46 @@ package B611017 is
 
    package Inst13 is new B611017A.Gen1 (T14);                  -- ERROR: {4;1}
 
-   package Inst14 is new B611017A.Gen2 (T14);                  -- ERROR: {4;1}
+   package Inst14 is new B611017A.Gen2 (T14);                  -- OK. {4;1}
 
    package Inst15 is new B611017A.Gen3 (T14);                  -- OK. {4;1}
+
+   -- Note: 12.3(18) means that the recheck in the private part of an instance
+   -- cannot change from the original check in the generic, so we cannot
+   -- test 6.1.1(17.2/4) for this rule.
+
+   -- Try the basic check with a generic derived type:
+   generic
+      type Der is new B611017A.Abstr with private;
+   package Gen4 is
+
+      type Mix_In is new Der with private;
+
+      function Is_Hard (M : Mix_In; N : in Natural) return Boolean
+         with Pre'Class => Is_Round (M);                       -- OK. {15;1}
+
+      procedure Has_It (M : in out Mix_In; N : in Natural)
+         with Pre'Class => Is_Hard (M, N);                     -- OK. {15;1}
+
+      procedure Doesnt_Have_It (M : in out Mix_In; N : in Natural)
+         with Pre'Class => Is_Hard (M, N);                     -- ERROR: {15;1}
+
+      procedure Has_It_True (M : in out Mix_In; N : in Natural)
+         with Pre'Class => Is_Hard (M, N);                     -- OK. {15;1}
+
+      procedure New_Proc (M : in out Mix_In; N : in Natural)
+         with Pre'Class => Is_Hard (M, N);                     -- OK. {15;1}
+
+
+   private
+      type Mix_In is new Der with null record;
+
+      function Is_Green (M : Mix_In) return Boolean;
+
+      function Is_Round (M : Mix_In) return Boolean
+         with Pre'Class => Is_Green (M);                       -- ERROR: {15;1}
+
+  end Gen4;
 
 
 private

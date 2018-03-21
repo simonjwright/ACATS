@@ -51,6 +51,7 @@
 --      31 Mar 16   RLB     Split all of the class-wide type objectives into
 --                          a single test. Added test cases for My_Object,
 --                          put the static binding tests into a subprogram.
+--      25 Jan 17   RLB     Corrected the name of the main subprogram.
 --
 --!
 with Ada.Assertions;
@@ -60,7 +61,7 @@ with C611A030;
 with C611A030.Child;
 with Report;
 
-procedure C611A03 is
+procedure C611A032 is
 
    pragma Assertion_Policy (Check);
 
@@ -786,4 +787,4 @@ begin
 
    Report.Result;
 
-end C611A03;
+end C611A032;

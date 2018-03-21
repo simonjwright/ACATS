@@ -61,6 +61,7 @@
 -- CHANGE HISTORY:
 --     17 Nov 2016   RLB   Created test.
 --     18 Nov 2016   RLB   Split renames objectives into a separate test.
+--     30 Nov 2016   RLB   Type T08 is supposed to be abstract.
 --
 --!
 package B611018 is
@@ -227,7 +228,7 @@ package B611018 is
    end Nest7;                              -- POSSIBLE ERROR: [Set2] {1:1;1}
 
    package Nest8 is
-      type T08 is new Con1 and Intf2 with private;
+      type T08 is abstract new Con1 and Intf2 with private;
       -- The rule applies; Get_Count and Set_Count are abstract (Is_Soft and
       -- Is_Young are concrete).
 
@@ -238,7 +239,7 @@ package B611018 is
           (Get_Count (T08(Obj)));                             -- ERROR: {12;2}
           -- Statically bound call of Get_Count.
    private
-      type T08 is new Con1 and Intf2 with null record;
+      type T08 is abstract new Con1 and Intf2 with null record;
    end Nest8;
 
 end B611018;

@@ -50,6 +50,7 @@
 --                          Corrected test results to reflect static binding;
 --                          added tag check.
 --      28 Mar 16   RLB     Added root event subtests.
+--      25 Jan 17   RLB     Corrected the name of the main subprogram.
 --
 --!
 with C611B020;
@@ -57,7 +58,7 @@ with C611B020.Child;
 with Report;
 with F611B00, Ada.Tags;
 
-procedure C611B02 is
+procedure C611B022 is
 
    pragma Assertion_Policy (Check);
 
@@ -165,4 +166,4 @@ begin
 
    Report.Result;
 
-end C611B02;
+end C611B022;

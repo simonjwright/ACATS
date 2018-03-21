@@ -44,6 +44,7 @@
 --                          including messages for particular tests.
 --      31 Mar 16   RLB     Removed duplicative versions of flags that aren't
 --                          needed in individual tests.
+--      24 Dec 16   JAC	    Add flags for interface tests.
 --
 --!
 package F611A00 is
@@ -64,6 +65,8 @@ package F611A00 is
    TC_Object_Y_Coord_Called                  : Boolean;
    TC_Object_Y_Coord_Specific_Post_Called    : Boolean;
    TC_Object_Y_Coord_Specific_Pre_Called     : Boolean;
+   TC_Point_Distance_Post_Class_Called       : Boolean;
+   TC_Point_Distance_Pre_Class_Called        : Boolean;
    TC_Triangle_Distance_Called               : Boolean;
    TC_Triangle_Distance_Is_Positive_Called   : Boolean;
    TC_Triangle_Not_Too_Far_Called            : Boolean;
@@ -93,6 +96,10 @@ package F611A00 is
 
    function TC_Log_Object_Y_Coord_Specific_Pre_Called     return Boolean;
 
+   function TC_Log_Point_Distance_Post_Class_Called       return Boolean;
+
+   function TC_Log_Point_Distance_Pre_Class_Called        return Boolean;
+
    function TC_Log_Triangle_Distance_Post_Class_Called    return Boolean;
 
    function TC_Log_Triangle_Distance_Pre_Class_Called     return Boolean;
@@ -121,6 +128,8 @@ package body F611A00 is
       TC_Object_Distance_Specific_Pre_Called    := False;
       TC_Object_X_Coord_Called                  := False;
       TC_Object_Y_Coord_Called                  := False;
+      TC_Point_Distance_Post_Class_Called       := False;
+      TC_Point_Distance_Pre_Class_Called        := False;
       TC_Triangle_Distance_Called               := False;
       TC_Triangle_Distance_Is_Positive_Called   := False;
       TC_Triangle_Not_Too_Far_Called            := False;
@@ -204,6 +213,28 @@ package body F611A00 is
       return True;
    end TC_Log_Object_Y_Coord_Specific_Post_Called;
 
+   function TC_Log_Point_Distance_Pre_Class_Called return Boolean is
+   begin
+      TC_Point_Distance_Pre_Class_Called := True;
+
+      return True;
+   end TC_Log_Point_Distance_Pre_Class_Called;
+
+   function TC_Log_Point_Distance_Post_Class_Called return Boolean is
+   begin
+      -- Note that the Post'Class is called for children too
+      if not (TC_Object_Distance_Called or TC_Triangle_Distance_Called) then
+         Report.Failed
+          ("Failure 13.1, Post'Class should only have been called after the" &
+           " subprogram body");
+         TC_Output;
+      end if;
+
+      TC_Point_Distance_Post_Class_Called := True;
+
+      return True;
+   end TC_Log_Point_Distance_Post_Class_Called;
+
    function TC_Log_Triangle_Distance_Pre_Class_Called return Boolean is
    begin
       TC_Triangle_Distance_Pre_Class_Called := True;
@@ -281,6 +312,14 @@ package body F611A00 is
       Report.Comment
        ("Object_Y_Coord_Called is " &
         Boolean'Image (TC_Object_Y_Coord_Called));
+
+      Report.Comment
+       ("Point_Distance_Pre_Class_Called is " &
+        Boolean'Image (TC_Point_Distance_Pre_Class_Called));
+
+      Report.Comment
+       ("Point_Distance_Post_Class_Called is " &
+        Boolean'Image (TC_Point_Distance_Post_Class_Called));
 
       Report.Comment
        ("Triangle_Distance_Called is " &

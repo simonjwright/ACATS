@@ -53,6 +53,10 @@
 --
 -- CHANGE HISTORY:
 --     18 Nov 2016   RLB   Created test.
+--     22 Nov 2016   RLB   Corrections: The private declarations in Gen2 never
+--                         override anything by 12.3(18), so instances of it
+--                         are never subject to this rule. Added Gen4 to check
+--                         that this check is made on generic derived types.
 --
 --!
 package B611019 is
@@ -160,20 +164,58 @@ package B611019 is
          with Pre'Class => Is_Round (Obj);
 
       function Get_Count (Obj : Der) return Natural renames Available;
-         -- Possibly subject to the 6.1.1(17/3) rule in an instance.
+         -- Never subject to the 6.1.1(17/3) rule in an instance, as it
+         -- never overrides a primitive of the actual by 12.3(18).
    end Gen2;
 
    package Inst1 is new Gen1 (Con1);                         -- ERROR: {4;1}
 
-   package Inst2 is new Gen2 (Con1);                         -- ERROR: {4;1}
+   package Inst2 is new Gen2 (Con1);                         -- OK. {4;1}
 
    package Inst3 is new Gen1 (Con2);                         -- ERROR: {4;1}
 
-   package Inst4 is new Gen2 (Con2);                         -- ERROR: {4;1}
+   package Inst4 is new Gen2 (Con2);                         -- OK. {4;1}
 
    package Inst5 is new Gen1 (Con3);                         -- OK. {4;1}
 
    package Inst6 is new Gen2 (Con3);                         -- OK. {4;1}
+
+   -- Note: 12.3(18) means that there is never overriding in the private part
+   -- of an instance that didn't occur in the generic, so the recheck cannot
+   -- fail and we cannot test 6.1.1(17.2/4) for this rule.
+
+   generic
+      type Der is new Con1 with private;
+   package Gen4 is
+      type T04 is new Con1 with private;
+
+      function Present (Obj : T04) return Natural;
+
+      overriding
+      function Get_Count (Obj : T04) return Natural
+         renames Present;                                    -- ERROR: {1:7;1}
+         -- Note: Present has a class-wide precondition of True, but
+         -- Get_Count has a class-wide precondition of Is_Young.
+   private
+      type T04 is new Con1 with null record;
+   end Gen4;
+
+   generic
+      type Der is new Con1 with private;
+   package Gen5 is
+      type T05 is new Con1 with private;
+
+   private
+      type T05 is new Con1 with null record;
+
+      function Present (Obj : T05) return Natural;
+
+      overriding
+      function Get_Count (Obj : T05) return Natural
+         renames Present;                                    -- ERROR: {1:7;1}
+         -- Note: Present has a class-wide precondition of True, but
+         -- Get_Count has a class-wide precondition of Is_Young.
+   end Gen5;
 
 end B611019;
 

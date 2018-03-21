@@ -74,7 +74,7 @@
 --     16 Nov 2016   RLB   Corrected two test cases. Redid some test cases
 --                         to ensure that they are not covered by any proposed
 --                         change to these rules.
---
+--     20 Jan 2016   RLB   Corrected error location code.
 --!
 package B611014 is
 
@@ -237,7 +237,7 @@ package B611014 is
        with Post => (N in 0 | Table(N)'Old);               -- ERROR: E4 {31;2}
 
     procedure P41 (N : in out Natural)
-       with Post => (N in Table(N)'Old | 1);               -- OK. E4 {27:6}
+       with Post => (N in Table(N)'Old | 1);               -- OK. E4 {27;6}
 
     procedure P42 (R : in out Rec)
        with Post => (R.D in True | (R.N'Old = 4));         -- ERROR: E1 {37;7}
@@ -249,7 +249,7 @@ package B611014 is
        with Post => (N in 0 | Fun(N)'Old);                 -- ERROR: E5 {31;2}
 
     procedure P45 (N : in out Natural)
-       with Post => (N in Fun(N)'Old | 1);                 -- OK. E5 {27:6}
+       with Post => (N in Fun(N)'Old | 1);                 -- OK. E5 {27;6}
 
     procedure R41 (Obj : in Root; N : in out Natural)
        with Post'Class => (Obj.N in 1 | Table(Glob)'Old);  -- ERROR: E3 {41;2}

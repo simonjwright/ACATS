@@ -48,6 +48,7 @@
 --      22 Mar 16   JAC     Initial pre-release version.
 --      24 Mar 16   RLB     Renamed so all test parts have the same name.
 --      28 Mar 16   RLB     Added root event subtests.
+--      25 Jan 17   RLB     Corrected the name of the main subprogram.
 --
 --!
 with C611B010;
@@ -55,7 +56,7 @@ with C611B010.Child;
 with Report;
 with F611B00, Ada.Tags;
 
-procedure C611B01 is
+procedure C611B012 is
 
    pragma Assertion_Policy (Check);
 
@@ -162,4 +163,4 @@ begin
 
    Report.Result;
 
-end C611B01;
+end C611B012;
