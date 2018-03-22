@@ -54,20 +54,21 @@
 -- CHANGE HISTORY:
 --    29 Nov 2004   PHL   Initial version.
 --    26 Mar 2007   RLB   Created ACATS version from submitted test.
+--    06 Feb 2018   RLB   Revised to use Possible Error to better reflect
+--                        intent of test. Added error location indicators.
 --
 --!
 
-limited with BA12010.Pak3;   -- OPTIONAL ERROR: The first error below could
-                             --                 reported here instead.
+limited with BA12010.Pak3;   -- POSSIBLE ERROR: [Set2] {1;1}
 with BA12010.Renpak21;
 with BA12010.Renpak31;
-use type BA12010.Renpak31.T; -- ERROR: A use clause that names an entity
-                             --        declared in a package mentioned
-                             --        by a previous limited with.
+use type BA12010.Renpak31.T; -- POSSIBLE ERROR: [Set2] {1;1} A use clause that
+                             --    names an entity declared in a package
+                             --    mentioned by a previous limited with.
 use BA12010.Renpak21;
-limited with BA12010.Pak2;   -- ERROR: Limited with clause in same context
-                             --        clause as a use clause naming an entity
-                             --        in the package Pak2 (a rename of the
-                             --        child package Pak21)
+limited with BA12010.Pak2;   -- ERROR: {1;1} Limited with clause in same
+                             --        context clause as a use clause naming an
+                             --        entity in the package Pak2 (a rename of
+                             --        the child package Pak21)
 package BA12010.Pak6 is
 end BA12010.Pak6;

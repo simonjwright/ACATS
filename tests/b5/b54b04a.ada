@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -30,12 +30,14 @@
 -- PART  I :  STATIC SUBRANGES OF STATIC RANGES
 
 
--- RM 01/29/80
--- SPS 2/2/83
+--     RM  01/29/80
+--     SPS 02/02/83
+--     RLB 02/08/18 ADDED ERROR LOCATION INDICATORS TO REFLECT COMMON
+--                  ERROR REPORTING STRATEGIES.
 
 
 PROCEDURE  B54B04A  IS
-BEGIN                                                       
+BEGIN
 
      -- THE TEST CASES APPEAR IN THE FOLLOWING ORDER:
      --
@@ -49,7 +51,7 @@ BEGIN
 
 
      DECLARE   --  STATIC SUBRANGES OF STATIC RANGES
-          
+
           SUBTYPE  STAT  IS  INTEGER RANGE 1..5 ;
           TYPE  ENUMERATION  IS  ( FIRST,SECOND,THIRD,FOURTH,FIFTH );
           I   : INTEGER RANGE 1..5   := 2 ;
@@ -66,7 +68,7 @@ BEGIN
                     CASE  I  IS
                          WHEN  1 | 3  =>  NULL ;
                          WHEN  2 | 4  =>  NULL ;
-                    END CASE;  -- ERROR: MISSING 'OTHERS' I A
+                    END CASE;  -- ERROR: {3:21;1} MISSING 'OTHERS' I A
 
                WHEN OTHERS  =>
                     NULL ;
@@ -78,7 +80,7 @@ BEGIN
 
                CASE  BOOL  IS
                     WHEN  TRUE   =>  NULL ;
-               END CASE;  -- ERROR: MISSING 'OTHERS' I A
+               END CASE;  -- ERROR: {2:16;1} MISSING 'OTHERS' I A
 
           END IF;
 
@@ -88,7 +90,7 @@ BEGIN
                WHEN  2  =>
                     CASE  STAT'( 2 )  IS
                          WHEN  5 | 2..4  =>  NULL ;
-                    END CASE;  -- ERROR: MISSING 'OTHERS' I C
+                    END CASE;  -- ERROR: {2:21;1} MISSING 'OTHERS' I C
 
                WHEN OTHERS  =>
                     NULL ;
@@ -102,7 +104,7 @@ BEGIN
                     CASE  STAT( J )  IS
                          WHEN  5 | 2..3  =>  NULL ;
                          WHEN  1         =>  NULL ;
-                    END CASE;  -- ERROR: MISSING 'OTHERS' I D
+                    END CASE;  -- ERROR: {3:21;1} MISSING 'OTHERS' I D
 
                WHEN OTHERS  =>
                     NULL ;

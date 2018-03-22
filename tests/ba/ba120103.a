@@ -54,13 +54,16 @@
 -- CHANGE HISTORY:
 --    29 Nov 2004   PHL   Initial version.
 --    26 Mar 2007   RLB   Created ACATS version from submitted test.
+--    06 Feb 2018   RLB   Added error location indicators.
 --
 --!
 
-limited with BA12010.Pak2.Pak21; -- OK.
-limited with BA12010.Pak3; -- ERROR: A limited with clause in the scope of a
-                           -- a nonlimited with clause that mentions the unit.
-limited with BA12010.Pak4; -- ERROR: A limited with clause in the scope of a
-                           -- a nonlimited with clause that mentions the unit.
+limited with BA12010.Pak2.Pak21; -- OK. {1;1}
+limited with BA12010.Pak3; -- ERROR: {1;1} A limited with clause in the scope
+                           --    of a nonlimited with clause that mentions
+                           --    the unit.
+limited with BA12010.Pak4; -- ERROR: {1;1} A limited with clause in the scope
+                           --    of a nonlimited with clause that mentions
+                           --    the unit.
 package BA12010.Pak8.Pak81 is
 end BA12010.Pak8.Pak81;

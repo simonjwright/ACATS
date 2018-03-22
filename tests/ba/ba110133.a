@@ -52,11 +52,13 @@
 -- CHANGE HISTORY:
 --      21 Mar 2007   RLB   Created test from submitted test.
 --      17 Aug 2007   RLB   Removed unintentionally duplicated unit.
+--      13 Feb 2018   RLB   Added error location indicators.
 --
 --!
 
 with BA11013A.Child3;
-private separate (BA11013A.Child1) -- ERROR: subunit cannot be declared private.
+private separate (BA11013A.Child1) -- ERROR: {1}
+                                   -- Subunit cannot be declared private.
 procedure Stub is
 begin
     null;

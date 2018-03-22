@@ -51,11 +51,12 @@
 --
 -- CHANGE HISTORY:
 --      21 Mar 2007   RLB   Created test from submitted test.
+--      13 Feb 2018   RLB   Added error location indicators.
 --
 --!
 
-private package body BA11013A.Child3 is -- ERROR: body cannot be declared
-                                        --        private.
+private package body BA11013A.Child3 is -- ERROR: {1} Body cannot be declared
+                                        --            private.
     procedure Dummy is
     begin
         null;

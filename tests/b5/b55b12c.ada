@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -34,9 +34,11 @@
 --    L  AND  R  ARE NON-STATIC EXPRESSIONS,  ST  IS A STATIC SUBTYPE.
 
 
--- RM 02/03/80
--- SPS 3/2/83
--- JBG 7/1/83
+--     RM  02/03/80
+--     SPS 03/02/83
+--     JBG 07/01/83
+--     RLB 02/08/18 ADDED ERROR LOCATION INDICATORS TO REFLECT COMMON
+--                  ERROR REPORTING STRATEGIES.
 
 PROCEDURE  B55B12C  IS
 
@@ -54,9 +56,9 @@ BEGIN
 
           I_VAR  :  STAT   ;
           D_VAR  :  NEW_STAT ;
-          C_VAR  :  STAT_C ;  
-          B_VAR  :  STAT_B ;  
-          E_VAR  :  STAT_E ;  
+          C_VAR  :  STAT_C ;
+          B_VAR  :  STAT_B ;
+          E_VAR  :  STAT_E ;
 
      BEGIN
 
@@ -67,7 +69,7 @@ BEGIN
                CASE  I  IS
                     WHEN  INTEGER'FIRST..-8  =>  NULL ;
                     WHEN  -6..INTEGER'LAST   =>  NULL ;
-               END CASE;   -- ERROR: MISSING 'OTHERS'
+               END CASE;   -- ERROR: {3:16;1} MISSING 'OTHERS'
 
           END LOOP;
 
@@ -78,7 +80,7 @@ BEGIN
                CASE  I  IS
                     WHEN  NEW_STAT'BASE'FIRST..-8  =>  NULL ;
                     WHEN  -6..NEW_STAT'BASE'LAST   =>  NULL ;
-               END CASE;   -- ERROR: MISSING 'OTHERS'
+               END CASE;   -- ERROR: {3:16;1} MISSING 'OTHERS'
 
           END LOOP;
 
@@ -86,7 +88,7 @@ BEGIN
 
                CASE  I  IS
                     WHEN  1..10 => NULL;
-               END CASE;   -- ERROR: MISSING 'OTHERS'
+               END CASE;   -- ERROR: {2:16;1} MISSING 'OTHERS'
 
           END LOOP;
 
@@ -95,7 +97,7 @@ BEGIN
                CASE  I  IS
                     WHEN  INTEGER'FIRST..-8  =>  NULL ;
                     WHEN  -6..INTEGER'LAST   =>  NULL ;
-               END CASE;   -- ERROR: MISSING 'OTHERS'
+               END CASE;   -- ERROR: {3:16;1} MISSING 'OTHERS'
 
           END LOOP;
 
@@ -105,7 +107,7 @@ BEGIN
                CASE  I  IS
                     WHEN  INTEGER'FIRST..-8  =>  NULL ;
                     WHEN  -6..INTEGER'LAST   =>  NULL ;
-               END CASE;   -- ERROR: MISSING 'OTHERS'
+               END CASE;   -- ERROR: {3:16;1} MISSING 'OTHERS'
 
           END LOOP;
 
@@ -119,7 +121,7 @@ BEGIN
                     WHEN  A..F  =>  NULL ;
                     WHEN  H..N  =>  NULL ;
 
-               END CASE;   -- ERROR: MISSING 'OTHERS'
+               END CASE;   -- ERROR: {5:16;1} MISSING 'OTHERS'
 
           END LOOP;
 
@@ -132,7 +134,7 @@ BEGIN
 
                     WHEN  FALSE  =>  NULL ;
 
-               END CASE;   -- ERROR: MISSING 'OTHERS'
+               END CASE;   -- ERROR: {4:16;1} MISSING 'OTHERS'
 
           END LOOP;
 
@@ -144,7 +146,7 @@ BEGIN
                CASE  I  IS
                     WHEN  CHARACTER'FIRST..'F'  =>  NULL ;
                     WHEN  'H'..CHARACTER'LAST   =>  NULL ;
-               END CASE;   -- ERROR: MISSING 'OTHERS'
+               END CASE;   -- ERROR: {3:16;1} MISSING 'OTHERS'
 
           END LOOP;
 

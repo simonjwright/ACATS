@@ -51,6 +51,8 @@
 --                          tested (and the other similar test). Updated
 --                          the objective to reflect terminology changes in
 --                          the Amendment.
+--      06 Feb 18   RLB     Added error location indicators.
+--
 --!
 
 package BDD2003_0 is
@@ -191,56 +193,58 @@ begin
    -- attribute for a task type, limited type, or composite type containing
    -- a limited type is rejected.
 
-   Non_Limited_Type'Write (Str_Access, Non_Limited_Object);         -- OK.
+   Non_Limited_Type'Write (Str_Access, Non_Limited_Object);  -- OK. {4;1}
 
-   Task_Type'Write (Str_Access,  Task_Object);                      -- ERROR:
+   Task_Type'Write (Str_Access,  Task_Object);               -- ERROR: {4;1}
                                                   -- Task_Type is limited.
 
-   BDD2003_0.Limited_Type'Write (Str_Access, Limited_Object);       -- ERROR:
+   BDD2003_0.Limited_Type'Write (Str_Access, Limited_Object);-- ERROR: {4;1}
                                                   -- Limited_Type is limited.
 
-   Derived_Limited_Type'Write (Str_Access, Derived_Limited_Object); -- ERROR:
+   Derived_Limited_Type'Write
+     (Str_Access, Derived_Limited_Object);                   -- ERROR: {1:4;1}
                                                   -- Derived_Limited _Type is
                                                   -- limited.
 
-   Non_Lim_Comp_Type'Write (Str_Access, Non_Lim_Comp_Object);       -- OK.
+   Non_Lim_Comp_Type'Write (Str_Access, Non_Lim_Comp_Object); -- OK. {4;1}
 
-   Comp_With_Lim_Type'Write (Str_Access, Composite_Object1);        -- ERROR:
+   Comp_With_Lim_Type'Write (Str_Access, Composite_Object1); -- ERROR: {4;1}
                                                   -- Type contains a component
                                                   -- of a limited type.
 
-   Comp_With_Der_Lim_Type'Write (Str_Access, Composite_Object2);    -- ERROR:
+   Comp_With_Der_Lim_Type'Write (Str_Access, Composite_Object2);-- ERROR: {4;1}
                                                   -- Type contains a component
                                                   -- of a type derived from a
                                                   -- limited type.
 
-   Composite_With_Task_Type'Write (Str_Access, Composite_Object3);  -- ERROR:
+   Composite_With_Task_Type'Write
+     (Str_Access, Composite_Object3);                        -- ERROR: {1:4;1}
                                                   -- Type contains a component
                                                   -- of a task type.
 
-   Comp_With_Acc_Disc'Write (Str_Access, Composite_Object4);        -- ERROR:
+   Comp_With_Acc_Disc'Write (Str_Access, Composite_Object4); -- ERROR: {4;1}
                                                   -- Attr. ref is illegal if
                                                   -- type is limited.
 
-   Protected_Type'Write (Str_Access, A_Protected_Object);           -- ERROR:
+   Protected_Type'Write (Str_Access, A_Protected_Object);    -- ERROR: {4;1}
                                                   -- Protected_Type is limited.
 
-   BDD2003_0.Limited_Type'Write (Str_Access, Limited_Object);       -- ERROR:
+   BDD2003_0.Limited_Type'Write (Str_Access, Limited_Object);-- ERROR: {4;1}
                                                   -- Limited_Type is limited.
 
-   BDD2003_0.Root_Type'Write (Str_Access, Root_Object);             -- ERROR:
+   BDD2003_0.Root_Type'Write (Str_Access, Root_Object);      -- ERROR: {4;1}
                                                   -- Root_Type is limited.
 
-   BDD2003_0.Extended_Type'Write (Str_Access, Extended_Object);     -- ERROR:
+   BDD2003_0.Extended_Type'Write (Str_Access, Extended_Object);-- ERROR: {4;1}
                                                   -- Extended_Type is limited.
 
    BDD2003_0.Root_With_Limited_Comp_Type'Write
-     (Str_Access, Root_With_LComp_Object);                          -- ERROR:
+     (Str_Access, Root_With_LComp_Object);                   -- ERROR: {1:4;1}
                                                   -- Type is extended with
                                                   -- limited component.
 
    BDD2003_0.Extended_With_Limited_Comp_Type'Write
-     (Str_Access, Ext_With_LComp_Object);                           -- ERROR:
+     (Str_Access, Ext_With_LComp_Object);                    -- ERROR: {1:4;1}
                                                   -- Type is extended with
                                                   -- limited component.
 
@@ -251,57 +255,58 @@ begin
    -- attribute for a task type, limited type, or composite type containing
    -- a limited type is rejected.
 
-   Non_Limited_Type'Read (Str_Access, Non_Limited_Object);          -- OK.
+   Non_Limited_Type'Read (Str_Access, Non_Limited_Object);   -- OK. {4;1}
 
-   Task_Type'Read (Str_Access,  Task_Object);                       -- ERROR:
+   Task_Type'Read (Str_Access,  Task_Object);                -- ERROR: {4;1}
                                                   -- Task_Type is limited.
 
-   BDD2003_0.Limited_Type'Read (Str_Access, Limited_Object);        -- ERROR:
+   BDD2003_0.Limited_Type'Read (Str_Access, Limited_Object); -- ERROR: {4;1}
                                                   -- Limited_Type is limited.
 
-   Derived_Limited_Type'Read (Str_Access, Derived_Limited_Object);  -- ERROR:
+   Derived_Limited_Type'Read
+     (Str_Access, Derived_Limited_Object);                   -- ERROR:{1:4;1}
                                                   -- Derived_Limited_Type
                                                   -- is limited.
 
-   Non_Lim_Comp_Type'Read (Str_Access, Non_Lim_Comp_Object);        -- OK.
+   Non_Lim_Comp_Type'Read (Str_Access, Non_Lim_Comp_Object); -- OK. {4;1}
 
-   Comp_With_Lim_Type'Read (Str_Access, Composite_Object1);         -- ERROR:
+   Comp_With_Lim_Type'Read (Str_Access, Composite_Object1);  -- ERROR: {4;1}
                                                   -- Type contains a component
                                                   -- of a limited type.
 
-   Comp_With_Der_Lim_Type'Read (Str_Access, Composite_Object2);     -- ERROR:
+   Comp_With_Der_Lim_Type'Read (Str_Access, Composite_Object2); -- ERROR: {4;1}
                                                   -- Type contains a component
                                                   -- of a type derived from
                                                   -- a limited type.
 
-   Composite_With_Task_Type'Read (Str_Access, Composite_Object3);   -- ERROR:
+   Composite_With_Task_Type'Read (Str_Access, Composite_Object3);-- ERROR:{4;1}
                                                   -- Type contains a component
                                                   -- of a task type.
 
-   Comp_With_Acc_Disc'Read (Str_Access, Composite_Object4);         -- ERROR:
+   Comp_With_Acc_Disc'Read (Str_Access, Composite_Object4);  -- ERROR: {4;1}
                                                   -- Attr. ref is illegal if
                                                   -- type is limited.
 
-   Protected_Type'Read (Str_Access, A_Protected_Object);            -- ERROR:
+   Protected_Type'Read (Str_Access, A_Protected_Object);     -- ERROR: {4;1}
                                                   -- Protected_Type is limited.
 
 
-   BDD2003_0.Limited_Type'Read (Str_Access, Limited_Object);        -- ERROR:
+   BDD2003_0.Limited_Type'Read (Str_Access, Limited_Object); -- ERROR: {4;1}
                                                   -- Limited_Type is limited.
 
-   BDD2003_0.Root_Type'Read (Str_Access, Root_Object);              -- ERROR:
+   BDD2003_0.Root_Type'Read (Str_Access, Root_Object);       -- ERROR: {4;1}
                                                   -- Root_Type is limited.
 
-   BDD2003_0.Extended_Type'Read (Str_Access, Extended_Object);      -- ERROR:
+   BDD2003_0.Extended_Type'Read (Str_Access, Extended_Object); -- ERROR: {4;1}
                                                   -- Extended_Type is limited.
 
    BDD2003_0.Root_With_Limited_Comp_Type'Read
-     (Str_Access, Root_With_LComp_Object);                          -- ERROR:
+     (Str_Access, Root_With_LComp_Object);                   -- ERROR: {1:4;1}
                                                   -- Type is extended with
                                                   -- limited component.
 
    BDD2003_0.Extended_With_Limited_Comp_Type'Read
-     (Str_Access, Ext_With_LComp_Object);                           -- ERROR:
+     (Str_Access, Ext_With_LComp_Object);                    -- ERROR: {1:4;1}
                                                   -- Type is extended with
                                                   -- limited component.
 
@@ -362,8 +367,8 @@ begin
       -- attribute_definition_clauses, an attribute reference to the 'Read
       -- or 'Write attributes is legal.
 
-      Tagged_Limited_Type'Read  (Str_Access, New_Limited_Object);        -- OK.
-      Tagged_Limited_Type'Write (Str_Access, New_Limited_Object);        -- OK.
+      Tagged_Limited_Type'Read  (Str_Access, New_Limited_Object);  -- OK. {7;1}
+      Tagged_Limited_Type'Write (Str_Access, New_Limited_Object);  -- OK. {7;1}
 
    end;
 

@@ -107,6 +107,8 @@
 --      3 Feb 2017   RLB  Added manual grading to missing binding.
 --      6 Feb 2017   RLB  Corrected the single error cases to include errors
 --                        with no positions.
+--      9 Feb 2017   RLB  Corrected so Annex C Rqmt are properly counted.
+--     22 Dec 2017   RLB  Fixed symbol for manual grading of missing set.
 
 with Ada.Command_Line;
 with Ada.Text_IO;
@@ -1331,7 +1333,7 @@ procedure Grade is
                         elsif Grading_Data.Summary_of_Tests(Sum).Kind =
                            Test_Summary.Annex_C_Requirement then
                            Expected(Ev) := True;
-                           NA_From_Expected_Compile_Time_Error := True;
+                           NA_From_Annex_C_Requirement := True;
                            if Noise_Level /= Quiet then
                               Message_For_Event (Kind => NA,
                                                  Item => Sum,
@@ -1574,7 +1576,7 @@ procedure Grade is
                               Grading_Data.Manual_Grading_Requested_for_Test (
                                 Grading_Data.Summary_of_Tests(Sum).Source_Name)
                                     then
-                              Message_For_Event (Kind => Failed,
+                              Message_For_Event (Kind => Special_Action,
                                                  Item => Sum,
                                                  Event=> 0, -- No event.
                                                  Text =>

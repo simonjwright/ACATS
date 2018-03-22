@@ -60,6 +60,9 @@
 --                          consideration).
 --      14 Mar 07   RLB     Replaced case (c) as OK; it is clearly allowed
 --                          by 3.10.2(32/2).
+--      09 Feb 18   RLB     Removed tabs to bring into compliance with test
+--                          standards. Added error location indicators.
+--
 --!
 
 package B3A2009_0 is
@@ -116,10 +119,10 @@ package body B3A2009 is
       end Designated;
 
    begin
-      AForm := Designated'Access;                                     -- ERROR:
+      AForm := Designated'Access;                              -- ERROR: {7;1}
                 -- Type of Designated'Access not declared in this generic unit.
 
-      ABody := Designated'Access;                                     -- OK.
+      ABody := Designated'Access;                              -- OK. {7;1}
    end Gen_Procedure;
 
 
@@ -140,16 +143,16 @@ package body B3A2009 is
          type Acc_GenOp is access procedure;
          AOp : Acc_GenOp;
       begin
-         AOut := Designated'Access;                                   -- ERROR:
+         AOut := Designated'Access;                            -- ERROR: {7;1}
                 -- Type of Designated'Access not declared in this generic unit.
 
-         AForm := Designated'Access;                                  -- ERROR:
+         AForm := Designated'Access;                           -- ERROR: {7;1}
                 -- Type of Designated'Access not declared in this generic unit.
 
-	 ADecl := Designated'Access;                                  -- OK.
+         ADecl := Designated'Access;                           -- OK. {7;1}
 
-         ABody := Designated'Access;                                  -- OK.
-         AOp   := Designated'Access;                                  -- OK.
+         ABody := Designated'Access;                           -- OK. {7;1}
+         AOp   := Designated'Access;                           -- OK. {7;1}
 
       end Some_Operation;
 
