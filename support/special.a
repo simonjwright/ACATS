@@ -42,6 +42,11 @@
 -- CHANGE HISTORY:
 --     20 May 2016   RLB  Split from Summary tool.
 --     22 May 2016   RLB  Added Do_Special.
+--     23 Mar 2017   RLB  Added test BA21005 to the optional unit list.
+--     13 Feb 2018   RLB  Added additional tests to the optional unit list.
+--                        Also, fixed some comments.
+--     15 Feb 2018   RLB  Added a new test to the optional unit list.
+--     13 Jun 2018   RLB  Added some existing tests to the optional unit list.
 
 with Trace, Test_Summary, Ada.Text_IO;
 package Special_Handling is
@@ -51,9 +56,9 @@ package Special_Handling is
                 Unit_Name   : Test_Summary.Comp_Unit_Name;
                 Unit_Kind   : Test_Summary.Compilation_Unit_Kinds)
       return Boolean;
-      -- Returns True if the test in the source file Source_Name is
-      -- has an optional main according to the Optional_Unit_List.
-      -- returns False otherwise.
+      -- Returns True if the test in the source file Source_Name
+      -- has an optional unit Unit_Name with Unit_Kind according to the
+      -- Optional_Unit_List. Returns False otherwise.
 
 
    type Special_Kind is (Not_Special, No_Parse, Fully_Manual);
@@ -139,7 +144,56 @@ package body Special_Handling is
          10 => (Source_Name => "B611004.A   ",
                 Unit_Name   => "B611004 " &
                                (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         11 => (Source_Name => "BA210057.AM ",
+                Unit_Name   => "BA210057" &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         12 => (Source_Name => "BA1001D.ADA ",
+                Unit_Name   => "BA1001D " &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         13 => (Source_Name => "BA1020F2.ADA",
+                Unit_Name   => "BA1020F2M" &
+                               (10..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         14 => (Source_Name => "BA110134.AM ",
+                Unit_Name   => "BA11013 " &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         15 => (Source_Name => "BA110134.AM ",
+                Unit_Name   => "BA11013A" &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Package_Body),
+         16 => (Source_Name => "BA140016.A  ",
+                Unit_Name   => "BA14001H" &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         17 => (Source_Name => "BA140018.A  ",
+                Unit_Name   => "BA14001A.DAUGHTER" &
+                               (18..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Function_Body),
+         18 => (Source_Name => "BA140024.A  ",
+                Unit_Name   => "BA14002H" &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         19 => (Source_Name => "B854001.A   ",
+                Unit_Name   => "B854001 " &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         20 => (Source_Name => "BDD2002.A   ",
+                Unit_Name   => "BDD2002 " &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         21 => (Source_Name => "B370001.A   ",
+                Unit_Name   => "B370001 " &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         22 => (Source_Name => "B7400032.AM ",
+                Unit_Name   => "B7400032" &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
                 Unit_Kind   => Test_Summary.Procedure_Body));
+
        -- Note: This list is maintained by the ACAA as part of the ACATS.
        -- Please report any units that should be on this list but are not to
        -- the ACAA at agent@ada-auth.org.
@@ -155,9 +209,9 @@ package body Special_Handling is
                 Unit_Name   : Test_Summary.Comp_Unit_Name;
                 Unit_Kind   : Test_Summary.Compilation_Unit_Kinds)
       return Boolean is
-      -- Returns True if the test in the source file Source_Name is
-      -- has an optional main according to the Optional_Unit_List.
-      -- returns False otherwise.
+      -- Returns True if the test in the source file Source_Name
+      -- has an optional unit Unit_Name with Unit_Kind according to the
+      -- Optional_Unit_List. Returns False otherwise.
       use type Test_Summary.Compilation_Unit_Kinds;
    begin
       for Man in 1 .. Last_Optional_Unit loop

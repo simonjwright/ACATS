@@ -1,4 +1,4 @@
--- B7400032.AM
+-- B8530014.A
 --
 --                             Grant of Unlimited Rights
 --
@@ -30,31 +30,52 @@
 --    assessment of a language processor. This test suite should not be used
 --    to make claims of conformance unless used in accordance with
 --    ISO/IEC 18009 and any applicable ACAA procedures.
+--
 --*
 --
 -- OBJECTIVE:
---     See B7400030.A.
+--      See B8530010.A.
 --
--- TEST DESCRIPTION
---     See B7400030.A.
+-- TEST DESCRIPTION:
+--      See B8530010.A.
 --
 -- TEST FILES:
---     This test consists of the following files:
---         B7400030.A
---         B7400031.A
---      -> B7400032.AM
+--      This test consists of the following files:
+--         B8530010.A
+--      -> B8530011.A
+--         B8530014.A
+--         B8530014.A
+--         B8530014.A
+--
+-- PASS/FAIL CRITERIA:
+--      See B8530010.A.
 --
 -- CHANGE HISTORY:
---      30 Apr 07   RLB   Created from ACATS 2.6 test.
---      13 Jun 18   RLB   Corrected name of (optional) main subprogram,
---                        added error location indicators.
+--    08 Jun 2018  RLB  Created test.
 --
 --!
 
-with B7400030;
-with B7400031; -- OPTIONAL ERROR: {1;1} Compilation unit has errors.
-procedure B7400032 is
-  -- Main subprogram.
+with B853001B, B8530012;
+procedure B8530014 is
+
+   -- We're not in the scope of any kind of clause for the renamed package.
+
+   type Fooey is access B853001B.Ren_A.Huey;               -- ERROR: {25;1}
+
+   type Blooey is access B853001B.Ren_A_Inner.Dewey;       -- ERROR: {26;1}
+
+   package Bad_Ren renames B853001B.Ren_A;                 -- ERROR: {28;1}
+
+   Max : constant := 52;
+
+   PI : constant := 3.14159;
+
 begin
-    null;
-end B7400032;
+   if Max in B853001B.Ren_A.Huey then                      -- ERROR: {14;5}
+      B8530012.V := Max;                                   -- OK. {7;1}
+   elsif PI in B853001B.Ren_A_Innermost.Louie then         -- ERROR: {16;5}
+      null;
+   else
+      null;
+   end if;
+end B8530014;

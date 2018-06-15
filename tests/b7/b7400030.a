@@ -59,7 +59,8 @@
 --     presence of the full constant declaration that makes it illegal.
 --
 --     We don't test completions given in a body, as those would look
---     identical to completions that are missing altogether (tested by B740001).
+--     identical to completions that are missing altogether (tested by
+--     B740001).
 --
 -- TEST FILES:
 --      This test consists of the following files:
@@ -68,8 +69,8 @@
 --         B7400032.AM
 --
 -- PASS/FAIL CRITERIA:
---     Files B7400030.A and B7400031.A contain errors.
---     All errors in these files must be detected to pass the test.
+--     Files B7400030.A and B7400031.A contain errors. All errors in
+--     these files must be detected to pass the test.
 --
 --     Files B7400030.A and B7400031.A contain several lines
 --     marked POSSIBLE ERROR: [Setn].
@@ -78,12 +79,19 @@
 --     at least one of the lines labeled POSSIBLE ERROR: [Set1] for an
 --     implementation to pass.
 --
+--     Compiling the main subprogram file B7400032.AM is optional.
+--
 -- CHANGE HISTORY:
 --      30 Apr 07  RLB   Created from ACATS 2.6 test.
 --      17 Aug 07  RLB   Moved error indications based on implementer comments.
 --      06 Sep 07  RLB   Added more flexibility in error indications.
 --      29 May 08  RLB   Updated Pass/Fail criteria.
 --      29 Jun 16  RLB   Fixed so tools don't pick up markers in criteria.
+--      13 Jun 18  RLB   Updated Pass/Fail criteria to note that processing
+--                       the last source file is optional (it is unnecessary
+--                       to test the objective). Added error location
+--                       indicators.
+
 --!
 package B7400030 is
 
@@ -91,13 +99,13 @@ package B7400030 is
 
    type List_Of_Priv_Comp is array (Positive range <>) of Priv_Comp;
 
-   Null_List : constant List_Of_Priv_Comp;                         -- OK.
+   Null_List : constant List_Of_Priv_Comp;                 -- OK. {4;1}
 
    type Rec is record
       C : Integer;
    end record;
 
-   CRec : constant Rec;                                            -- OK.
+   CRec : constant Rec;                                    -- OK. {4;1}
 
    procedure Dummy;
 
@@ -113,39 +121,41 @@ end B7400030;
 
 package body B7400030 is
 
-   Null_List_Body : constant List_Of_Priv_Comp; -- POSSIBLE ERROR: [Set1]
+   Null_List_Body : constant List_Of_Priv_Comp; -- POSSIBLE ERROR: [Set1] {4;1}
                                            --   Deferred constant in body.
-   CRec_Body : constant Rec;               -- POSSIBLE ERROR: [Set2]
+   CRec_Body : constant Rec;               -- POSSIBLE ERROR: [Set2] {4;1}
                                            --   Deferred constant in body.
 
    Null_List_Body : constant List_Of_Priv_Comp :=
-      (1 .. 0 => Anything);                -- POSSIBLE ERROR: [Set1] Completion
-                                           -- of deferred constant in body.
+      (1 .. 0 => Anything);                -- POSSIBLE ERROR: [Set1] {1:4;1}
+                                           -- Completion of deferred constant
+                                           -- in body.
 
-   CRec_Body : constant Rec := (C => 12);  -- POSSIBLE ERROR: [Set2] Completion
-                                           -- of deferred constant in body.
+   CRec_Body : constant Rec := (C => 12);  -- POSSIBLE ERROR: [Set2] {4;1}
+                                           -- Completion of deferred constant
+                                           -- in body.
 
 
    procedure Dummy is
-      CRec_Sub : constant Rec;             -- POSSIBLE ERROR: [Set3]
+      CRec_Sub : constant Rec;             -- POSSIBLE ERROR: [Set3] {7;1}
                                            -- Deferred constant in subprogram.
 
-      CRec_Sub : constant Rec := (C => 18);-- POSSIBLE ERROR: [Set3] Completion
-                                           -- of deferred constant in
-                                           -- subprogram.
+      CRec_Sub : constant Rec := (C => 18);-- POSSIBLE ERROR: [Set3] {7;1}
+                                           -- Completion of deferred constant
+                                           -- in subprogram.
       package Goofy is
          CRec_Nest : constant Rec;
       private
-         CRec_Nest : constant Rec := (C => 18); -- OK.
+         CRec_Nest : constant Rec := (C => 18); -- OK. {10;1}
       end Goofy;
    begin
       declare
-         CRec_Sub : constant Rec;              -- POSSIBLE ERROR: [Set4]
-                                               -- Deferred constant in block.
+         CRec_Sub : constant Rec;          -- POSSIBLE ERROR: [Set4] {10;1}
+                                           -- Deferred constant in block.
 
-         CRec_Sub : constant Rec := (C => 92); -- POSSIBLE ERROR: [Set4]
-                                               -- Completion of deferred
-                                               -- constant in block.
+         CRec_Sub : constant Rec := (C => 92);-- POSSIBLE ERROR: [Set4] {10;1}
+                                           -- Completion of deferred
+                                           -- constant in block.
       begin
          null;
       end;

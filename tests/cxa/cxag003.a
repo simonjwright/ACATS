@@ -54,8 +54,10 @@
 --     names in both upper and lower case.
 --
 -- CHANGE HISTORY:
---     04 Feb 2017  SJW  Drafted test.
---     05 Feb 2017  RLB  Strengthened test.
+--     04 Feb 2018  SJW  Drafted test.
+--     05 Feb 2018  RLB  Strengthened test.
+--     04 May 2018  RLB  Corrected Read_File to return immediately when the
+--                       file cannot be opened.
 --
 --!
 with Report;
@@ -168,6 +170,7 @@ procedure CXAG003 is
             if TC_Trace then
                Report.Comment ("Check file name = " & Name);
             end if;
+            return; -- File is not open, so we're done here (nothing to read).
       end;
 
       declare

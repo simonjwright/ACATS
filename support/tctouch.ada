@@ -98,11 +98,15 @@
 --     07 SEP 07   RLB     Added Validate_One_Of.
 --     23 JAN 14   RLB     Changed foundation id to reflect test suite version.
 --     28 FEB 14   RLB     Changed foundation id to reflect test suite version.
+--     19 MAR 18   RLB     Fixed to avoid repeating the "Trace Overflow"
+--                         message many times if there is broken implementation
+--                         of something. Changed the foundation id (previously
+--                         missed for ACATS 4.1).
 --
 --!
 
 package TCTouch is
-  Foundation_ID   : constant String := "TCTouch ACATS 4.0";
+  Foundation_ID   : constant String := "TCTouch ACATS 4.1";
   Max_Touch_Count : constant        := 80;
 
   procedure Assert    ( SB_True  : Boolean; Message : String );
@@ -163,6 +167,7 @@ package body TCTouch is
 
   Collection : String(1..Max_Touch_Count);
   Finger     : Natural := 0;
+  Overflow_Count : Natural := 0;
 
   procedure Touch ( A_Tag : Character ) is
   begin
@@ -170,7 +175,13 @@ package body TCTouch is
     Collection(Finger) := A_Tag;
   exception
     when Constraint_Error =>
-      Report.Failed("Trace Overflow: " & Collection);
+      if Overflow_Count = 0 then
+        Report.Failed("Trace Overflow: " & Collection);
+      end if;
+      if Overflow_Count <= Natural'Last - Max_Touch_Count then
+        Overflow_Count := Overflow_Count + Max_Touch_Count;
+      -- else the overflow count would overflow. :-)
+      end if;
       Finger := 0;
   end Touch;
 
@@ -193,11 +204,28 @@ package body TCTouch is
     end loop;
   end Sort_String;
 
+  procedure Check_Overflow is
+    -- Check and report on any overflow, clearing the overflow information
+    -- afterwards.
+  begin
+    if Overflow_Count > Max_Touch_Count then
+      if Overflow_Count > Natural'Last - Max_Touch_Count then
+        Report.Comment ("More than " & Natural'Image(Overflow_Count) &
+	  " excess Touch calls discarded");
+      else
+        Report.Comment (Natural'Image(Overflow_Count) &
+	  " excess Touch calls discarded");
+      end if;
+    end if;
+    Overflow_Count := 0;
+  end Check_Overflow;
+
   procedure Validate( Expected: String;
                       Message : String;
                       Order_Meaningful : Boolean := True) is
     Want : String(1..Expected'Length) := Expected;
   begin
+    Check_Overflow;
     if not Order_Meaningful then
       Sort_String( Want );
       Sort_String( Collection(1..Finger) );
@@ -220,6 +248,7 @@ package body TCTouch is
      -- If the null string is a legitimate result, it must be given
      -- first.
   begin
+    Check_Overflow;
     if Collection(1..Finger) = Expected_1 then
        Finger := 0;
        return; -- OK.

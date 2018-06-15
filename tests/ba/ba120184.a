@@ -1,4 +1,4 @@
--- B7400032.AM
+-- BA120184.A
 --
 --                             Grant of Unlimited Rights
 --
@@ -30,31 +30,41 @@
 --    assessment of a language processor. This test suite should not be used
 --    to make claims of conformance unless used in accordance with
 --    ISO/IEC 18009 and any applicable ACAA procedures.
+--
 --*
 --
 -- OBJECTIVE:
---     See B7400030.A.
+--    See BA120180.A.
 --
 -- TEST DESCRIPTION
---     See B7400030.A.
+--    See BA120180.A.
 --
 -- TEST FILES:
---     This test consists of the following files:
---         B7400030.A
---         B7400031.A
---      -> B7400032.AM
+--    This test consists of the following files:
+--        BA120180.A
+--        BA120181.A
+--        BA120182.A
+--        BA120183.A
+--     -> BA120184.A
+--        BA120185.A
+--        BA120186.A
+--        BA120187.A
+--
+-- PASS/FAIL CRITERIA:
+--    See BA120180.A.
 --
 -- CHANGE HISTORY:
---      30 Apr 07   RLB   Created from ACATS 2.6 test.
---      13 Jun 18   RLB   Corrected name of (optional) main subprogram,
---                        added error location indicators.
+--    22 May 2018   RLB   Created test from existing test BA12014.
 --
 --!
 
-with B7400030;
-with B7400031; -- OPTIONAL ERROR: {1;1} Compilation unit has errors.
-procedure B7400032 is
-  -- Main subprogram.
+private with BA12018_0.BA12018_1;
+procedure BA12018_T4 (X : in out BA12018_0.Rec) is -- ERROR: {34;4}
+                                         -- Used in subprogram specification
+    Z : Float := BA12018_0.BA12018_1.Func (92); -- OK. {18;5}
+
+    Temp : BA12018_0.Rec := ('G', 'B'); -- OK. {12;14}
+
 begin
-    null;
-end B7400032;
+    X := Temp;
+end BA12018_T4;
