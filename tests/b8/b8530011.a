@@ -1,4 +1,4 @@
--- B7400032.AM
+-- B8530011.A
 --
 --                             Grant of Unlimited Rights
 --
@@ -30,31 +30,44 @@
 --    assessment of a language processor. This test suite should not be used
 --    to make claims of conformance unless used in accordance with
 --    ISO/IEC 18009 and any applicable ACAA procedures.
+--
 --*
 --
 -- OBJECTIVE:
---     See B7400030.A.
+--      See B8530010.A.
 --
--- TEST DESCRIPTION
---     See B7400030.A.
+-- TEST DESCRIPTION:
+--      See B8530010.A.
 --
 -- TEST FILES:
---     This test consists of the following files:
---         B7400030.A
---         B7400031.A
---      -> B7400032.AM
+--      This test consists of the following files:
+--         B8530010.A
+--      -> B8530011.A
+--         B8530012.A
+--         B8530013.A
+--         B8530014.A
+--
+-- PASS/FAIL CRITERIA:
+--      See B8530010.A.
 --
 -- CHANGE HISTORY:
---      30 Apr 07   RLB   Created from ACATS 2.6 test.
---      13 Jun 18   RLB   Corrected name of (optional) main subprogram,
---                        added error location indicators.
+--    08 Jun 2018  RLB  Created test.
 --
 --!
 
-with B7400030;
-with B7400031; -- OPTIONAL ERROR: {1;1} Compilation unit has errors.
-procedure B7400032 is
-  -- Main subprogram.
-begin
-    null;
-end B7400032;
+limited with B853001A;
+package B853001B is
+
+   package Ren_A renames B853001A;                         -- OK. {4;1}
+
+   package Ren_A_Inner renames B853001A.Inner;             -- OK. {4;1}
+
+   package Ren_A_Innermost renames B853001A.Inner.Innermost;-- OK. {4;1}
+
+   -- We're in the immediate scope of the renames here.
+
+   type Gooey is access all Ren_A_Inner.Dewey;             -- OK. {4;1}
+
+   type Loopey is access all Ren_A.Huey;                   -- OK. {4;1}
+
+end B853001B;

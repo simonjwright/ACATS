@@ -1,4 +1,4 @@
--- B7400032.AM
+-- B8530010.A
 --
 --                             Grant of Unlimited Rights
 --
@@ -30,31 +30,54 @@
 --    assessment of a language processor. This test suite should not be used
 --    to make claims of conformance unless used in accordance with
 --    ISO/IEC 18009 and any applicable ACAA procedures.
+--
 --*
 --
 -- OBJECTIVE:
---     See B7400030.A.
+--    Check that the name of a renamed limited view of a package cannot be
+--    used outside of the scope of a with clause for the package or the
+--    immediate scope of the renaming.
 --
--- TEST DESCRIPTION
---     See B7400030.A.
+-- TEST DESCRIPTION:
+--    The test checks illegal uses of names by 8.5.3(3.1/2).
 --
+--    For that to happen, we need a package A that is limited withed into a
+--    second package B, and then the second package is with into a third
+--    package C that does not with A (in any way). If B contains renames of
+--    and A nested packages of A, the renames cannot be referenced in C.
+--
+--
+--    In this case, we try C being a package specification as well as the
+--    main subprogram. Since a limited with only makes types and packages
+--    visible, that's all we put in package A.
+
 -- TEST FILES:
---     This test consists of the following files:
---         B7400030.A
---         B7400031.A
---      -> B7400032.AM
+--      This test consists of the following files:
+--      -> B8530010.A
+--         B8530011.A
+--         B8530012.A
+--         B8530013.A
+--         B8530014.A
+--
+-- PASS/FAIL CRITERIA:
+--      Files B8530013.A and B8530014.A contain errors. All errors in these
+--      files must be detected to pass the test.
 --
 -- CHANGE HISTORY:
---      30 Apr 07   RLB   Created from ACATS 2.6 test.
---      13 Jun 18   RLB   Corrected name of (optional) main subprogram,
---                        added error location indicators.
+--    08 Jun 2018  RLB  Created test.
 --
 --!
 
-with B7400030;
-with B7400031; -- OPTIONAL ERROR: {1;1} Compilation unit has errors.
-procedure B7400032 is
-  -- Main subprogram.
-begin
-    null;
-end B7400032;
+package B853001A is
+   type Huey is range 0 .. 12;
+
+   package Inner is
+      type Dewey is (A, B, C);
+
+      package Innermost is
+         type Louie is digits 5;
+      end Innermost;
+
+   end Inner;
+
+end B853001A;
