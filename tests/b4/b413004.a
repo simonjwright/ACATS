@@ -47,6 +47,7 @@
 --
 -- CHANGE HISTORY:
 --     27 Sep 2007 RLB Created test.
+--      6 Aug 2018 RLB Corrected test to avoid problem of AI12-0289-1.
 --
 --!
 procedure B413004 is
@@ -87,8 +88,8 @@ procedure B413004 is
 
       procedure PP    (X : in Priv);
       function PF     (X : in Priv) return Integer;
-      procedure PPA   (X : access Priv);
-      function PFA    (X : access Priv) return Integer;
+      procedure PPA   (X : not null access Priv);
+      function PFA    (X : not null access Priv) return Integer;
 
       function F_Priv   return Priv;
       function F_APriv  return access Priv;
@@ -202,12 +203,12 @@ procedure B413004 is
          return Integer(X.Int);
       end PF;
 
-      procedure PPA   (X : access Priv) is
+      procedure PPA   (X : not null access Priv) is
       begin
          null;
       end PPA;
 
-      function PFA    (X : access Priv) return Integer is
+      function PFA    (X : not null access Priv) return Integer is
       begin
          return Integer(X.Int);
       end PFA;

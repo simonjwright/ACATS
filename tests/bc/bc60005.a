@@ -44,7 +44,7 @@
 --     subprogram of an outer generic and that appears in the specification
 --     of the outer generic, check that an instantiation of the outer generic
 --     is illegal if the if the corresponding parameter or result of the
---     actual subprogram does not include a null_exclusion.
+--     actual subprogram does not exclude null.
 --
 --     For an instance of a generic with a generic formal subprogram with
 --     a parameter or result type that has null_exclusion or is an
@@ -56,6 +56,7 @@
 --
 -- CHANGE HISTORY:
 --     12 Jun 2018 RLB Created test from similar BC40003.
+--     26 Jul 2018 RLB Corrected the middle test objective.
 --
 procedure BC60005 is
 

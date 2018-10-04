@@ -47,6 +47,7 @@
 --                        Also, fixed some comments.
 --     15 Feb 2018   RLB  Added a new test to the optional unit list.
 --     13 Jun 2018   RLB  Added some existing tests to the optional unit list.
+--     06 Sep 2018   RLB  Added a new test to the optional unit list.
 
 with Trace, Test_Summary, Ada.Text_IO;
 package Special_Handling is
@@ -191,6 +192,10 @@ package body Special_Handling is
                 Unit_Kind   => Test_Summary.Procedure_Body),
          22 => (Source_Name => "B7400032.AM ",
                 Unit_Name   => "B7400032" &
+                               (9..Test_Summary.Comp_Unit_Name'Last => ' '),
+                Unit_Kind   => Test_Summary.Procedure_Body),
+         23 => (Source_Name => "B854003.A   ",
+                Unit_Name   => "B854003 " &
                                (9..Test_Summary.Comp_Unit_Name'Last => ' '),
                 Unit_Kind   => Test_Summary.Procedure_Body));
 
