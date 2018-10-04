@@ -44,7 +44,7 @@
 --     generic whose renamed subprogram is a generic formal subprogram of
 --     the outer generic, check that an instantiation of the outer generic is
 --     illegal if the corresponding parameter or result of the actual
---     subprogram does not include a null_exclusion.
+--     subprogram does not exclude null.
 --
 --     For a subprogram renaming with a parameter or result type
 --     that has a null_exclusion or is an access_definition with a
@@ -56,6 +56,7 @@
 --
 -- CHANGE HISTORY:
 --     13 Jun 2018 RLB Created test from similar BC60005.
+--     26 Jul 2018 RLB Corrected the wording of the middle test objective.
 --
 procedure B854002 is
 
