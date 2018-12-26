@@ -98,6 +98,7 @@
 -- CHANGE HISTORY:
 --     08 Jun 2018  RLB  Created new test using outline of B851005 plus
 --                       legacy tests B85003A and B85003B.
+--     28 Sep 2018  RLB  Fixed test errors.
 
 procedure B851007 is
 
@@ -195,7 +196,7 @@ procedure B851007 is
       X309 : Integer renames IR1.F7.F;           -- OK. {7;1} (AT3)
       X310 : R0 renames Indef_Rec'(IR1).F2;      -- OK. {7;1} (TH1)
       X311 : A0 renames Indef_Rec'(IR1).F3;      -- OK. {7;1} (TH2)
-      X312 : Integer renames Indef_Rec'(IR1).F7; -- OK. {7;1} (TH3)
+      X312 : R0 renames Indef_Rec'(IR1).F7;      -- OK. {7;1} (TH3)
 
       -- Note: Generic formal in parameters are considered stand-alone
       -- constants.
@@ -211,7 +212,7 @@ procedure B851007 is
       X409 : Integer renames CR1.F7.F;           -- OK. {7;1} (AZ3)
       X410 : R0 renames Rec'(CR1).F2;            -- OK. {7;1} (ZH1)
       X411 : A0 renames Rec'(CR1).F3;            -- OK. {7;1} (ZH2)
-      X412 : Integer renames Rec'(CR1).F7;       -- OK. {7;1} (ZH3)
+      X412 : R0 renames Rec'(CR1).F7;            -- OK. {7;1} (ZH3)
 
    end Gen_Pack_1;
 
@@ -318,14 +319,14 @@ procedure B851007 is
       type GDer is new Indef_Rec;
    package Gen_Pack_4 is
 
-      procedure Looey (P3, P4 : in GDer);
+      procedure Looey (P3, P4 : in out GDer);
 
    end Gen_Pack_4;
 
 
    package body Gen_Pack_4 is
 
-      procedure Looey (P3, P4 : in GDer) is
+      procedure Looey (P3, P4 : in out GDer) is
 
          G4X01 : Integer renames P3.F1;          -- OK. {10;1} (C, not DDC)
          G4X02 : R0 renames P3.F2;               -- ERROR: {10;1} (C1)
