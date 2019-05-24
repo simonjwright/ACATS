@@ -42,12 +42,14 @@
 --      7 Mar 2016   RLB  Created package.
 --     16 May 2016   RLB  Added Annex C Requirement.
 --                        Added Manual_Grading_List.
-
+--     24 May 2019   SJW  Increase capacity.
+--                        Remove trailing white space while reading manual
+--                        grading list.
 
 with Trace, Test_Summary;
 package Grading_Data is
 
-   MAX_EVENTS : constant := 50_000;
+   MAX_EVENTS : constant := 200_000;
       -- We have to use a constant as there is no reasonable way to find
       -- out how many records are in an event trace file short of reading
       -- the entire file an extra time.
@@ -60,7 +62,7 @@ package Grading_Data is
    Event_Trace : Event_Trace_Array(Event_Index);
    Last_Event : Event_Count := 0;
 
-   MAX_SUMMARY_ITEMS : constant := 30_000;
+   MAX_SUMMARY_ITEMS : constant := 50_000;
       -- We have to use a constant as there is no reasonable way to find
       -- out how many records are in a test summary file short of reading
       -- the entire file an extra time. This value is approximately enough
@@ -155,6 +157,7 @@ end Grading_Data;
 
 
 with Ada.Text_IO;
+with Ada.Characters.Handling;
 with Ada.Strings.Fixed;
 with Ada.Strings.Maps.Constants;
 with Ada.Strings.Unbounded;
@@ -1069,12 +1072,14 @@ package body Grading_Data is
             -- Chop off the comment.
             Last := Item_Start - 1;
          end if;
-         -- Remove any trailing blanks:
+         -- Remove any trailing white space:
          for I in reverse 1 .. Last loop
-            if Buffer(I) = ' ' then
-               Last := I - 1; -- Drop the blank.
+            if Buffer(I) = ' '
+              or else not Ada.Characters.Handling.Is_Graphic (Buffer(I))
+            then
+               Last := I - 1; -- Drop the white space.
             else
-               exit; -- Not a blank.
+               exit; -- Not white space.
             end if;
          end loop;
          if Last < Buffer'First then
