@@ -398,16 +398,16 @@ package ImpDef is
    -- Note that the use of these four string constants will be split between
    -- two tests, CXB5004 and CXB5005.
 
-   CXB50040_External_Name : constant String := "CXB50040";
+   CXB50040_External_Name : constant String := "args";
    --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
 
-   CXB50041_External_Name : constant String := "CXB50041";
+   CXB50041_External_Name : constant String := "tax";
    --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
 
-   CXB50050_External_Name : constant String := "CXB50050";
+   CXB50050_External_Name : constant String := "align";
    --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
 
-   CXB50051_External_Name : constant String := "CXB50051";
+   CXB50051_External_Name : constant String := "modify";
    --                 MODIFY HERE AS NEEDED --- ^^^^^^^^
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
