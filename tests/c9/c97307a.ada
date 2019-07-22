@@ -3,31 +3,33 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
 -- CHECK THAT A TIMED ENTRY CALL THAT IS CANCELED (BECAUSE THE DELAY HAS
 -- EXPIRED) IS REMOVED FROM THE QUEUE OF THE CALLED TASK'S ENTRY.
 
--- WRG 7/14/86
+-- WRG 07/14/86
+-- RLB 06/28/19    Replaced excessive delays with Impdef constants.
 
 WITH REPORT; USE REPORT;
+with Impdef;
 PROCEDURE C97307A IS
 
 BEGIN
@@ -39,7 +41,7 @@ BEGIN
 
      DECLARE
 
-          DELAY_TIME : CONSTANT DURATION := 2 * 60.0;
+          Delay_Time : constant Duration := 2 * Impdef.Clear_Ready_Queue;
 
           TASK EXPIRED IS
                ENTRY INCREMENT;
@@ -159,7 +161,7 @@ BEGIN
                          EXPIRED.READ (EXPIRED_CALLS);
                     EXIT WHEN E'COUNT >= DESIRED_QUEUE_LENGTH -
                                          EXPIRED_CALLS;
-                         DELAY 2.0;
+                         delay Impdef.Switch_to_New_Task;
                     END LOOP;
                EXIT WHEN DESIRED_QUEUE_LENGTH = 5;
                     DISPATCH.READY;
@@ -170,7 +172,7 @@ BEGIN
                -- LET THE TIMED ENTRY CALLS ISSUED BY CALLER1,
                -- CALLER3, AND CALLER5 EXPIRE:
 
-               DELAY DELAY_TIME + 10.0;
+               delay Delay_Time + Impdef.Clear_Ready_Queue;
 
                -- AT THIS POINT, ALL THE TIMED ENTRY CALLS MUST HAVE
                -- EXPIRED AND BEEN REMOVED FROM THE ENTRY QUEUE FOR E,

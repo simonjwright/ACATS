@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -36,12 +36,14 @@
 -- SPS 11/2/82
 -- SPS 11/21/82
 -- JRK 11/29/82
--- TBN  8/25/86     REDUCED DELAYS; ADDED LIMITED PRIVATE TYPES; 
+-- TBN  8/25/86     REDUCED DELAYS; ADDED LIMITED PRIVATE TYPES;
 --                  INCLUDED EXITS BY RAISING AN EXCEPTION.
 -- PWN 01/31/95     REMOVED PRAGMA PRIORITY FOR ADA 9X.
+-- RLB 06/28/19     Replaced excessive delays with Impdef constants.
 
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
+with Impdef;
 PROCEDURE C94002A IS
 
      PACKAGE P IS
@@ -65,10 +67,10 @@ PROCEDURE C94002A IS
                ACCEPT E (I : INTEGER) DO
                     LOCAL := I;
                END E;
-               DELAY 30.0;    -- SINCE THE PARENT UNIT HAS HIGHER
-                              -- PRIORITY AT THIS POINT, IT WILL
-                              -- RECEIVE CONTROL AND TERMINATE IF
-                              -- THE ERROR IS PRESENT.
+               delay Impdef.Clear_Ready_Queue;
+                         -- Since the parent task is ready to run other than
+                         -- waiting for termination, it will receive control
+                         -- and continue if the error is present.
                GLOBAL := LOCAL;
           END T1;
 
@@ -78,7 +80,7 @@ PROCEDURE C94002A IS
                ACCEPT E (I : INTEGER) DO
                     LOCAL := I;
                END E;
-               DELAY 30.0;
+               delay Impdef.Clear_Ready_Queue;
                GLOBAL := LOCAL;
           END T2;
 
@@ -226,7 +228,8 @@ BEGIN
      DECLARE -- (E)
 
           LOOP_COUNT : INTEGER := 0;
-          CUT_OFF : CONSTANT := 5 * 60;     -- FIVE MINUTE DELAY.
+          CUT_OFF : constant INTEGER :=
+                             INTEGER(10 * Impdef.Clear_Ready_Queue) + 1;
 
           TASK TSK IS
                ENTRY ENT;
@@ -281,7 +284,8 @@ BEGIN
      DECLARE -- (F)
 
           LOOP_COUNT : INTEGER := 0;
-          CUT_OFF : CONSTANT := 5 * 60;     -- FIVE MINUTE DELAY.
+          CUT_OFF : constant INTEGER :=
+                             INTEGER(10 * Impdef.Clear_Ready_Queue) + 1;
 
           TASK TSK IS
                ENTRY ENT;
