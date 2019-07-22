@@ -38,10 +38,12 @@
 -- TBN  8/22/86     REVISED; ADDED CASES THAT EXIT BY RAISING AN
 --                  EXCEPTION.
 -- PWN 01/31/95     REMOVED PRAGMA PRIORITY FOR ADA 9X.
+-- RLB 06/28/19     Replaced excessive delays with Impdef constants.
 
 with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
+with Impdef;
 PROCEDURE C94001A IS
 
      MY_EXCEPTION : EXCEPTION;
@@ -57,10 +59,10 @@ PROCEDURE C94001A IS
           ACCEPT E (I : INTEGER) DO
                LOCAL := I;
           END E;
-          DELAY 30.0 * Impdef.One_Nominal_Second;
-                         -- SINCE THE PARENT UNIT HAS HIGHER PRIORITY
-                         -- AT THIS POINT, IT WILL RECEIVE CONTROL AND
-                         -- TERMINATE IF THE ERROR IS PRESENT.
+          delay Impdef.Clear_Ready_Queue;
+                         -- Since the parent task is ready to run other than
+                         -- waiting for termination, it will receive control
+                         -- and continue if the error is present.
           GLOBAL := LOCAL;
      END TT;
 
@@ -177,7 +179,8 @@ BEGIN
      DECLARE -- (E)
 
           LOOP_COUNT : INTEGER := 0;
-          CUT_OFF : CONSTANT := 60 * 60;     -- ONE HOUR DELAY.
+          CUT_OFF : constant INTEGER := INTEGER(60 * Impdef.Clear_Ready_Queue);
+                                                      -- 60 times usual delay
 
           TASK TSK IS
                ENTRY ENT;
@@ -217,7 +220,8 @@ BEGIN
      DECLARE -- (F)
 
           LOOP_COUNT : INTEGER := 0;
-          CUT_OFF : CONSTANT := 60 * 60;     -- ONE HOUR DELAY.
+          CUT_OFF : constant INTEGER := INTEGER(60 * Impdef.Clear_Ready_Queue);
+                                                      -- 60 times usual delay
 
           TASK TSK IS
                ENTRY ENT;

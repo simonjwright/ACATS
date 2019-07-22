@@ -40,10 +40,12 @@
 --                  BLOCKS, AND ADDED CASE TO INSURE THAT LEAVING A
 --                  PACKAGE VIA AN EXCEPTION WOULD NOT ABORT TASKS.
 --     PWN 01/31/95 REMOVED PRAGMA PRIORITY FOR ADA 9X.
+--     RLB 06/28/19 Replaced excessive delays with Impdef constants.
 
 with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
+with Impdef;
 PROCEDURE C94007A IS
 
      TASK TYPE SYNC IS
@@ -62,7 +64,7 @@ PROCEDURE C94007A IS
           SELECT
                ACCEPT OUTER;
           OR
-               DELAY 120.0 * Impdef.One_Nominal_Second;
+               delay Impdef.Clear_Ready_Queue * 4;
                FAILED ("PROBABLY BLOCKED - (" & ID_C & ')');
           END SELECT;
           ACCEPT INNER;
@@ -243,7 +245,7 @@ BEGIN
 
                     TASK BODY T1 IS
                     BEGIN
-                         DELAY 120.0 * Impdef.One_Nominal_Second;
+                         delay Impdef.Clear_Ready_Queue;
                          GLOBAL := IDENT_INT(1);
                     END T1;
 

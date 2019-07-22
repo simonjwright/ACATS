@@ -25,10 +25,12 @@
 -- CHECK THAT A TIMED ENTRY CALL THAT IS CANCELED (BECAUSE THE DELAY HAS
 -- EXPIRED) IS REMOVED FROM THE QUEUE OF THE CALLED TASK'S ENTRY.
 
--- WRG 7/14/86
+-- WRG 07/14/86
+-- RLB 06/28/19    Replaced excessive delays with Impdef constants.
 
 with Impdef;
 WITH REPORT; USE REPORT;
+with Impdef;
 PROCEDURE C97307A IS
 
 BEGIN
@@ -40,8 +42,7 @@ BEGIN
 
      DECLARE
 
-          DELAY_TIME : CONSTANT DURATION
-               := 2 * 60.0 * Impdef.One_Nominal_Second;
+          Delay_Time : constant Duration := 2 * Impdef.Clear_Ready_Queue;
 
           TASK EXPIRED IS
                ENTRY INCREMENT;
@@ -161,7 +162,7 @@ BEGIN
                          EXPIRED.READ (EXPIRED_CALLS);
                     EXIT WHEN E'COUNT >= DESIRED_QUEUE_LENGTH -
                                          EXPIRED_CALLS;
-                         DELAY 2.0 * Impdef.One_Nominal_Second;
+                         delay Impdef.Switch_to_New_Task;
                     END LOOP;
                EXIT WHEN DESIRED_QUEUE_LENGTH = 5;
                     DISPATCH.READY;
@@ -172,7 +173,7 @@ BEGIN
                -- LET THE TIMED ENTRY CALLS ISSUED BY CALLER1,
                -- CALLER3, AND CALLER5 EXPIRE:
 
-               DELAY DELAY_TIME + 10.0 * Impdef.One_Nominal_Second;
+               delay Delay_Time + Impdef.Clear_Ready_Queue;
 
                -- AT THIS POINT, ALL THE TIMED ENTRY CALLS MUST HAVE
                -- EXPIRED AND BEEN REMOVED FROM THE ENTRY QUEUE FOR E,

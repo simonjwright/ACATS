@@ -37,6 +37,7 @@
 -- SPS 11/21/82
 -- JWC 11/15/85    MADE THE LIBRARY PACKAGE NAME UNIQUE, C94005B_PKG.
 -- PWN 01/31/95    REMOVED PRAGMA PRIORITY FOR ADA 9X.
+-- RLB 06/28/19    Replaced excessive delays with Impdef constants.
 
 
 WITH SYSTEM; USE SYSTEM;
@@ -50,6 +51,7 @@ PACKAGE C94005B_PKG IS
 
 END C94005B_PKG;
 
+
 with Impdef;
 PACKAGE BODY C94005B_PKG IS
 
@@ -59,10 +61,10 @@ PACKAGE BODY C94005B_PKG IS
           ACCEPT E (I : INTEGER) DO
                LOCAL := I;
           END E;
-          DELAY 60.0 * Impdef.One_Nominal_Second;
-                         -- SINCE THE PARENT UNIT HAS HIGHER PRIORITY
-                         -- AT THIS POINT, IT WILL RECEIVE CONTROL AND
-                         -- TERMINATE IF THE ERROR IS PRESENT.
+          delay Impdef.Clear_Ready_Queue;
+                         -- Since the parent task is ready to run other than
+                         -- waiting for termination, it will receive control
+                         -- and continue if the error is present.
           GLOBAL := LOCAL;
      END TT;
 

@@ -30,8 +30,9 @@
 
 -- JRK 10/8/81
 -- SPS 11/21/82
--- JWC 11/15/85    MADE THE LIBRARY PACKAGE NAME UNIQUE, C94005A_PKG.
+-- JWC 11/15/85  MADE THE LIBRARY PACKAGE NAME UNIQUE, C94005A_PKG.
 -- PWN 09/11/94  REMOVED PRAGMA PRIORITY FOR ADA 9X.
+-- RLB 06/28/19  Replaced excessive delays with Impdef constants.
 
 
 WITH SYSTEM; USE SYSTEM;
@@ -45,15 +46,16 @@ END C94005A_PKG;
 
 with Impdef;
 WITH REPORT; USE REPORT;
+with Impdef;
 PACKAGE BODY C94005A_PKG IS
 
      TASK BODY TT IS
           I : INTEGER := IDENT_INT (0);
      BEGIN
           ACCEPT E;
-          FOR J IN 1..60 LOOP
+          FOR J IN 1 .. 30 LOOP
                I := IDENT_INT (I);
-               DELAY 1.0 * Impdef.One_Nominal_Second;
+               delay Impdef.Minimum_Task_Switch;
           END LOOP;
           RESULT;   -- FAILURE IF THIS MESSAGE IS NOT WRITTEN.
      END TT;

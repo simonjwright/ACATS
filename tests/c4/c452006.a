@@ -37,6 +37,11 @@
 --     access type yields True if the predefined equals for the type
 --     yields True, and False otherwise.
 --
+--     Check that an individual membership test that is an expression of a
+--     type that is limited at the point of the membership yields True if the
+--     primitive equals for the type yields True, and False otherwise, even
+--     if the full type is an access type.
+--
 -- TEST DESCRIPTION:
 --     We imagine an application with a private type that represents a handle
 --     to a managed object. It has equality operations which compare the
@@ -49,7 +54,10 @@
 --     type to check which equality operator is used to implement the
 --     individual membership tests.
 --
---     RM 4.5.2(28.1/4) is the primary paragraph tested herein.
+--     RM 4.5.2(28.1/4) is the primary paragraph tested herein. Note that
+--     AI12-0328-1 confirms and clarifies that if the type is limited at
+--     the point of the membership test, then primitive equality is used
+--     even if the full type would use predefined equality.
 --
 --     Note: We don't try to describe a use case for the use of the
 --     memberships, since these are an alternative to using "=", and we
@@ -58,6 +66,8 @@
 --
 -- CHANGE HISTORY:
 --    28 Mar 2019   RLB   Created test.
+--    27 Jun 2019   RLB   Revised test to avoid cases declared illegal
+--                        by AI12-0328-1.
 --
 --!
 
@@ -91,7 +101,9 @@ private
       Value : Natural;
    end record;
 
-   type Lim_Handle is access Data_Type;
+   type Raw_Access is access Data_Type;
+
+   type Lim_Handle is new Raw_Access;
 
    Null_Lim_Handle : constant Lim_Handle := null;
 
@@ -105,13 +117,11 @@ package body C452006_A is
 
    function "=" (Left, Right : Lim_Handle) return Boolean is
    begin
-      -- Note: The only way to get at the predefined equality here
-      -- is to use a membership. This means that the test is likely
-      -- to raise Storage_Error rather than a clean failure if memberships
-      -- call the wrong "=". Can't be helped.
-      if Left in Right then -- Really predefined "=".
+      -- Note: Using a membership here on Lim_Handle is illegal by AI12-0328-1,
+      -- so we have to introduce an extra type to get at predefined "=" here.
+      if Raw_Access(Left) = Raw_Access(Right) then -- Predefined "=".
          return True;
-      elsif Left in null or else Right in null then
+      elsif Raw_Access(Left) = null or else Raw_Access(Right) = null then
          return False;
       else
          return Left.all = Right.all;
@@ -125,7 +135,10 @@ package body C452006_A is
 
    function "=" (Left, Right : Nonlim_Handle) return Boolean is
    begin
-      -- Note: See note in the other "=" above.
+      -- Note: The only way to get at the predefined equality here
+      -- without declaring an extra type is to use a membership. This means
+      -- that the test is likely to raise Storage_Error rather than a clean
+      -- failure if memberships call the wrong "=".
       if Left in Right then -- Really predefined "=".
          return True;
       elsif Left in null or else Right in null then
@@ -163,7 +176,7 @@ begin
    Report.Test
      ("C452006",
       "Check that a membership with a private type whose full type " &
-      "is an access type uses predefined equality to evaluate the tests " &
+      "is an access type uses the correct equality to evaluate the tests " &
       "for expression choices");
 
    -- Check that primitive equality works as expected:
@@ -214,20 +227,18 @@ begin
 
    -- Interesting cases:
    if Lim_Another_One in Null_Lim_Handle | Lim_One then
-      -- It is not clear (yet) whether we want predefined equality (because
-      -- the full type is nonlimited and elementary) or primitive equality
-      -- (because the view of limited). The question has been raised with
-      -- the ARG. The test will be revised to require whatever the decision
-      -- is - RLB.)
-      Report.Comment ("Limited membership uses primitive equality (5)");
+      -- This case was confirmed by AI12-0328-1.
+      --Report.Comment ("Limited membership uses primitive equality (5)");
+      null; -- OK.
    else
-      Report.Comment ("Limited membership uses predefined equality (5)");
+      Report.Failed ("Wrong: limited membership uses predefined equality (5)");
    end if;
 
    if Nonlim_Another_One not in Null_Nonlim_Handle | Nonlim_One then
       null; -- OK. (Must use predefined equality)
    else
-      Report.Failed ("Wrong nonlimited result (5)");
+      Report.Failed ("Wrong: nonlimited membership uses " &
+                     "primitive equality (5)");
    end if;
 
    Report.Result;

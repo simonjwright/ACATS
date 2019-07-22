@@ -37,10 +37,12 @@
 
 -- TBN  8/25/86
 -- PWN 01/31/95  REMOVED PRAGMA PRIORITY FOR ADA 9X.
+-- RLB 06/28/19     Replaced excessive delays with Impdef constants.
 
 with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
+with Impdef;
 PROCEDURE C94001C IS
 
      MY_EXCEPTION : EXCEPTION;
@@ -56,10 +58,10 @@ PROCEDURE C94001C IS
           ACCEPT E (I : INTEGER) DO
                LOCAL := I;
           END E;
-          DELAY 30.0 * Impdef.One_Nominal_Second;
-                         -- SINCE THE PARENT UNIT HAS HIGHER PRIORITY
-                         -- AT THIS POINT, IT WILL RECEIVE CONTROL AND
-                         -- TERMINATE IF THE ERROR IS PRESENT.
+          delay Impdef.Clear_Ready_Queue;
+                         -- Since the parent task is ready to run other than
+                         -- waiting for termination, it will receive control
+                         -- and continue if the error is present.
           GLOBAL := LOCAL;
      END TT;
 
