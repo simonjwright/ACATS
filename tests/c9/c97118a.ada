@@ -27,7 +27,6 @@
 
 -- WRG 7/11/86
 
-with Impdef;
 WITH REPORT; USE REPORT;
 PROCEDURE C97118A IS
 
@@ -46,7 +45,7 @@ BEGIN
           BEGIN
                -- ENSURE THAT E HAS BEEN CALLED BEFORE PROCEEDING:
                WHILE E'COUNT = 0 LOOP
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END LOOP;
 
                SELECT

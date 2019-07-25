@@ -28,7 +28,6 @@
 -- WEI  3/ 4/82
 -- TLB 10/30/87  RENAMED FROM C950CHC.ADA.
 
-with Impdef;
 WITH REPORT;
  USE REPORT;
 PROCEDURE C95040B IS
@@ -39,7 +38,7 @@ PROCEDURE C95040B IS
 
      TASK BODY T1 IS
      BEGIN
-          DELAY 1.0 * Impdef.One_Nominal_Second;
+          DELAY 1.0;
           IF EQUAL (1, 1) THEN
                ABORT T1;
           END IF;

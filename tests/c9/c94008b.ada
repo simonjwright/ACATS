@@ -29,7 +29,6 @@
 -- WEI  3/ 4/82
 -- TBN 11/25/85     RENAMED FROM C940BBA-B.ADA.
 
-with Impdef;
 WITH REPORT;
  USE REPORT;
 PROCEDURE C94008B IS
@@ -49,7 +48,7 @@ BLOCK1 :
 
           TASK BODY TT1 IS
           BEGIN
-               DELAY_TIME := DELAY_TIME + 1.0 * Impdef.One_Nominal_Long_Second;
+               DELAY_TIME := DELAY_TIME + 1.0;
                DELAY DELAY_TIME;
                FOR I IN 1 .. NUMB_TT1
                LOOP

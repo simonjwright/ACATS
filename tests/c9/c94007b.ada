@@ -36,7 +36,6 @@
 -- SPS 11/2/82
 -- PWN 01/31/95  REMOVED PRAGMA PRIORITY FOR ADA 9X.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C94007B IS
@@ -53,11 +52,11 @@ PROCEDURE C94007B IS
           ACCEPT ID (C : CHARACTER) DO
                ID_C := C;
           END ID;
-          DELAY 1.0 * Impdef.One_Nominal_Second;
+          DELAY 1.0;
           SELECT
                ACCEPT OUTER;
           OR
-               DELAY 120.0 * Impdef.One_Nominal_Second;
+               DELAY 120.0;
                FAILED ("PROBABLY BLOCKED - (" & ID_C & ')');
           END SELECT;
           ACCEPT INNER;

@@ -30,7 +30,6 @@
 
 -- RM 4/06/1982
 
-with Impdef;
 WITH REPORT;
 USE REPORT;
 PROCEDURE  C97303A  IS
@@ -67,7 +66,7 @@ BEGIN
                     SELECT  -- NOT A SELECTIVE_WAIT
                          A ( FALSE ) ;  -- CALLING (OWN) ENTRY
                     OR
-                         DELAY 1.0 * Impdef.One_Nominal_Second ;
+                         delay 1.0;
                          COMMENT( "ALTERNATIVE BRANCH TAKEN" );
                     END SELECT;
 
@@ -100,7 +99,7 @@ BEGIN
                SELECT  -- NOT A SELECTIVE_WAIT
                     TT.A ( FALSE ) ;  -- UNBORN
                OR
-                    DELAY  2.0 * Impdef.One_Nominal_Second ;
+                    DELAY  2.0;
                     COMMENT( "(OUT:) ALTERNATIVE BRANCH TAKEN" );
                END SELECT;
 

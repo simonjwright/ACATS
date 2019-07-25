@@ -69,7 +69,7 @@ BEGIN
                SELECT
                     ACCEPT E (0);
                OR
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END SELECT;
                C_E_NOT_RAISED := TRUE;
           EXCEPTION
@@ -84,7 +84,7 @@ BEGIN
           SELECT
                T.E (0);
           OR
-               DELAY 15.0 * Impdef.One_Nominal_Second;
+               DELAY 15.0;
           END SELECT;
           FAILED ("CONSTRAINT_ERROR NOT RAISED IN " &
                   "ENTRY_CALL - (A)");
@@ -129,7 +129,7 @@ BEGIN
                SELECT
                     ACCEPT E (IDENT_CHAR('Z'));
                OR
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END SELECT;
                C_E_NOT_RAISED := TRUE;
           EXCEPTION
@@ -144,7 +144,7 @@ BEGIN
           SELECT
                T.E (IDENT_CHAR('Z'));
           OR
-               DELAY 15.0 * Impdef.One_Nominal_Second;
+               DELAY 15.0;
           END SELECT;
           FAILED ("CONSTRAINT_ERROR NOT RAISED IN " &
                   "ENTRY_CALL - (B)");
@@ -189,7 +189,7 @@ BEGIN
                SELECT
                     ACCEPT E (FALSE);
                OR
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END SELECT;
                C_E_NOT_RAISED := TRUE;
           EXCEPTION
@@ -204,7 +204,7 @@ BEGIN
           SELECT
                T.E (TRUE);
           OR
-               DELAY 15.0 * Impdef.One_Nominal_Second;
+               DELAY 15.0;
           END SELECT;
           FAILED ("CONSTRAINT_ERROR NOT RAISED IN " &
                   "ENTRY_CALL - (C)");
@@ -252,7 +252,7 @@ BEGIN
                SELECT
                     ACCEPT E (E0) (I : INTEGER);
                OR
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END SELECT;
                C_E_NOT_RAISED := TRUE;
           EXCEPTION
@@ -267,7 +267,7 @@ BEGIN
           SELECT
                T.E (E0) (0);
           OR
-               DELAY 15.0 * Impdef.One_Nominal_Second;
+               DELAY 15.0;
           END SELECT;
           FAILED ("CONSTRAINT_ERROR NOT RAISED IN " &
                   "ENTRY_CALL - (D)");
@@ -315,7 +315,7 @@ BEGIN
                SELECT
                     ACCEPT E (D_I(3)) (I : INTEGER);
                OR
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END SELECT;
                C_E_NOT_RAISED := TRUE;
           EXCEPTION
@@ -330,7 +330,7 @@ BEGIN
           SELECT
                T.E (D_I(2)) (0);
           OR
-               DELAY 15.0 * Impdef.One_Nominal_Second;
+               DELAY 15.0;
           END SELECT;
           FAILED ("CONSTRAINT_ERROR NOT RAISED IN " &
                   "ENTRY_CALL - (E)");
@@ -378,7 +378,7 @@ BEGIN
                SELECT
                     ACCEPT E (D_ET'(E2)) (I : INTEGER);
                OR
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END SELECT;
                C_E_NOT_RAISED := TRUE;
           EXCEPTION
@@ -393,7 +393,7 @@ BEGIN
           SELECT
                T.E (D_ET'(E2)) (0);
           OR
-               DELAY 15.0 * Impdef.One_Nominal_Second;
+               DELAY 15.0;
           END SELECT;
           FAILED ("CONSTRAINT_ERROR NOT RAISED IN " &
                   "ENTRY_CALL - (F)");

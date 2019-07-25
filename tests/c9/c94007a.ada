@@ -42,7 +42,6 @@
 --     PWN 01/31/95 REMOVED PRAGMA PRIORITY FOR ADA 9X.
 --     RLB 06/28/19 Replaced excessive delays with Impdef constants.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 with Impdef;
@@ -60,7 +59,7 @@ PROCEDURE C94007A IS
           ACCEPT ID (C : CHARACTER) DO
                ID_C := C;
           END ID;
-          DELAY 1.0 * Impdef.One_Nominal_Second;
+          DELAY 1.0;
           SELECT
                ACCEPT OUTER;
           OR

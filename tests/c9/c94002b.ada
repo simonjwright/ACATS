@@ -39,7 +39,6 @@
 --                 VALUES, AND MODIFYING THE COMMENTS.
 -- PWN 09/11/94    REMOVED PRAGMA PRIORITY FOR ADA 9X.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C94002B IS
@@ -171,7 +170,7 @@ BEGIN
                TSK1.ENT1 (ARA1);
 
                WHILE NOT TSK1'TERMINATED AND LOOP_COUNT1 < CUT_OFF1 LOOP
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                     LOOP_COUNT1 := LOOP_COUNT1 + 1;
                END LOOP;
 
@@ -191,7 +190,7 @@ BEGIN
      BEGIN -- (C)
 
           WHILE NOT TSK'TERMINATED AND LOOP_COUNT < CUT_OFF LOOP
-               DELAY 2.0 * Impdef.One_Nominal_Second;
+               DELAY 2.0;
                LOOP_COUNT := LOOP_COUNT + 1;
           END LOOP;
 

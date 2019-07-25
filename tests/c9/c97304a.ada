@@ -31,7 +31,6 @@
 -- SPS 11/21/82
 -- PWN 09/11/94  REMOVED PRAGMA PRIORITY FOR ADA 9X.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE  C97304A  IS
@@ -78,7 +77,7 @@ BEGIN
 
           FOR  I  IN  1..5  LOOP
                EXIT WHEN  T_OBJECT1'TERMINATED ;
-               DELAY 10.0 * Impdef.One_Nominal_Second ;
+               DELAY 10.0;
           END LOOP;
 
 
@@ -93,7 +92,7 @@ BEGIN
                     T_OBJECT1.E ;
                     FAILED( "CALL WAS NOT DISOBEYED" );
                OR
-                    DELAY 1.0 * Impdef.One_Nominal_Second ;
+                    DELAY 1.0;
                     FAILED( "'OR' BRANCH TAKEN INSTEAD OF TSKG_ERROR" );
                END SELECT;
 

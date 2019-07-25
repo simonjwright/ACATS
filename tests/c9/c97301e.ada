@@ -32,7 +32,6 @@
 
 -- RJW 3/31/86
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH CALENDAR; USE CALENDAR;
 PROCEDURE C97301E IS
@@ -48,7 +47,7 @@ BEGIN
 
      DECLARE
 
-          WAIT_TIME : DURATION :=  3.0 * Impdef.One_Nominal_Second;
+          WAIT_TIME : DURATION :=  3.0;
 
           START_TIME : TIME;
 

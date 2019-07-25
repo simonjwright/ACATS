@@ -28,7 +28,6 @@
 -- WEI  3/ 4/82
 -- JWC 6/28/85   RENAMED FROM C950CAA-B.ADA
 
-with Impdef;
 WITH REPORT;
  USE REPORT;
 PROCEDURE C95035A IS
@@ -57,7 +56,7 @@ PROCEDURE C95035A IS
 
      TASK BODY T2 IS
      BEGIN
-          DELAY 1.0 * Impdef.One_Nominal_Second;
+          DELAY 1.0;
           PSPY_NUMB (1);
           T1.E1;
      END T2;

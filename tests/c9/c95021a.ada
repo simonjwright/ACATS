@@ -46,7 +46,6 @@
 -- THE TASK TYPE CALLERS IS USED TO CREATE TASKS THAT WILL CALL THE
 -- ENTRY IN THE TASK QUEUE.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM;
 PROCEDURE C95021A IS
@@ -122,8 +121,7 @@ BEGIN
                FOR I IN 1..6       -- WILL WAIT FOR ONE MINUTE
                LOOP
                     EXIT WHEN E1'COUNT = 2;
-                    DELAY 10.0 * Impdef.One_Nominal_Second;
-                                                   -- WAIT FOR CALLS TO ARRIVE
+                    DELAY 10.0;    -- WAIT FOR CALLS TO ARRIVE
                END LOOP;
 
                IF E1'COUNT /= 2 THEN
@@ -152,8 +150,7 @@ BEGIN
                FOR I IN 1..6       -- WILL WAIT FOR ONE MINUTE
                LOOP
                     EXIT WHEN E1'COUNT = 2;
-                    DELAY 10.0 * Impdef.One_Nominal_Second;
-                                                   -- WAIT FOR CALLS TO ARRIVE
+                    DELAY 10.0;    -- WAIT FOR CALLS TO ARRIVE
                END LOOP;
 
                IF E1'COUNT /= 2 THEN

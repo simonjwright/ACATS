@@ -28,7 +28,6 @@
 -- WRG 7/11/86
 -- PWN 09/11/94  REMOVED PRAGMA PRIORITY FOR ADA 9X.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C97201B IS
@@ -52,7 +51,7 @@ BEGIN
           BEGIN
                -- ENSURE THAT E HAS BEEN CALLED BEFORE PROCEEDING:
                WHILE E'COUNT = 0 LOOP
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END LOOP;
 
                ACCEPT SYNCH;
@@ -70,7 +69,7 @@ BEGIN
                          END IF;
                     END DONE;
                OR
-                    DELAY 1000.0 * Impdef.One_Nominal_Second;
+                    DELAY 1000.0;
                     FAILED ("DELAY EXPIRED; E'COUNT =" &
                             NATURAL'IMAGE(E'COUNT) );
                END SELECT;
@@ -91,7 +90,7 @@ BEGIN
 
           T.SYNCH;
 
-          DELAY 10.0 * Impdef.One_Nominal_Second;
+          DELAY 10.0;
 
           SELECT
                T.E;

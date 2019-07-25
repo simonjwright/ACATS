@@ -34,7 +34,6 @@
 -- JRK 10/2/85
 -- PWN 09/11/94  REMOVED PRAGMA PRIORITY FOR ADA 9X.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C95095D IS
@@ -83,7 +82,7 @@ BEGIN
 
           T.E (TRUE, 5, I);
 
-          DELAY 10.0 * Impdef.One_Nominal_Second;
+          DELAY 10.0;
           ABORT T;
 
           IF S /= "AB" THEN

@@ -446,9 +446,6 @@ package ImpDef is
 
 --=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====-=====--
 
-   One_Nominal_Second : constant Duration := 0.001;
-   One_Nominal_Long_Second : constant Duration := 0.1;
-
 end ImpDef;
 
 

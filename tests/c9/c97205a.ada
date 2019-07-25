@@ -31,7 +31,6 @@
 -- WRG 7/13/86
 -- PWN 09/11/94  REMOVED PRAGMA PRIORITY FOR ADA 9X.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C97205A IS
@@ -63,7 +62,7 @@ BEGIN
      BEGIN
 
           WHILE NOT STATEMENTS_AFTER_CALL_EXECUTED LOOP
-               DELAY 1.0 * Impdef.One_Nominal_Second;
+               DELAY 1.0;
 
                SELECT
                     T.E (RENDEZVOUS_OCCURRED);

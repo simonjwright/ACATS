@@ -178,7 +178,7 @@ BEGIN
 
                     FOR  I  IN  1..5  LOOP
                          EXIT WHEN  BIRTHS_AND_DEATHS'COUNT = 2;
-                         DELAY 10.0 * Impdef.One_Nominal_Second;
+                         DELAY 10.0;
                     END LOOP;
 
                     OLD_COUNT := BIRTHS_AND_DEATHS'COUNT;

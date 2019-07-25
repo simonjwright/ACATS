@@ -27,7 +27,6 @@
 
 -- WRG 7/11/86
 
-with Impdef;
 WITH REPORT;   USE REPORT;
 WITH CALENDAR; USE CALENDAR;
 PROCEDURE C97120A IS
@@ -49,7 +48,7 @@ BEGIN
           BEGIN
                -- ENSURE THAT SYNCH HAS BEEN CALLED BEFORE PROCEEDING:
                WHILE SYNCH'COUNT = 0 LOOP
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END LOOP;
 
                BEFORE := CLOCK;
@@ -57,9 +56,9 @@ BEGIN
                     ACCEPT NO_GO;
                     FAILED ("ACCEPTED NONEXISTENT ENTRY CALL");
                OR
-                    DELAY 10.0 * Impdef.One_Nominal_Second;
+                    DELAY 10.0;
                     AFTER := CLOCK;
-                    IF AFTER - BEFORE < 10.0 * Impdef.One_Nominal_Second THEN
+                    IF AFTER - BEFORE < 10.0 THEN
                          FAILED ("INSUFFICIENT DELAY");
                     END IF;
                END SELECT;

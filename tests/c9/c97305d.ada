@@ -30,7 +30,6 @@
 -- WRG 7/13/86
 -- PWN 11/30/94 REMOVED PRAGMA PRIORITY INSTANCES FOR ADA 9X.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C97305D IS
@@ -55,7 +54,7 @@ BEGIN
 
           TASK BODY T IS
           BEGIN
-               DELAY 10.0 * Impdef.One_Nominal_Second;
+               DELAY 10.0;
 
                SELECT
                     ACCEPT E (2) (B : IN OUT BOOLEAN) DO
@@ -73,7 +72,7 @@ BEGIN
                T.E (2) (RENDEZVOUS_OCCURRED);
                STATEMENTS_AFTER_CALL_EXECUTED := IDENT_BOOL (TRUE);
           OR
-               DELAY DELAY_IN_MINUTES * 60.0 * Impdef.One_Nominal_Second;
+               DELAY DELAY_IN_MINUTES * 60.0;
                FAILED ("TIMED ENTRY CALL NOT ACCEPTED AFTER" &
                        POSITIVE'IMAGE(DELAY_IN_MINUTES) &
                        " MINUTES ELAPSED");

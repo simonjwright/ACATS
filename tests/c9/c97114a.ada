@@ -32,7 +32,6 @@
 -- JBG 10/24/83
 -- PWN 09/11/94  REMOVED PRAGMA PRIORITY FOR ADA 9X.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE C97114A IS
@@ -78,7 +77,7 @@ PROCEDURE C97114A IS
           INDEX := INDEX + 1;
           EVAL_ORDER (INDEX) := 'A';    -- 123: ABC
           EVAL_ORD   (INDEX) := 'D';    -- 123: DDD ( 'D' FOR 'DELAY' )
-          RETURN ( 1.0 * Impdef.One_Nominal_Second );
+          RETURN ( 1.0 );
      END D1;
 
 
@@ -87,7 +86,7 @@ PROCEDURE C97114A IS
           INDEX := INDEX + 1;
           EVAL_ORDER (INDEX) := 'B';
           EVAL_ORD   (INDEX) := 'D';
-          RETURN ( 2.0 * Impdef.One_Nominal_Second );
+          RETURN ( 2.0 );
      END D2;
 
 
@@ -96,7 +95,7 @@ PROCEDURE C97114A IS
           INDEX := INDEX + 1;
           EVAL_ORDER (INDEX) := 'C';
           EVAL_ORD   (INDEX) := 'D';
-          RETURN ( 3.0 * Impdef.One_Nominal_Second );
+          RETURN ( 3.0 );
      END D3;
 
      FUNCTION POS_OF (FUNC : CHARACTER) RETURN INTEGER  IS
@@ -135,7 +134,7 @@ BEGIN
 
                WHILE  E1'COUNT = 0  -- IF  E1  NOT YET CALLED, THEN GIVE
                LOOP                 --     THE MAIN TASK AN OPPORTUNITY
-                    DELAY  10.01 * Impdef.One_Nominal_Long_Second;
+                    DELAY  10.01;
                                     --     TO ISSUE THE CALL.
                END LOOP;
 

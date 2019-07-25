@@ -31,7 +31,6 @@
 -- SPS 11/21/82
 -- WRG 7/9/86    ADDED DELAY EXPRESSIONS AND ENTRY FAMILY INDICES.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 PROCEDURE C97113A IS
 
@@ -75,7 +74,7 @@ BEGIN
           BEGIN
                --ENSURE THAT E1 HAS BEEN CALLED BEFORE PROCEEDING:
                WHILE E1'COUNT = 0 LOOP
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END LOOP;
 
                SELECT
@@ -86,7 +85,7 @@ BEGIN
                OR
                     ACCEPT E3 ( F2(1) );
                OR
-                    DELAY F3 ( 1.0 * Impdef.One_Nominal_Second );
+                    DELAY F3 ( 1.0 );
                END SELECT;
           END T;
 

@@ -27,7 +27,6 @@
 
 -- WRG 7/13/86
 
-with Impdef;
 WITH REPORT; USE REPORT;
 PROCEDURE C97304B IS
 
@@ -64,7 +63,7 @@ BEGIN
                T.E (F);
                FAILED ("TIMED ENTRY CALL MADE");
           OR
-               DELAY 1.0 * Impdef.One_Nominal_Second;
+               DELAY 1.0;
                FAILED ("DELAY ALTERNATIVE TAKEN");
           END SELECT;
 

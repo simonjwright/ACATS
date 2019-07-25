@@ -27,7 +27,6 @@
 
 -- R.WILLIAMS 8/20/86
 
-with Impdef;
 WITH REPORT; USE REPORT;
 PROCEDURE C93008A IS
 
@@ -72,7 +71,7 @@ BLOCK:
 
                PACKAGE BODY DUMMY IS
                BEGIN
-                    DELAY 2.0 * Impdef.One_Nominal_Second;
+                    DELAY 2.0;
                     T.FINIT_POS(1);
                END DUMMY;
           BEGIN
@@ -85,7 +84,7 @@ BLOCK:
 
                PACKAGE BODY DUMMY IS
                BEGIN
-                    DELAY 2.0 * Impdef.One_Nominal_Second;
+                    DELAY 2.0;
                     T.FINIT_POS(2);
                END DUMMY;
           BEGIN

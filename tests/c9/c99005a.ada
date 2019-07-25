@@ -28,7 +28,6 @@
 -- HISTORY:
 --     DHH 03/24/88 CREATED ORIGINAL TEST.
 
-with Impdef;
 WITH SYSTEM; USE SYSTEM;
 WITH REPORT; USE REPORT;
 PROCEDURE C99005A IS
@@ -134,7 +133,7 @@ BEGIN
                LOOP
                     SELECT
                          ACCEPT WAIT DO
-                              DELAY 1.0 * Impdef.One_Nominal_Second;
+                              DELAY 1.0;
                          END WAIT;
                          CHOICE.RETURN_CALL;
                     OR

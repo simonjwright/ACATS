@@ -29,7 +29,6 @@
 -- WEI  3/ 4/82
 -- JWC 6/28/85   RENAMED FROM C950CBA-B.ADA
 
-with Impdef;
 WITH REPORT;
  USE REPORT;
 PROCEDURE C95034B IS
@@ -50,7 +49,7 @@ PROCEDURE C95034B IS
      BEGIN
           ACCEPT E1 DO
                PSPY_NUMB (1);
-               DELAY 1.0 * Impdef.One_Nominal_Second;
+               DELAY 1.0;
                PSPY_NUMB (2);
           END E1;
      END T1;

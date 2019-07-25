@@ -41,7 +41,6 @@
 -- PWN 01/31/95     REMOVED PRAGMA PRIORITY FOR ADA 9X.
 -- RLB 06/28/19     Replaced excessive delays with Impdef constants.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 with Impdef;
@@ -262,7 +261,7 @@ BEGIN
      BEGIN -- (E)
 
           WHILE NOT TSK'TERMINATED AND LOOP_COUNT < CUT_OFF LOOP
-               DELAY 1.0 * Impdef.One_Nominal_Second;
+               DELAY 1.0;
                LOOP_COUNT := LOOP_COUNT + 1;
           END LOOP;
 
@@ -315,7 +314,7 @@ BEGIN
      BEGIN -- (F)
 
           WHILE NOT TSK'TERMINATED AND LOOP_COUNT < CUT_OFF LOOP
-               DELAY 1.0 * Impdef.One_Nominal_Second;
+               DELAY 1.0;
                LOOP_COUNT := LOOP_COUNT + 1;
           END LOOP;
 

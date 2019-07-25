@@ -30,7 +30,6 @@
 --     WRG 7/10/86  CREATED ORIGINAL TEST.
 --     RJW 5/15/90  REMOVED SHARED VARIABLES.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 PROCEDURE C97116A IS
 
@@ -44,7 +43,7 @@ PROCEDURE C97116A IS
 
      FUNCTION SO_LONG RETURN DURATION IS
      BEGIN
-          RETURN 20.0 * Impdef.One_Nominal_Second;
+          RETURN 20.0;
      END SO_LONG;
 
 BEGIN
@@ -81,7 +80,7 @@ BEGIN
           TASK BODY GET_CPU IS
           BEGIN
                WHILE NOT T'TERMINATED LOOP
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END LOOP;
 
           END GET_CPU;

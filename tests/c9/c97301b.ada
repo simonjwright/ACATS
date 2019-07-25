@@ -34,7 +34,6 @@
 --     RJW 03/31/86 CREATED ORIGINAL TEST.
 --     DHH 10/20/87 SHORTENED LINES CONTAINING MORE THAN 72 CHARACTERS.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH CALENDAR; USE CALENDAR;
 PROCEDURE C97301B IS
@@ -51,7 +50,7 @@ BEGIN
 
 
      DECLARE
-          WAIT_TIME  : DURATION :=  3.0 * Impdef.One_Nominal_Second;
+          WAIT_TIME  : DURATION :=  3.0;
 
           TASK T1;
 
@@ -74,7 +73,7 @@ BEGIN
                     IF X = 1 THEN
                          T2.AWAKEN_T2;
                          WHILE DO_IT_NOW_OR_WAIT'COUNT = 0 LOOP
-                              DELAY 1.0 * Impdef.One_Nominal_Second;
+                              DELAY 1.0;
                          END LOOP;
                          T3.AWAKEN_T3;
                          T3.RELEASE_T;

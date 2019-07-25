@@ -30,7 +30,6 @@
 
 -- RJW 3/31/86
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH CALENDAR; USE CALENDAR;
 PROCEDURE C97301D IS
@@ -47,7 +46,7 @@ BEGIN
 
      DECLARE
           START_TIME : TIME;
-          WAIT_TIME : CONSTANT DURATION := 10.0 * Impdef.One_Nominal_Second;
+          WAIT_TIME : CONSTANT DURATION := 10.0;
 
           TASK  T  IS
                ENTRY  DO_IT_NOW_OR_WAIT;

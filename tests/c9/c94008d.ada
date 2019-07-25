@@ -141,7 +141,6 @@ BEGIN
      END LOOP;
 END SHARE;
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 WITH SHARED_C94008D, COUNTER_C94008D, EVENTS_C94008D;
@@ -181,10 +180,10 @@ BEGIN
 
                     TASK BODY T2 IS
                     BEGIN
-                         DELAY 10.0 * Impdef.One_Nominal_Second;
+                         DELAY 10.0;
 
                          IF TERMINATE_COUNT.GET /= 1 THEN
-                              DELAY 20.0 * Impdef.One_Nominal_Second;
+                              DELAY 20.0;
                          END IF;
 
                          IF TERMINATE_COUNT.GET /= 1 THEN

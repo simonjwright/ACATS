@@ -30,7 +30,6 @@
 -- HISTORY:
 --     DHH 06/14/88 CREATED ORIGINAL TEST.
 
-with Impdef;
 WITH SYSTEM; USE SYSTEM;
 WITH REPORT; USE REPORT;
 PROCEDURE C9A011B IS
@@ -49,7 +48,7 @@ PROCEDURE C9A011B IS
           SELECT
                OWNER.SELF_ABORT;
           OR
-               DELAY 60.0 * Impdef.One_Nominal_Second;
+               DELAY 60.0;
           END SELECT;
           FAILED("NO EXCEPTION RAISED");
 
@@ -66,7 +65,7 @@ PROCEDURE C9A011B IS
      BEGIN
           ACCEPT START DO
                WHILE SELF_ABORT'COUNT = 0 LOOP
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END LOOP;
           END START;
 
@@ -84,7 +83,7 @@ BEGIN
                      "WHEN THE CALL IS FIRST EXECUTED");
 
      OWNER.START;
-     DELAY 5.0 * Impdef.One_Nominal_Second;
+     DELAY 5.0;
 
      IF TIMED_ENTRY'CALLABLE THEN
           TIMED_ENTRY.WAIT_AROUND;

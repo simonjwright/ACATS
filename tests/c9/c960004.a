@@ -48,7 +48,6 @@
 --!
 
 
-with Impdef;
 with Report;
 with Ada.Calendar;
 
@@ -60,7 +59,7 @@ procedure C960004 is
    TC_Elapsed_Time    : duration;
 
    -- Note: a properly executing test will complete immediately.
-   Allowable_ACK_Time : duration := 600.0 * Impdef.One_Nominal_Second;
+   Allowable_ACK_Time : duration := 600.0;
 
 begin
 

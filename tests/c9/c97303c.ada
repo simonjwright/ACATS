@@ -29,7 +29,6 @@
 
 -- WRG 7/15/86
 
-with Impdef;
 WITH REPORT; USE REPORT;
 PROCEDURE C97303C IS
 
@@ -73,7 +72,7 @@ BEGIN
                          FAILED ("TIMED ENTRY CALL ACCEPTED - " &
                                  "INNER (1)");
                     OR
-                         DELAY 1.0 * Impdef.One_Nominal_Second;
+                         DELAY 1.0;
                          T.SYNCH;
                     END SELECT;
 
@@ -82,7 +81,7 @@ BEGIN
                          FAILED ("TIMED ENTRY CALL ACCEPTED - " &
                                  "INNER (2)");
                     OR
-                         DELAY 1.0 * Impdef.One_Nominal_Second;
+                         DELAY 1.0;
                          OUTER.SYNCH;
                     END SELECT;
                EXCEPTION
@@ -101,7 +100,7 @@ BEGIN
                     T.E;
                     FAILED ("TIMED ENTRY CALL ACCEPTED - OUTER");
                OR
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                     T.SYNCH;
                END SELECT;
 

@@ -84,7 +84,6 @@ BEGIN
 
 END F;
 
-with Impdef;
 WITH SYSTEM; USE SYSTEM;
 WITH REPORT; USE REPORT;
 WITH C94005B_PKG; USE C94005B_PKG;
@@ -155,7 +154,7 @@ BEGIN
      BEGIN -- (C)
 
           WHILE NOT TSK'TERMINATED LOOP
-               DELAY 0.1 * Impdef.One_Nominal_Long_Second;
+               DELAY 0.1;
           END LOOP;
 
           IF GLOBAL /= 3 THEN

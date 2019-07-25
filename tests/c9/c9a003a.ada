@@ -29,7 +29,6 @@
 -- SPS 11/21/82
 -- PWN 09/11/94  REMOVED PRAGMA PRIORITY FOR ADA 9X
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH SYSTEM; USE SYSTEM;
 PROCEDURE  C9A003A  IS
@@ -73,7 +72,7 @@ BEGIN
 
 
           IF NOT  T_OBJECT1'TERMINATED  THEN
-               DELAY  20.0 * Impdef.One_Nominal_Second ;
+               DELAY  20.0;
           END IF;
 
           IF NOT  T_OBJECT1'TERMINATED  THEN

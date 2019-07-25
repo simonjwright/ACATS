@@ -30,7 +30,6 @@
 
 -- RJW 3/31/86
 
-with Impdef;
 WITH REPORT; USE REPORT;
 WITH CALENDAR; USE CALENDAR;
 PROCEDURE C97301C IS
@@ -48,7 +47,7 @@ BEGIN
      DECLARE
           START_TIME : TIME;
           STOP_TIME : TIME;
-          WAIT_TIME  : DURATION :=  3.0 * Impdef.One_Nominal_Second;
+          WAIT_TIME  : DURATION :=  3.0;
 
           TASK  T  IS
                ENTRY NO_SPIN;

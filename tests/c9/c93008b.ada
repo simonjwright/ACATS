@@ -31,7 +31,6 @@
 --                  DURING TASK ACTIVATION.
 -- RJW 4/11/86      ADDED PACKAGE DUMMY.
 
-with Impdef;
 WITH REPORT; USE REPORT;
 PROCEDURE C93008B IS
 
@@ -65,7 +64,7 @@ BLOCK:
 
                PACKAGE BODY DUMMY IS
                BEGIN
-                    DELAY 2.0 * Impdef.One_Nominal_Second;
+                    DELAY 2.0;
                     DECLARE
                          IDUMMY1 : NATURAL := FINIT_POS (1);
                     BEGIN

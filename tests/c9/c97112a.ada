@@ -28,7 +28,6 @@
 
 -- WRG 7/9/86
 
-with Impdef;
 WITH REPORT;   USE REPORT;
 WITH CALENDAR; USE CALENDAR;
 PROCEDURE C97112A IS
@@ -57,9 +56,9 @@ BEGIN
                     ACCEPT E;
                     ACCEPT_ALTERNATIVE_TAKEN := TRUE;
                     BEFORE := CLOCK;
-                    DELAY 10.0 * Impdef.One_Nominal_Second;
+                    DELAY 10.0;
                     AFTER  := CLOCK;
-                    IF AFTER - BEFORE < 10.0 * Impdef.One_Nominal_Second THEN
+                    IF AFTER - BEFORE < 10.0 THEN
                          FAILED ("INSUFFICIENT DELAY (A)");
                     END IF;
                OR
@@ -90,15 +89,15 @@ BEGIN
           BEGIN
                --ENSURE THAT E HAS BEEN CALLED BEFORE PROCEEDING:
                WHILE E'COUNT = 0 LOOP
-                    DELAY 1.0 * Impdef.One_Nominal_Second;
+                    DELAY 1.0;
                END LOOP;
 
                SELECT
                     ACCEPT E;
                     BEFORE := CLOCK;
-                    DELAY 10.0 * Impdef.One_Nominal_Second;
+                    DELAY 10.0;
                     AFTER  := CLOCK;
-                    IF AFTER - BEFORE < 10.0 * Impdef.One_Nominal_Second THEN
+                    IF AFTER - BEFORE < 10.0 THEN
                          FAILED ("INSUFFICIENT DELAY (B-1)");
                     END IF;
                ELSE
@@ -110,9 +109,9 @@ BEGIN
                     FAILED ("ACCEPT STATEMENT EXECUTED (B-2)");
                ELSE
                     BEFORE := CLOCK;
-                    DELAY 10.0 * Impdef.One_Nominal_Second;
+                    DELAY 10.0;
                     AFTER  := CLOCK;
-                    IF AFTER - BEFORE < 10.0 * Impdef.One_Nominal_Second THEN
+                    IF AFTER - BEFORE < 10.0 THEN
                          FAILED ("INSUFFICIENT DELAY (B-2)");
                     END IF;
                END SELECT;
