@@ -5,7 +5,7 @@ the [Ada Conformity Assessment Test Suite][Ada-Auth] customised for
 use with FSF GCC. Eventually it's hoped they will replace the current
 GCC tests (based on ACATS 2.5).
 
-The current version here is 4.1L.
+The current version here is 4.1N.
 
 ## Notes ##
 
@@ -22,10 +22,11 @@ Some individual tests are in any case suppressed (by inclusion in the
 file `norun.lst`), because they involve another language (Fortran,
 Cobol).
 
-The tests that involve timing mostly include very long timeouts (up to
-an hour in some cases). These have been scaled by multiplying by
-`One_Nominal_Second` (0.001 seconds) or `One_Nominal_Long_Second` (0.1
-seconds), in line with the changes in the GCC version of the tests.
+The tests that involve timing mostly included very long timeouts (up
+to an hour in some cases), which were scaled here (as in the GCC
+version) by multiplying by `One_Nominal_Second` (0.001 seconds) or
+`One_Nominal_Long_Second` (0.1 seconds). This problem was corrected in
+ACATS 4.1M, and the code here matches the official version.
 
 ### Testing in GCC ###
 
@@ -106,14 +107,15 @@ test execution.
 
 The summary is reported in the form
 
-            === acats Summary ===
-    # of expected passes		2499
-    # of unexpected failures	10
-    # of expected failures		1451
-    # of unresolved testcases	11
-    # of unsupported tests		106
-    *** FAILURES: cxd1003 cxd1004 cxd1005  cxd2006 cxd3001 cxd3002  cxh1001  c250002  c611a04  cxd4007
-
+``` none
+        === acats Summary ===
+# of expected passes		2499
+# of unexpected failures	10
+# of expected failures		1451
+# of unresolved testcases	11
+# of unsupported tests		106
+*** FAILURES: cxd1003 cxd1004 cxd1005  cxd2006 cxd3001 cxd3002  cxh1001  c250002  c611a04  cxd4007
+```
 (this is from a run for GCC 8.0 on macOS).
 
 [Ada-Auth]: http://www.ada-auth.org/acats.html
