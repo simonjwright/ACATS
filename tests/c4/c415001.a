@@ -57,6 +57,7 @@
 --      3 Apr 2014 GJD Corrected minor test error.
 --      4 Apr 2014 RLB Renamed test for inclusion in ACATS 4.0.
 --      9 Apr 2015 RLB Corrected a violation of the anti-aliasing rules.
+--     26 Sep 2019 RLB Corrected an accessibility error in Fetch.
 --
 --!
 with Report;
@@ -112,7 +113,8 @@ procedure C415001 is
         raise Collection_Overflow;
     end Update_Collection;
 
-    function Fetch (C : in out Collection; Key : Key_Range) return Reference is
+    function Fetch (C   : aliased in out Collection;
+                    Key : Key_Range) return Reference is
     begin
         for Elt_Index in C'range loop
             if C (Elt_Index).Key = Key then
@@ -123,7 +125,7 @@ procedure C415001 is
         return Null_Reference;
     end Fetch;
 
-    My_Colln : Collection (1 .. 10);
+    My_Colln : aliased Collection (1 .. 10);
 
 begin
 
