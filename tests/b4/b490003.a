@@ -71,66 +71,69 @@
 --                            Replaced error cascade of subtype S3 with
 --                            an qualifed expression, added named number to
 --                            make a few test cases more realistic.
+--        19 Nov 19   RLB     Moved error tags, added error location
+--                            indicators.
 --!
 package B490003 is
    Debug_Cnt : constant := 0;
 
-   C1 : constant :=                         -- OK (A).
-          Boolean'Pos (True or else 1=1/0);
-   C2 : constant :=                         -- OK (B).
-          (if Debug_Cnt = 0 then 1 else 1 / Debug_Cnt);
-   C3 : constant :=                         -- OK (D).
+   C1 : constant :=
+          Boolean'Pos (True or else 1=1/0);                -- OK. (A)  {1:4}
+   C2 : constant :=
+          (if Debug_Cnt = 0 then 1 else 1 / Debug_Cnt);    -- OK. (B)  {1:4}
+   C3 : constant :=
           (case True is
-           when 0=1 => Positive'(Debug_Cnt), when 2=2 => 1);
-   C4 : constant :=                         -- OK (B).
+           when 0=1 => Positive'(Debug_Cnt), when 2=2 => 1); -- OK. (D) {2:4}
+   C4 : constant :=
           Boolean'Pos (if True then True
-                       else 1 in 0 .. 1/Debug_Cnt);
-   C5 : constant :=                         -- OK (D).
+                       else 1 in 0 .. 1/Debug_Cnt);        -- OK. (B)  {2:4}
+   C5 : constant :=
           (case Integer'(4) is
              when Integer => 1,
-             when others  => 1/Debug_Cnt);
-   C6 : constant :=                         -- ERROR: (D)
+             when others  => 1/Debug_Cnt);                 -- OK. (D)  {3:4}
+   C6 : constant :=
           (case Debug_Cnt /= 0 is
              when Debug_Cnt=1 => 1/Debug_Cnt,
-             when 2=2 => 1);
-   C7 : constant :=                         -- OK (E)
-          Boolean'Pos (1 in 1 | 2/0);
-   C8 : constant :=                         -- OK (C)
+             when 2=2 => 1);                               -- ERROR: (D) {3:4}
+   C7 : constant :=
+          Boolean'Pos (1 in 1 | 2/0);                      -- OK. (E)  {1:4}
+   C8 : constant :=
           (if True then 1
-           elsif 1/0=0 then 2 else 3);
-   C9 : constant :=                         -- OK (E)
+           elsif 1/0=0 then 2 else 3);                     -- OK. (C)  {2:4}
+   C9 : constant :=
           Boolean'Pos
-            (1.0 in 1.0 | 1.0 / 0.0);
-   C10 : constant :=                        -- ERROR: (E)
+            (1.0 in 1.0 | 1.0 / 0.0);                      -- OK. (E)  {2:4}
+   C10 : constant :=
            Boolean'Pos
-             (2.0 in 1.0 | 1.0 / 0.0);
+             (2.0 in 1.0 | 1.0 / 0.0);                     -- ERROR: (E) {2:4}
 
-   subtype S1 is String (1 .. 2);          -- OK
-   subtype S2 is String (1 .. 3);          -- OK
+   subtype S1 is String (1 .. 2);
+   subtype S2 is String (1 .. 3);
 
-   Scon : constant String := "ABC";        -- OK
+   Scon : constant String := "ABC";                        -- OK. {4}
 
-   C11 : constant :=                       -- OK (E)
+   C11 : constant :=
            Boolean'Pos
-             (Scon in S1 | S2 | S2'("12"));
-   C12 : constant :=                       -- ERROR: (E)
+             (Scon in S1 | S2 | S2'("12"));                -- OK. (E)  {2:4}
+   C12 : constant :=
            Boolean'Pos
-             (Scon in S2'("12") | S2 | S1);
-   C13 : constant :=                       -- OK (E)
+             (Scon in S2'("12") | S2 | S1);                -- ERROR: (E) {2:4}
+   C13 : constant :=
            Boolean'Pos
-             (Scon in "ABC" | S2'("12"));
-   C14 : constant :=                       -- ERROR: (E)
+             (Scon in "ABC" | S2'("12"));                  -- OK. (E)  {2:4}
+   C14 : constant :=
            Boolean'Pos
-             (Scon in "AB1" | "AB2" | S2'("12"));
-   C15 : constant :=                       -- OK (B)
+             (Scon in "AB1" | "AB2" | S2'("12"));          -- ERROR: (E) {2:4}
+   C15 : constant :=
            (if Debug_Cnt = 0 then 1
-            else Boolean'Pos (Positive'(Debug_Cnt) = 0));
-   C16 : constant :=                       -- ERROR: (B)
+            else Boolean'Pos (Positive'(Debug_Cnt) = 0));  -- OK. (B)  {2:4}
+   C16 : constant :=
            (if Debug_Cnt /= 0 then 1
-            else Boolean'Pos (Positive'(Debug_Cnt) = 0));
-   C17 : constant :=                       -- ERROR: (F)
+            else Boolean'Pos (Positive'(Debug_Cnt) = 0));  -- ERROR: (B) {2:4}
+   C17 : constant :=
            (if True then 1
             else (case 1 is
                     when 1/Debug_Cnt => 2,
-                    when others => 3));
+                    when others => 3));                    -- ERROR: (F) {4:4}
+
 end B490003;

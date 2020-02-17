@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -33,18 +33,18 @@
 --
 -- TEST DESCRIPTION:
 --      The actual corresponding to an abstract formal type may be either
---      abstract or non-abstract. 
+--      abstract or non-abstract.
 --
 --      Record and private extensions of the formal derived type may be
 --      either abstract or non-abstract, but for non-abstract extensions the
 --      abstract primitive subprograms inherited from the formal type (which,
 --      in turn, have been inherited from the ancestor type) must be
---      overridden in the generic. 
+--      overridden in the generic.
 --
 --      Additionally, within the instance, all abstract primitive subprograms
 --      of the *actual type* must be overridden for non-abstract extensions,
 --      even those which are not primitive subprograms of the ancestor type.
---      
+--
 --
 -- TEST FILES:
 --      The following files comprise this test:
@@ -62,7 +62,7 @@
 --                          part. Added Proc and New_Proc to private
 --                          part of PriExt_Overrides_Inherited. Added
 --                          commentary.
---
+--      21 Nov 19   RLB     Added error location indicators.
 --!
 
 with FC51C00;
@@ -82,18 +82,18 @@ package BC51C01_0 is
    generic
       type Concrete_Anc is abstract new FC51C00.Concrete_Root with private;
    package Concrete_Ancestor is
-      type Rec_Ext  is abstract new Concrete_Anc with null record;    -- OK.
-      type Priv_Ext is abstract new Concrete_Anc with private;        -- OK.
+      type Rec_Ext  is abstract new Concrete_Anc with null record; -- OK. {7;1}
+      type Priv_Ext is abstract new Concrete_Anc with private;     -- OK. {7;1}
    private
-      type Priv_Ext is abstract new Concrete_Anc with null record;    -- OK.
+      type Priv_Ext is abstract new Concrete_Anc with null record; -- OK. {7;1}
    end Concrete_Ancestor;
 
 
    package Concrete_Actual_A is new Concrete_Ancestor
-     (FC51C00.Concrete_Root);                                         -- OK.
+     (FC51C00.Concrete_Root);                                 -- OK.    {1:4;1}
 
    package Abstract_Actual_A is new Concrete_Ancestor
-     (FC51C00.Abstract_Child);                                        -- OK.
+     (FC51C00.Abstract_Child);                                -- OK.    {1:4;1}
 
 
 --
@@ -103,18 +103,18 @@ package BC51C01_0 is
    generic
       type Abstract_Anc is abstract new FC51C00.Abstract_Child with private;
    package Abstract_Ancestor is
-      type Rec_Ext  is abstract new Abstract_Anc with null record;    -- OK.
-      type Priv_Ext is abstract new Abstract_Anc with private;        -- OK.
+      type Rec_Ext  is abstract new Abstract_Anc with null record; -- OK. {7;1}
+      type Priv_Ext is abstract new Abstract_Anc with private;     -- OK. {7;1}
    private
-      type Priv_Ext is abstract new Abstract_Anc with null record;    -- OK.
+      type Priv_Ext is abstract new Abstract_Anc with null record; -- OK. {7;1}
    end Abstract_Ancestor;
 
 
    package Abstract_Actual_B is new Abstract_Ancestor
-     (FC51C00.Abstract_Child);                                        -- OK.
+     (FC51C00.Abstract_Child);                                -- OK.    {1:4;1}
 
    package Concrete_Actual_B is new Abstract_Ancestor
-     (FC51C00.Concrete_GrandChild);                                   -- OK.
+     (FC51C00.Concrete_GrandChild);                           -- OK.    {1:4;1}
 
 
 end BC51C01_0;
@@ -149,7 +149,7 @@ package BC51C01_1 is
 --         as abstract from the ancestor as well as the abstract subprograms
 --         that are unique to the actual type (i.e., not abstract subprograms
 --         of the ancestor).
---         
+--
 -- For this test, the only generics for which an instantiation with the
 -- abstract type FC51C00.Abstract_Child is legal are those in category (2).
 
@@ -337,13 +337,13 @@ package BC51C01 is
 --
 
    package Instance01 is new BC51C01_1.RecExt_Overrides_Inherited
-     (FC51C00.Abstract_Child);                                        -- ERROR:
+     (FC51C00.Abstract_Child);                                -- ERROR: {1:4;1}
                             -- Derived type in instance has abstract primitive
                             -- subprograms (Proc, New_Proc).
 
 
    package Instance02 is new BC51C01_1.RecExt_Overrides_All
-     (FC51C00.Abstract_Child);                                        -- OK.
+     (FC51C00.Abstract_Child);                                -- OK.    {1:4;1}
 
 
 
@@ -352,13 +352,13 @@ package BC51C01 is
 --
 
    package Instance03 is new BC51C01_1.PriExt_Overrides_Inherited
-     (FC51C00.Abstract_Child);                                        -- ERROR:
+     (FC51C00.Abstract_Child);                                -- ERROR: {1:4;1}
                              -- Derived type in instance has abstract primitive
                              -- subprograms (Proc, New_Proc).
 
 
    package Instance04 is new BC51C01_1.PriExt_Overrides_All
-     (FC51C00.Abstract_Child);                                        -- OK.
+     (FC51C00.Abstract_Child);                                -- OK.    {1:4;1}
 
 
 end BC51C01;

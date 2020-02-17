@@ -46,6 +46,8 @@
 --                        enough for the entire ACATS.
 --     28 May 2019   RLB  Added code to make reading of the manual grading
 --                        file more resilient to extra white space.
+--     30 Dec 2019   RLB  Increased the maximum summary value as the ACATS
+--                        has grown to exceed it.
 
 with Trace, Test_Summary;
 package Grading_Data is
@@ -63,7 +65,7 @@ package Grading_Data is
    Event_Trace : Event_Trace_Array(Event_Index);
    Last_Event : Event_Count := 0;
 
-   MAX_SUMMARY_ITEMS : constant := 32_000;
+   MAX_SUMMARY_ITEMS : constant := 40_000;
       -- We have to use a constant as there is no reasonable way to find
       -- out how many records are in a test summary file short of reading
       -- the entire file an extra time. This value is approximately enough

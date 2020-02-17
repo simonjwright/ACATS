@@ -68,13 +68,13 @@
 --      both abstract and non-abstract formal derived types. (Test BC51020
 --      checks cases of inherited abstract subprograms.)
 --
---
+
 -- CHANGE HISTORY:
 --      06 Dec 94   SAIC    ACVC 2.0.
 --      22 Mar 07   RLB     Corrected test so that the functions require
 --                          overriding as the test is expected; also
 --                          corrected the terminology and test description.
---
+--      21 Nov 19   RLB     Added error location indicators.
 --!
 
 package BC51019_0 is
@@ -125,7 +125,7 @@ package BC51019 is
       type Record_Extension is new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- ERROR:
+        end record;                                           -- ERROR: {3:7;1}
                    -- Type has primitive subprograms that require overriding.
       -- function True_Field return Record_Extension requires overriding.
 
@@ -134,7 +134,7 @@ package BC51019 is
       type Record_Ext_Overrides is new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- OK.
+        end record;                                           -- OK.    {3:7;1}
 
       function True_Field return Record_Ext_Overrides;  -- Overrides inherited
                                                         -- function.
@@ -144,7 +144,7 @@ package BC51019 is
       type Abstract_Record_Ext is abstract new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- OK.
+        end record;                                           -- OK.    {3:7;1}
       -- function True_Field return Abstract_Record_Ext is abstract;
 
 
@@ -155,13 +155,13 @@ package BC51019 is
 
 
       type Private_Ext_Overrides is new Formal_Derived
-        with private;                                                 -- OK.
+        with private;                                         -- OK.    {1:7;1}
       -- function True_Field return Private_Ext_Overrides;
 
 
 
       type Abstract_Private_Ext is abstract new Formal_Derived
-        with private;                                                 -- OK.
+        with private;                                         -- OK.    {1:7;1}
       -- function True_Field return Abstract_Private_Ext is abstract;
 
    private
@@ -169,7 +169,7 @@ package BC51019 is
       type Private_Extension is new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- ERROR:
+        end record;                                           -- ERROR: {3:7;1}
                    -- Type has primitive subprograms that require overriding.
       -- function True_Field return Private_Extension requires overriding.
 
@@ -178,7 +178,7 @@ package BC51019 is
       type Private_Ext_Overrides is new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- OK.
+        end record;                                           -- OK.    {3:7;1}
 
       function True_Field return Private_Ext_Overrides; -- Overrides inherited
                                                         -- function.
@@ -188,7 +188,7 @@ package BC51019 is
       type Abstract_Private_Ext is abstract new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- OK.
+        end record;                                           -- OK.    {3:7;1}
       -- function True_Field return Abstract_Private_Ext is abstract;
 
    end Nonabstract_Formal_Derived;
@@ -209,7 +209,7 @@ package BC51019 is
       type Record_Extension is new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- ERROR:
+        end record;                                           -- ERROR: {3:7;1}
                    -- Type has primitive subprograms that require overriding.
       -- function True_Field return Record_Extension requires overriding.
 
@@ -218,7 +218,7 @@ package BC51019 is
       type Record_Ext_Overrides is new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- OK.
+        end record;                                           -- OK.    {3:7;1}
 
       function True_Field return Record_Ext_Overrides;  -- Overrides inherited
                                                         -- function.
@@ -228,7 +228,7 @@ package BC51019 is
       type Abstract_Record_Ext is abstract new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- OK.
+        end record;                                           -- OK.    {3:7;1}
       -- function True_Field return Abstract_Record_Ext is abstract;
 
 
@@ -239,13 +239,13 @@ package BC51019 is
 
 
       type Private_Ext_Overrides is new Formal_Derived
-        with private;                                                 -- OK.
+        with private;                                         -- OK.    {1:7;1}
       -- function True_Field return Private_Ext_Overrides;
 
 
 
       type Abstract_Private_Ext is abstract new Formal_Derived
-        with private;                                                 -- OK.
+        with private;                                         -- OK.    {1:7;1}
       -- function True_Field return Abstract_Private_Ext is abstract;
 
    private
@@ -253,7 +253,7 @@ package BC51019 is
       type Private_Extension is new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- ERROR:
+        end record;                                           -- ERROR: {3:7;1}
                    -- Type has primitive subprograms that require overriding.
       -- function True_Field return Private_Extension requires overriding.
 
@@ -262,7 +262,7 @@ package BC51019 is
       type Private_Ext_Overrides is new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- OK.
+        end record;                                           -- OK.    {3:7;1}
 
       function True_Field return Private_Ext_Overrides; -- Overrides inherited
                                                         -- function.
@@ -272,7 +272,7 @@ package BC51019 is
       type Abstract_Private_Ext is abstract new Formal_Derived with
         record
           B : Boolean;
-        end record;                                                -- OK.
+        end record;                                           -- OK.    {3:7;1}
       -- function True_Field return Abstract_Private_Ext is abstract;
 
    end Abstract_Formal_Derived;
