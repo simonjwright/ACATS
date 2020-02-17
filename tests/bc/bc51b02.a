@@ -3,22 +3,22 @@
 --                             Grant of Unlimited Rights
 --
 --     Under contracts F33600-87-D-0337, F33600-84-D-0280, MDA903-79-C-0687,
---     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained 
+--     F08630-91-C-0015, and DCA100-97-D-0025, the U.S. Government obtained
 --     unlimited rights in the software and documentation contained herein.
---     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making 
---     this public release, the Government intends to confer upon all 
---     recipients unlimited rights  equal to those held by the Government.  
---     These rights include rights to use, duplicate, release or disclose the 
---     released technical data and computer software in whole or in part, in 
---     any manner and for any purpose whatsoever, and to have or permit others 
+--     Unlimited rights are defined in DFAR 252.227-7013(a)(19).  By making
+--     this public release, the Government intends to confer upon all
+--     recipients unlimited rights  equal to those held by the Government.
+--     These rights include rights to use, duplicate, release or disclose the
+--     released technical data and computer software in whole or in part, in
+--     any manner and for any purpose whatsoever, and to have or permit others
 --     to do so.
 --
 --                                    DISCLAIMER
 --
 --     ALL MATERIALS OR INFORMATION HEREIN RELEASED, MADE AVAILABLE OR
---     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED 
+--     DISCLOSED ARE AS IS.  THE GOVERNMENT MAKES NO EXPRESS OR IMPLIED
 --     WARRANTY AS TO ANY MATTER WHATSOEVER, INCLUDING THE CONDITIONS OF THE
---     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE 
+--     SOFTWARE, DOCUMENTATION OR OTHER INFORMATION RELEASED, MADE AVAILABLE
 --     OR DISCLOSED, OR THE OWNERSHIP, MERCHANTABILITY, OR FITNESS FOR A
 --     PARTICULAR PURPOSE OF SAID MATERIAL.
 --*
@@ -61,7 +61,7 @@
 --
 -- CHANGE HISTORY:
 --      06 Dec 94   SAIC    ACVC 2.0
---
+--      21 Nov 19   RLB     Added error location indicators.
 --!
 
 with FC51B00;  -- Indefinite subtype definitions.
@@ -75,14 +75,14 @@ package BC51B02 is
    generic
 
       type ClassWideAncestor is new FC51B00.Vector'Class
-        with private;                                                 -- ERROR:
+        with private;                                         -- ERROR: {1:7;1}
                                                      -- Ancestor is class-wide.
 
-      type KnownDiscriminantPart (S : Tiny) is new FC51B00.Square;    -- ERROR:
+      type KnownDiscriminantPart (S : Tiny) is
+        new FC51B00.Square;                                   -- ERROR: {1:7;1}
                             -- Formal derived type has known discriminant part.
 
    package Illegal is end;
-
 
    --
    -- Formal derived type cases:
@@ -91,7 +91,7 @@ package BC51B02 is
    generic
       type AncestorIsUnconstrainedNonFormalArray is new FC51B00.Matrix;
    package One is
-      Object : AncestorIsUnconstrainedNonFormalArray;            -- ERROR:
+      Object : AncestorIsUnconstrainedNonFormalArray;         -- ERROR: {7;1}
                                               -- Subtype is unconstrained.
    end One;
 
@@ -102,7 +102,7 @@ package BC51B02 is
       type UnconstrainedArray is array (Index range <>) of Item;
       type AncestorIsUnconstrainedFormalArray is new UnconstrainedArray;
    package Two is
-      Object : AncestorIsUnconstrainedFormalArray;               -- ERROR:
+      Object : AncestorIsUnconstrainedFormalArray;            -- ERROR: {7;1}
                                               -- Subtype is unconstrained.
    end Two;
 
@@ -111,7 +111,7 @@ package BC51B02 is
       type AncestorIsDiscrimRecordNoDefaults is new FC51B00.Square;
    package Three is
       type Rec is record
-         Field : AncestorIsDiscrimRecordNoDefaults;              -- ERROR:
+         Field : AncestorIsDiscrimRecordNoDefaults;           -- ERROR: {7;1}
                                     -- Component subtype is unconstrained.
       end record;
    end Three;
@@ -120,7 +120,7 @@ package BC51B02 is
    generic
       type AncestorIsDiscrimTagged is new FC51B00.Square_Pair with private;
    package Four is
-      Object : AncestorIsDiscrimTagged;                          -- ERROR:
+      Object : AncestorIsDiscrimTagged;                       -- ERROR: {7;1}
                                               -- Subtype is unconstrained.
    end Four;
 
@@ -130,17 +130,17 @@ package BC51B02 is
       type AncestorHasUnknownDiscrim is new Formal_Package.Vectors
         with private;
    package Five is
-      Object : AncestorHasUnknownDiscrim;                        -- ERROR:
+      Object : AncestorHasUnknownDiscrim;                     -- ERROR: {7;1}
                                               -- Subtype is unconstrained.
    end Five;
 
 
    generic
       type FormalHasUnknownDiscrim (<>) is new FC51B00.Vector with private;
-   package Six is  
-      type Table is array (1 .. 3) of FormalHasUnknownDiscrim;   -- ERROR:
+   package Six is
+      type Table is array (1 .. 3) of FormalHasUnknownDiscrim; -- ERROR: {7;1}
                                     -- Component subtype is unconstrained.
-   end Six; 
+   end Six;
 
 
    --
@@ -149,16 +149,16 @@ package BC51B02 is
 
    generic
       type FormalHasUnknownDiscrim (<>) is tagged private;
-   package Seven is  
-      Object : FormalHasUnknownDiscrim;                          -- ERROR:
+   package Seven is
+      Object : FormalHasUnknownDiscrim;                       -- ERROR: {7;1}
                                               -- Subtype is unconstrained.
-   end Seven; 
+   end Seven;
 
 
    generic
       type FormalHasKnownDiscrim (S : Natural) is private;
-   package Eight is  
-      Object : FormalHasKnownDiscrim;                            -- ERROR:
+   package Eight is
+      Object : FormalHasKnownDiscrim;                         -- ERROR: {7;1}
                                               -- Subtype is unconstrained.
    end Eight;
 

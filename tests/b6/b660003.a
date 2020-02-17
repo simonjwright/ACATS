@@ -33,26 +33,30 @@
 --                          obsolete because functions (but not operators) can
 --                          have parameters of other modes. Added enumeration
 --                          and instance subtests.
+--      19 Nov 19   RLB     Fixed overlong lines; added error location
+--                          indicators.
 
-package B660003_0 is
+package B660003 is
 
      type T is new Integer range 0 .. 100;
 
      type Color is (Yellow, Red, Green, Blue);
 
-     function "+" (I : in out T; J : in T) return T;   -- ERROR: In Out.
+     function "+" (I : in out T; J : in T) return T;   -- ERROR: In Out.  {6}
 
-     function "-" (I : out T) return T;                -- ERROR: Out.
+     function "-" (I : out T) return T;                -- ERROR: Out.     {6}
 
-     function "*" (I : T; J : out T) return T;         -- ERROR: Out.
+     function "*" (I : T; J : out T) return T;         -- ERROR: Out.     {6}
 
-     function "mod" (I : T; J : in out Color) return T;-- ERROR: In Out.
+     function "mod" (I : T; J : in out Color) return T;-- ERROR: In Out.  {6}
 
-     function "/" (I : access T; J : T) return T;      -- OK. Access is not a mode!
+     function "/" (I : access T; J : T) return T;      -- OK. Access is   {6}
+                                                       --     not a mode!
 
-     function Flab (I : in out T; J : out T) return T; -- OK. Not an operator.
+     function Flab (I : in out T; J : out T) return T; -- OK. Not an      {6}
+                                                       --     operator.
 
-     function ">=" (I : out Color; J : Color) return Boolean; -- ERROR: Out.
+     function ">=" (I : out Color; J : Color) return Boolean; -- ERROR: Out.{6}
 
      generic
          type D is (<>);
@@ -66,22 +70,27 @@ package B660003_0 is
          type D is (<>);
      function Gen3 (A : D; B : access D) return Boolean;
 
-     function "and" is new Gen1 (T);                   -- ERROR: Out.
+     function "and" is new Gen1 (T);                   -- ERROR: Out.     {6}
 
-     function "xor" is new Gen2 (T);                   -- ERROR: In Out.
+     function "xor" is new Gen2 (T);                   -- ERROR: In Out.  {6}
 
-     function "or" is new Gen3 (T);                    -- OK. Access is not a mode!
+     function "or" is new Gen3 (T);                    -- OK. Access is   {6}
+                                                       --     not a mode!
 
-     function Foo is new Gen1 (T);                     -- OK. Not an operator.
+     function Foo is new Gen1 (T);                     -- OK. Not an      {6}
+                                                       --     operator.
 
-     function Bar is new Gen2 (T);                     -- OK. Not an operator.
+     function Bar is new Gen2 (T);                     -- OK. Not an      {6}
+                                                       --     operator.
 
-     function "<=" is new Gen1 (Color);                -- ERROR: Out.
+     function "<=" is new Gen1 (Color);                -- ERROR: Out.     {6}
 
-     function "<" is new Gen2 (Color);                 -- ERROR: In Out.
+     function "<" is new Gen2 (Color);                 -- ERROR: In Out.  {6}
 
-     function ">" is new Gen3 (Color);                 -- OK. Access is not a mode!
+     function ">" is new Gen3 (Color);                 -- OK. Access is   {6}
+                                                       --     not a mode!
 
-     function Glow is new Gen1 (Color);                -- OK. Not an operator.
+     function Glow is new Gen1 (Color);                -- OK. Not an
+                                                       --     operator.   {6}
 
-end B660003_0;
+end B660003;

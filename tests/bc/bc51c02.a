@@ -61,6 +61,7 @@
 --                          PriExt_Overrides_Explicit.
 --      22 Mar 07   RLB     Corrected to avoid problems with 3.9.3(4/2);
 --                          updated terminology.
+--      21 Nov 19   RLB     Added error location indicators.
 --!
 
 with FC51C00;
@@ -78,21 +79,21 @@ package BC51C02_0 is
       type Rec_Ext  is abstract new Formal_Private with
         record
           B : Boolean;
-        end record;                                                   -- OK.
-      type Priv_Ext is abstract new Formal_Private with private;      -- OK.
+        end record;                                              -- OK. {3:7;1}
+      type Priv_Ext is abstract new Formal_Private with private; -- OK. {7;1}
    private
       type Priv_Ext is abstract new Formal_Private with
         record
           B : Boolean;
-        end record;                                                   -- OK.
+        end record;                                              -- OK. {3:7;1}
    end Formal_Private_Parm;
 
 
    package Concrete_Actual is new Formal_Private_Parm
-     (FC51C00.Concrete_Root);                                         -- OK.
+     (FC51C00.Concrete_Root);                                    -- OK. {1:4;1}
 
    package Abstract_Actual is new Formal_Private_Parm
-     (FC51C00.Abstract_Child);                                        -- OK.
+     (FC51C00.Abstract_Child);                                   -- OK. {1:4;1}
 
 
 end BC51C02_0;
@@ -333,20 +334,20 @@ package BC51C02 is
 --
 
    package Instance01 is new BC51C02_1.RecExt_No_Overrides
-     (FC51C00.Abstract_Child);                                        -- ERROR:
+     (FC51C00.Abstract_Child);                                -- ERROR: {1:4;1}
                             -- Derived type in instance has primitive
                             -- subprograms that require overriding (Proc,
-			    -- New_Proc, Func).
+                            -- New_Proc, Func).
 
 
    package Instance02 is new BC51C02_1.RecExt_Overrides_Explicit
-     (FC51C00.Abstract_Child);                                        -- ERROR:
+     (FC51C00.Abstract_Child);                                -- ERROR: {1:4;1}
                             -- Derived type in instance has a primitive
                             -- subprogram that requires overriding (Func).
 
 
    package Instance03 is new BC51C02_1.RecExt_Overrides_All
-     (FC51C00.Abstract_Child);                                        -- OK.
+     (FC51C00.Abstract_Child);                                -- OK.    {1:4;1}
 
 
 
@@ -355,20 +356,20 @@ package BC51C02 is
 --
 
    package Instance04 is new BC51C02_1.PriExt_No_Overrides
-     (FC51C00.Abstract_Child);                                        -- ERROR:
+     (FC51C00.Abstract_Child);                                -- ERROR: {1:4;1}
                             -- Derived type in instance has primitive
                             -- subprograms that require overriding (Proc,
-			    -- New_Proc, Func).
+                            -- New_Proc, Func).
 
 
    package Instance05 is new BC51C02_1.PriExt_Overrides_Explicit
-     (FC51C00.Abstract_Child);                                        -- ERROR:
+     (FC51C00.Abstract_Child);                                -- ERROR: {1:4;1}
                             -- Derived type in instance has a primitive
                             -- subprogram that requires overriding (Func).
 
 
    package Instance06 is new BC51C02_1.PriExt_Overrides_All
-     (FC51C00.Abstract_Child);                                        -- OK.
+     (FC51C00.Abstract_Child);                                -- OK.    {1:4;1}
 
 
 end BC51C02;
