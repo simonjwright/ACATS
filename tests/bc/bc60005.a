@@ -57,6 +57,8 @@
 -- CHANGE HISTORY:
 --     12 Jun 2018 RLB Created test from similar BC40003.
 --     26 Jul 2018 RLB Corrected the middle test objective.
+--     17 Mar 2020 RLB Corrected results for InstG51, InstG61, InstGF51, and
+--                     InstGF61.
 --
 procedure BC60005 is
 
@@ -422,12 +424,12 @@ begin
          package InstG21 is new Gen01 (GProc2);          -- OK. {10;1}
          package InstG31 is new Gen02 (GProc3);          -- OK. {10;1}
          package InstG41 is new Gen02 (GProc4);          -- ERROR: {10;1}
-         package InstG51 is new Gen03 (GProc5);          -- ERROR: {10;1}
-         package InstG61 is new Gen03 (GProc6);          -- OK. {10;1}
+         package InstG51 is new Gen03 (GProc5);          -- OK. {10;1}
+         package InstG61 is new Gen03 (GProc6);          -- ERROR: {10;1}
          package InstGF31 is new GenF2 (GFunc3);         -- OK. {10;1}
          package InstGF41 is new GenF2 (GFunc4);         -- ERROR: {10;1}
-         package InstGF51 is new GenF3 (GFunc5);         -- ERROR: {10;1}
-         package InstGF61 is new GenF3 (GFunc6);         -- OK. {10;1}
+         package InstGF51 is new GenF3 (GFunc5);         -- OK. {10;1}
+         package InstGF61 is new GenF3 (GFunc6);         -- ERROR: {10;1}
 
          procedure Dummy is
             package InstG71 is new Gen01 (GProc1);       -- ERROR: {13;1}
