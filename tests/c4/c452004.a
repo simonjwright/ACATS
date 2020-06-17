@@ -66,6 +66,7 @@
 --
 -- CHANGE HISTORY:
 --    27 Mar 2019   RLB   Created test.
+--    06 Feb 2020   RLB   Corrected types of LTemp and RTemp.
 --
 --!
 
@@ -133,7 +134,7 @@ package body C452004_A is
          return Left.Num = Right.Num;
       else
          declare
-            LTemp, RTemp : Natural;
+            LTemp, RTemp : Integer;
          begin
             LTemp := Left.Num*Right.Dem;
             RTemp := Right.Num*Left.Dem;
@@ -161,7 +162,7 @@ package body C452004_A is
          return (Num => Left.Num + Right.Num, Dem => Left.Dem);
       else
          declare
-            LTemp, RTemp : Natural;
+            LTemp, RTemp : Integer;
          begin
             LTemp := Left.Num*Right.Dem;
             RTemp := Right.Num*Left.Dem;
