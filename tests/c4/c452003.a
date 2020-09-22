@@ -55,7 +55,7 @@
 --     provide that. The abstraction constructor wants to communicate that
 --     the actual parameters have to have library-level accessibility - they
 --     can do that with a membership in a precondition. Similarly, the client
---     programmer wants to avoid violated the precondition (regardless of how
+--     programmer wants to avoid violating the precondition (regardless of how
 --     it is given), and they can use a membership to do that.
 --
 --     We only declare a skeleton of this structure, declaring Root_Type and
@@ -82,6 +82,10 @@
 
 -- CHANGE HISTORY:
 --    28 Sep 2018   RLB   Created test.
+--    13 May 2020   RLB   Corrected Force_Save, the inner if branches
+--                        were backwards.
+--    14 May 2020   RLB   Corrected Force_Op, which didn't test the objective.
+--    22 May 2020   RLB   Typos in previous version.
 --
 --!
 
@@ -104,7 +108,7 @@ package C452003_Root is
 
    type TC_Result is (Is_Null, Done, Wrong_Kind);
 
-   procedure Force_Op (Obj : access Root_Type'Class;
+   procedure Force_Op (Obj : access constant Root_Type'Class;
                        Result : out TC_Result);
 
 end C452003_Root;
@@ -137,16 +141,14 @@ package body C452003_Root is
       end if;
    end Is_Present;
 
-   type Any_Cnst_Root_Ptr is access constant Root_Type'Class;
-
-   procedure Force_Op (Obj : access Root_Type'Class;
+   procedure Force_Op (Obj : access constant Root_Type'Class;
                        Result : out TC_Result) is
    begin
-      if Obj in Any_Cnst_Root_Ptr then -- (Objective 1)
+      if Obj in Any_Root_Ptr then -- (Objective 1)
          if Obj in Non_Null_Any_Root_Ptr then -- Should never get here.
-            Result := Is_Null;
-         else
             Result := Done;
+         else
+            Result := Is_Null;
          end if;
       else
          Result := Wrong_Kind;
@@ -211,11 +213,11 @@ package body C452003_Root.Child is
    begin
       if Obj in Any_Child_Ptr then -- (Objective 3)
          if Obj in Non_Null_Any_Root_Ptr then -- (Objective 4)
-            Global_Save := null;
-            Result := Is_Null;
-         else
             Global_Save := Any_Child_Ptr (Obj);
             Result := Done;
+         else
+            Global_Save := null;
+            Result := Is_Null;
          end if;
       else
          Result := Wrong_Tag;
@@ -426,7 +428,7 @@ package body C452003A is
             end if;
          exception
             when Program_Error =>
-               Report.Failed ("Unexpected Program_Errpr from Force_Save " &
+               Report.Failed ("Unexpected Program_Error from Force_Save " &
                   "with null");
          end;
          begin
@@ -471,7 +473,7 @@ package body C452003A is
             end if;
          exception
             when Program_Error =>
-               Report.Failed ("Unexpected Program_Errpr from Force_Op " &
+               Report.Failed ("Unexpected Program_Error from Force_Op " &
                   "with null");
          end;
          begin
