@@ -59,6 +59,7 @@
 --     26 Jul 2018 RLB Corrected the middle test objective.
 --     17 Mar 2020 RLB Corrected results for InstG51, InstG61, InstGF51, and
 --                     InstGF61.
+--     12 May 2020 RLB Corrected test case for InstGF1 @437.
 --
 procedure BC60005 is
 
@@ -434,7 +435,7 @@ begin
          procedure Dummy is
             package InstG71 is new Gen01 (GProc1);       -- ERROR: {13;1}
             package InstG81 is new Gen02 (GProc4);       -- ERROR: {13;1}
-            package InstGF1 is new GenF3 (GFunc5);       -- ERROR: {13;1}
+            package InstGF1 is new GenF3 (GFunc6);       -- ERROR: {13;1}
          begin
             null;
          end Dummy;

@@ -57,6 +57,8 @@
 -- CHANGE HISTORY:
 --     13 Jun 2018 RLB Created test from similar BC60005.
 --     26 Jul 2018 RLB Corrected the wording of the middle test objective.
+--     13 May 2020 RLB Corrected results for RenG51, RenG61, RenGF51, and
+--                     RenGF61. Corrected test case for InstGF1 @412.
 --
 procedure B854002 is
 
@@ -391,17 +393,17 @@ begin
          procedure RenG41 (P : not null access Integer)
                              renames GProc4;             -- ERROR: {1:10;1}
          procedure RenG51 (P : in not null Int_PS_Ptr)
-                             renames GProc5;             -- ERROR: {1:10;1}
+                             renames GProc5;             -- OK. {1:10;1}
          procedure RenG61 (P : in not null Int_PS_Ptr)
-                             renames GProc6;             -- OK. {1:10;1}
+                             renames GProc6;             -- ERROR: {1:10;1}
          function RenGF31 (P : access Integer)
             return not null access Integer renames GFunc3;-- OK. {1:10;1}
          function RenGF41 (P : access Integer)
             return not null access Integer renames GFunc4;-- ERROR: {1:10;1}
          function RenGF51 (P : in Int_PS_Ptr)
-            return not null Int_PS_Ptr renames GFunc5;   -- ERROR: {1:10;1}
+            return not null Int_PS_Ptr renames GFunc5;   -- OK. {1:10;1}
          function RenGF61 (P : in Int_PS_Ptr)
-            return not null Int_PS_Ptr renames GFunc6;   -- OK. {1:10;1}
+            return not null Int_PS_Ptr renames GFunc6;   -- ERROR: {1:10;1}
 
          procedure Dummy is
             procedure RenG71 (P : in out not null Int_Ptr)
@@ -409,7 +411,7 @@ begin
             procedure RenG81 (P : not null access Integer)
                              renames GProc4;             -- ERROR: {1:13;1}
             function RenGF1 (P : in Int_PS_Ptr)
-               return not null Int_PS_Ptr renames GFunc5;-- ERROR: {1:13;1}
+               return not null Int_PS_Ptr renames GFunc6;-- ERROR: {1:13;1}
          begin
             null;
          end Dummy;

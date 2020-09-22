@@ -56,6 +56,8 @@
 --            would be nonsense, we assume that AI is supported.
 --        (G) A derived type that inherits primitive subprograms cannot specify
 --            a different value of aspect Default_Value - 13.1(10/4).
+--            Note: This rule will be repealed in Ada 202x by AI12-0376-1, so
+--            we no longer test it.
 --        (H) The expression for the Default_Value aspect of a type given in
 --            the visible part of a package cannot name a declaration given
 --            in the private part - 13.1.1(11/3).
@@ -85,9 +87,10 @@
 --
 -- CHANGE HISTORY:
 --     19 Mar 20   RLB     Created test from existing BDD2007 for Stream_Size.
+--     14 May 20   RLB     Removed (G) test cases as the rule will be repealed
+--                         by AI12-0376-1.
 --
 --!
-with Ada.Streams;
 procedure B350001 is
 
    Outer_Default_Value : constant := 10;
@@ -166,19 +169,23 @@ procedure B350001 is
       Not_Set : constant Tst19 :=
                                Unknown;  -- POSSIBLE ERROR: [Set04] (F) {1:7;1}
 
-      type Tst20 is mod 2**8
-         with Default_Value => 0;        -- OK. {1:7;1}
-      function Is_Primitive (A : Tst20) return Boolean is (True);
+      --type Tst20 is mod 2**8
+      --   with Default_Value => 0;        -- OK. {1:7;1}
+      --function Is_Primitive (A : Tst20) return Boolean is (True);
 
-      type Tst21 is new Tst20
-         with Default_Value => 10;       -- ERROR: (G) {1:7;1}
+      --type Tst21 is new Tst20
+      --   with Default_Value => 10;       -- ERROR: (G) {1:7;1}
+      --   This will be legal in Ada 202x, so we don't test it nor
+      --   require it to work for Ada 2012.
+      
+      --type Tst22 is (Unknown, Raw, Bound, Solved)
+      --   with Default_Value => Unknown;  -- OK. {1:7;1}
+      --function Bad_Value return Tst22 is (Unknown);
 
-      type Tst22 is (Unknown, Raw, Bound, Solved)
-         with Default_Value => Unknown;  -- OK. {1:7;1}
-      function Bad_Value return Tst22 is (Unknown);
-
-      type Tst23 is new Tst22
-         with Default_Value => Solved;   -- ERROR: (G) {1:7;1}
+      --type Tst23 is new Tst22
+      --   with Default_Value => Solved;   -- ERROR: (G) {1:7;1}
+      --   This will be legal in Ada 202x, so we don't test it nor
+      --   require it to work for Ada 2012.
 
       type Tst24 is mod 2 ** 8
          with Default_Value =>

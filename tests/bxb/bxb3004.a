@@ -42,6 +42,8 @@
 --       (D) It cannot be specified for a derived record type whose parent
 --           type is a discriminated record type with a variant part that
 --           has primitive operations;
+--           Note: This rule will be repealed in Ada 202x by AI12-0376-1, so
+--           we no longer test it.
 --       (E) Its expression cannot have a type other than Boolean;
 --       (F) Its expression cannot be a non-static Boolean expression.
 --
@@ -62,30 +64,32 @@
 --
 --  CHANGE HISTORY:
 --     22 APR 2015  RLB  Created test.
+--     14 May 2020  RLB  Removed (D) test case as the rule will be repealed
+--                       by AI12-0376-1. Added error location indicators.
 --!
-with Interfaces.C; use Interfaces.C;             -- N/A => ERROR.
+with Interfaces.C; use Interfaces.C;             -- N/A => ERROR. {1}
 package BXB3004 is
 
    ARod : constant Integer := 12;
 
    type My_Int is range 1 .. 10
-      with Unchecked_Union;                                      -- ERROR: (A)
+      with Unchecked_Union;                               -- ERROR: (A) {1:4;1}
 
    type Int_Arr is array (1..10) of Int
-      with Unchecked_Union;                                      -- ERROR: (A)
+      with Unchecked_Union;                               -- ERROR: (A) {1:4;1}
 
    type Priv (D : Int := 0) is private
-      with Unchecked_Union;                                      -- ERROR: (A)
+      with Unchecked_Union;                               -- ERROR: (A) {1:4;1}
 
    type No_Disc is record
       Comp_1 : Int;
       Comp_2 : Unsigned_Char;
-   end record with Unchecked_Union;                              -- ERROR: (B)
+   end record with Unchecked_Union;                       -- ERROR: (B) {3:4;1}
 
    type No_Var (D : Unsigned_Char := 0) is record
       Comp_1 : Int;
       Comp_2 : Signed_Char;
-   end record with Unchecked_Union;                              -- ERROR: (C)
+   end record with Unchecked_Union;                       -- ERROR: (C) {3:4;1}
 
    type Both (D : Unsigned_Char := 0) is record
       case D is
@@ -94,7 +98,7 @@ package BXB3004 is
          when others =>
             Alt_2 : Unsigned_Char;
       end case;
-   end record with Unchecked_Union => True;                      -- OK.
+   end record with Unchecked_Union => True;               -- OK. {7:4;1}
 
    type Not_UU (D : Unsigned_Char := 0) is record
       case D is
@@ -111,9 +115,11 @@ package BXB3004 is
 
    NVar : Not_UU; -- Freeze Not_UU.
 
-   type Bad_Der is new Not_UU with Unchecked_Union;              -- ERROR: (D)
+-- type Bad_Der is new Not_UU with Unchecked_Union;       -- ERROR: (D) {4;1}
+   --   This will be legal in Ada 202x, so we don't test it nor
+   --   require it to work for Ada 2012.
 
-   type OK_Der is new Both with Unchecked_Union => True;         -- OK.
+   type OK_Der is new Both with Unchecked_Union => True;  -- OK. {4;1}
 
    type QB (D : Unsigned_Char := 0) is record
       case D is
@@ -122,7 +128,7 @@ package BXB3004 is
          when others =>
             Alt_2 : Unsigned_Char;
       end case;
-   end record with Unchecked_Union => ARod;                      -- ERROR: (E)
+   end record with Unchecked_Union => ARod;               -- ERROR: (E) {7:4;1}
 
    type LB (D : Unsigned_Char := 0) is record
       case D is
@@ -131,7 +137,7 @@ package BXB3004 is
          when others =>
             Alt_2 : Unsigned_Char;
       end case;
-   end record with Unchecked_Union => NVar.D /= 0;               -- ERROR: (F)
+   end record with Unchecked_Union => NVar.D /= 0;        -- ERROR: (F) {7:4;1}
 
    type Great (D : Unsigned_Char := 0) is record
       case D is
@@ -140,18 +146,18 @@ package BXB3004 is
          when others =>
             Alt_2 : Unsigned_Char;
       end case;
-   end record with Unchecked_Union => ARod = 12;                 -- OK.
+   end record with Unchecked_Union => ARod = 12;          -- OK. {7:4;1}
 
 private
 
-   type Priv (D : Int := 0) is record                            -- OK.
+   type Priv (D : Int := 0) is record                     
       case D is
          when 0 =>
             Alt_1 : Signed_Char;
          when others =>
             Alt_2 : Unsigned_Char;
       end case;
-   end record;
+   end record;                                            -- OK. {7:4;1}
 
 end BXB3004;
 

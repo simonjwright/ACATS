@@ -55,6 +55,8 @@
 --            type or of a subtype of it.)
 --        (G) A derived type that inherits primitive subprograms cannot specify
 --            a different value of aspect Default_Component_Value - 13.1(10/4).
+--            Note: This rule will be repealed in Ada 202x by AI12-0376-1, so
+--            we no longer test it.
 --        (H) The expression for the Default_Component_Value aspect of a type
 --            given in the visible part of a package cannot name a declaration
 --            given in the private part - 13.1.1(11/3).
@@ -84,9 +86,10 @@
 --
 -- CHANGE HISTORY:
 --     19 Mar 20   RLB     Created test from existing B350001 for Stream_Size.
+--     14 May 20   RLB     Removed (G) test cases as the rule will be repealed
+--                         by AI12-0376-1.
 --
 --!
-with Ada.Streams;
 procedure B360001 is
 
    Outer_Default_Component_Value : constant := 10;
@@ -167,19 +170,23 @@ procedure B360001 is
       type Tst16 is array (1..10) of Kind
          with Default_Component_Value => Kind'Val(0); -- OK. {1:7;1}
 
-      type Tst17 is array (1..10) of Small_Mod
-         with Default_Component_Value => 0;        -- OK. {1:7;1}
-      function Is_Primitive (A : Tst17) return Boolean is (True);
+      --type Tst17 is array (1..10) of Small_Mod
+      --   with Default_Component_Value => 0;        -- OK. {1:7;1}
+      --function Is_Primitive (A : Tst17) return Boolean is (True);
 
-      type Tst18 is new Tst17
-         with Default_Component_Value => 10;       -- ERROR: (G) {1:7;1}
+      --type Tst18 is new Tst17
+      --   with Default_Component_Value => 10;       -- ERROR: (G) {1:7;1}
+      --   This will be legal in Ada 202x, so we don't test it nor
+      --   require it to work for Ada 2012.
 
-      type Tst19 is array (1..10) of Kind
-         with Default_Component_Value => Unknown;  -- OK. {1:7;1}
-      function Bad_Value return Tst19 is (1 .. 10 => Unknown);
+      --type Tst19 is array (1..10) of Kind
+      --   with Default_Component_Value => Unknown;  -- OK. {1:7;1}
+      --function Bad_Value return Tst19 is (1 .. 10 => Unknown);
 
-      type Tst20 is new Tst19
-         with Default_Component_Value => Solved;   -- ERROR: (G) {1:7;1}
+      --type Tst20 is new Tst19
+      --   with Default_Component_Value => Solved;   -- ERROR: (G) {1:7;1}
+      --   This will be legal in Ada 202x, so we don't test it nor
+      --   require it to work for Ada 2012.
 
       type Tst21 is array (1..10) of Small_Mod
          with Default_Component_Value =>
