@@ -128,6 +128,7 @@
 --     23 APR 2015  RLB  Modernized objective, ensured that all components
 --                       of unions are C-compatible, added applicability
 --                       criteria, removed compiler bug workaround.
+--     13 JUL 2020  JAC  Actually check that an exception is raised.
 --
 --!
 
@@ -910,6 +911,7 @@ begin
 
    begin
       Test_EQ ("T001", T001);
+      Failed ("T001 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T001");
@@ -928,6 +930,7 @@ begin
 
    begin
       Test_EQ ("T003", T003);
+      Failed ("T003 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T003");
@@ -946,6 +949,7 @@ begin
 
    begin
       Test_EQ ("T005", T005);
+      Failed ("T005 Exception not raised");
     exception
       when Program_Error =>
          Correct_PE ("T005");
@@ -968,6 +972,7 @@ begin
 
    begin
       Test_EQ ("T009", T009);
+      Failed ("T009 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T009");
@@ -977,6 +982,7 @@ begin
 
    begin
       Test_EQ ("T010", T010);
+      Failed ("T010 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T010");
@@ -986,6 +992,7 @@ begin
 
    begin
       Test_EQ ("T011", T011);
+      Failed ("T011 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T011");
@@ -1004,6 +1011,7 @@ begin
 
    begin
       Test_EQ ("T013", T013);
+      Failed ("T013 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T013");
@@ -1022,6 +1030,7 @@ begin
 
    begin
       Test_EQ ("T015", T015);
+      Failed ("T015 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T015");
@@ -1040,6 +1049,7 @@ begin
 
    begin
       Test_EQ ("T017", T017);
+      Failed ("T017 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T017");
@@ -1062,6 +1072,7 @@ begin
 
    begin
       Test_EQ ("T021", T021);
+      Failed ("T021 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T021");
@@ -1071,6 +1082,7 @@ begin
 
    begin
       Test_EQ ("T022", T022);
+      Failed ("T022 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T022");
@@ -1080,6 +1092,7 @@ begin
 
    begin
       Test_EQ ("T023", T023);
+      Failed ("T023 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T023");
@@ -1098,6 +1111,7 @@ begin
 
    begin
       Test_EQ ("T025", T025);
+      Failed ("T025 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T025");
