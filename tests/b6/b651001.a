@@ -40,7 +40,7 @@
 --
 -- CHANGE HISTORY:
 --     31 Mar 17   RLB     Created test.
---
+--     29 Sep 20   RLB     Corrected pragmas.
 --!
 procedure B651001 is
 
@@ -173,10 +173,10 @@ procedure B651001 is
       pragma No_Return (Check_Error_2);
 
       procedure Check_Error_3 (Code : in Natural);
-      pragma No_Return (Check_Error_1);
+      pragma No_Return (Check_Error_3);
 
       procedure Check_Error_4 (Code : in Natural);
-      pragma No_Return (Check_Error_2);
+      pragma No_Return (Check_Error_4);
 
    private
       -- Renames-as-body checks:

@@ -58,6 +58,7 @@
 --     23 APR 2015  RLB  Modernized objective, ensured that all components
 --                       of unions are C-compatible, added applicability
 --                       criteria, removed compiler bug workaround.
+--     13 JUL 2020  JAC  Actually check that an exception is raised.
 --!
 with Report; use Report;
 with Interfaces.C; use Interfaces.C;                    -- N/A => ERROR.
@@ -141,7 +142,7 @@ begin
 
    begin
       T001;
-      --Comment ("T001 - Conversion complete");
+      Failed ("T001 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T001");

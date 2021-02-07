@@ -128,6 +128,7 @@
 --     23 APR 2015  RLB  Modernized objective, ensured that all components
 --                       of unions are C-compatible, added applicability
 --                       criteria, removed compiler bug workaround.
+--     13 JUL 2020  JAC  Actually check that an exception is raised.
 --!
 
 with Report; use Report;
@@ -319,7 +320,7 @@ procedure CXB3020 is
       return Obj1 /= Obj2;
    end T007;
 
-   --  Must raise Program_Error since Comp_T2_1 laks inferable discriminants
+   --  Must raise Program_Error since Comp_T2_1 lacks inferable discriminants
    function T008 return Boolean is
       type T1 (I : Int := 0) is record
          case I is
@@ -1009,6 +1010,7 @@ begin
 
    begin
       Test_EQ ("T008", T008);
+      Failed ("T008 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T008");
@@ -1018,6 +1020,7 @@ begin
 
    begin
       Test_EQ ("T009", T009);
+      Failed ("T009 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T009");
@@ -1117,6 +1120,7 @@ begin
 
    begin
       Test_EQ ("T022", T022);
+      Failed ("T022 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T022");
@@ -1126,6 +1130,7 @@ begin
 
    begin
       Test_EQ ("T023", T023);
+      Failed ("T023 Exception not raised");
    exception
       when Program_Error =>
          Correct_PE ("T023");
