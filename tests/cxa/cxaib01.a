@@ -54,6 +54,8 @@
 --
 -- CHANGE HISTORY:
 --    23 Dec 2020   RLB   Created test.
+--    29 Dec 2020   RLB   Corrected wrong instance name, qualified some
+--                        aggregates for Ada 202x compatibility.
 --
 --!
 with FXAIB00;
@@ -106,29 +108,29 @@ begin
 
    -- Insert data, saving cursors:
    Static_Locations.Insert (Before => Static_Data.No_Element,
-                            New_Item => (X => 100, Y => 50),
+                            New_Item => FXAIB00.Location'(X => 100, Y => 50),
                             Position => Sheboygan);
    Static_Locations.Insert (Before => Static_Data.No_Element,
-                            New_Item => (X => 0, Y => 0),
+                            New_Item => FXAIB00.Location'(X => 0, Y => 0),
                             Position => Madison);
    Static_Locations.Insert (Before => Static_Data.No_Element,
-                            New_Item => (X => 0, Y => 150),
+                            New_Item => FXAIB00.Location'(X => 0, Y => 150),
                             Position => Wausaw);
    Static_Locations.Insert (Before => Static_Data.No_Element,
-                            New_Item => (X => 75, Y => 120),
+                            New_Item => FXAIB00.Location'(X => 75, Y => 120),
                             Position => Green_Bay);
 
-   Moveable_Locations.Insert (Before => Static_Data.No_Element,
-                              New_Item => (Id => <>,
-                                           Loc => (X => 100, Y => 50)),
+   Moveable_Locations.Insert (Before => Moveable_Data.No_Element,
+                              New_Item => FXAIB00.Tagged_Location'(Id => <>,
+                                             Loc => (X => 100, Y => 50)),
                               Position => Windstar);
-   Moveable_Locations.Insert (Before => Static_Data.No_Element,
-                              New_Item => (Id => <>,
-                                           Loc => (X => 0, Y => 0)),
+   Moveable_Locations.Insert (Before => Moveable_Data.No_Element,
+                              New_Item => FXAIB00.Tagged_Location'(Id => <>,
+                                             Loc => (X => 0, Y => 0)),
                               Position => Mazda_3);
-   Moveable_Locations.Insert (Before => Static_Data.No_Element,
-                              New_Item => (Id => <>,
-                                           Loc => (X => -10, Y => 0)),
+   Moveable_Locations.Insert (Before => Moveable_Data.No_Element,
+                              New_Item => FXAIB00.Tagged_Location'(Id => <>,
+                                             Loc => (X => -10, Y => 0)),
                               Position => Forester);
 
    -- Check that the lengths are correct:
