@@ -43,25 +43,14 @@
 --     precondition or postcondition expression cannot use a global object
 --     of type T or T'Class as a parameter to a primitive operation of type T.
 --
---     Check that a primitive subprogram is illegal if the corresponding
---     expression for an inherited class-wide precondition or postcondition
---     expression would be illegal.
---
 -- TEST DESCRIPTION:
 --     These objectives descend from changes made by AI12-0113-1, part
 --     of Technical Corrigendum 1 (ISO/IEC 8652:2012/Corr1:2016).
 --     The purpose of these rules is to ensure that the interpretation of
---     class-wide precondition and postcondition e xpressions can be
+--     class-wide precondition and postcondition expressions can be
 --     meaningfully inherited. We don't want to allow calls to routines that
 --     don't have equivalents for a descendant type, nor parameters that
---     wouldn't have a matching type for a descendant type. (The first two
---     objectives cover these cases.)
---
---     We don't try to prevent all problems up-front, as they would be
---     unnecessarily limiting. Thus we have a instantiation-like legality
---     rule recheck on inherited class-wide precondition and postcondition
---     expressions. This prevents abstract routines from being called
---     in one of these expressions.
+--     wouldn't have a matching type for a descendant type.
 --
 -- CHANGE HISTORY:
 --     04 Feb 2016   RLB   Created test.
@@ -69,6 +58,8 @@
 --     28 Mar 2016   RLB   Generalized error messages, added location codes.
 --     20 Jan 2017   RLB   Clarified error in Pack3.
 --      2 Feb 2017   RLB   Corrected Pack5, which is not illegal.
+--     28 Jan 2021   RLB   Removed the third objective, as it is incompatible
+--                         with AI12-0412-1, a new Binding Interpretation.
 --
 --!
 package B611006 is
@@ -177,75 +168,6 @@ package B611006 is
 
    procedure ProcG (Obj : in out NRT)
              with Post'Class => Is_OK (Obj) and Unrelated_Glob;  -- OK. {19}
-
-   -- Third objective:
-
-   package Pack2 is
-      type NAT is abstract new Root with null record;
-
-      function Is_OK (Obj : NAT) return Boolean is abstract;
-
-      procedure Proc1 (Obj : in out NAT);                        -- ERROR: {7}
-         -- The inherited Pre'Class expression Is_OK (Obj) makes
-         -- a non-dispatching call on an abstract routine.
-         -- A statically bound call of the form Proc1 (NAT(Some_Obj));
-         -- would have to evaluate this expression.
-
-      procedure Proc2 (Obj : in out NAT) is abstract;            -- OK. {7}
-         -- We don't recheck class-wide precondition and postcondition
-         -- expressions for abstract routines, as they can't be called,
-         -- either with a statically bound call or through a dispatching
-         -- call.
-
-   end Pack2;
-
-   package Pack3 is
-      type NAT2 is abstract new Root
-            with null record;                -- POSSIBLE ERROR: [Set1] {1:7}
-
-      function Is_OK (Obj : NAT2) return Boolean is abstract;
-
-      procedure Proc1 (Obj : in out NAT2) is abstract;           -- OK. {7}
-
-      -- Inherits procedure Proc2 (Obj : in out NAT2), which is illegal
-      -- for the same reason as Pack2.Proc1 above.
-                                             -- POSSIBLE ERROR: [Set1] {0;-1:0}
-   end Pack3;
-
-   package Pack4 is
-      type NAT3 is abstract new Root and Intf with null record;
-
-      function Is_OK (Obj : NAT3) return Boolean;
-
-      function Is_Old (Obj : NAT3) return Boolean is abstract;
-
-      -- Inherits procedure Proc1 (Obj : in out NAT3) and
-      -- procedure Proc2 (Obj : in out NAT3), which are OK as Is_OK is not
-      -- abstract.
-
-      procedure Proc3 (Obj : in out NAT3);                       -- ERROR: {7}
-
-      procedure Proc4 (Obj : in out NAT3) is abstract;           -- OK. {7}
-   end Pack4;
-
-   package Pack5 is
-      type NAT4 is abstract new Root and Intf
-          with null record;                                      -- OK. {1:7}
-
-      function Is_OK (Obj : NAT4) return Boolean;
-
-      function Is_Old (Obj : NAT4) return Boolean is abstract;
-
-      -- Inherits procedure Proc1 (Obj : in out NAT4) and
-      -- procedure Proc2 (Obj : in out NAT4), which are OK as Is_OK is not
-      -- abstract.
-
-      procedure Proc3 (Obj : in out NAT4) is abstract;           -- OK. {7}
-
-      -- Inherits procedure Proc4 (Obj : in out NAT4), which is OK
-      -- despite Is_Old being used in its Pre'Class, as it is abstract.
-                                                                 -- OK.{0;-1:0}
-   end Pack5;
 
 end B611006;
 
