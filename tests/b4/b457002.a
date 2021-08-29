@@ -39,7 +39,7 @@
 -- CHANGE HISTORY:
 --      02 Jan 2015   RLB     Created test based in part on ancient case
 --                            statement test B54A01L.
---
+--      26 Apr 2021   RLB     Added error location indicators.
 --!
 
 procedure B457002 is
@@ -50,26 +50,26 @@ begin
 
      J := (case I is
              when 5 => 17,
-             when others => 12,          -- ERROR: others not last.
+             when others => 12,          -- ERROR: others not last. {2:11;-1:1}
              when 6 => 16);
 
      J := (case I is
-             when others => 12,          -- ERROR: others not last.
+             when others => 12,          -- ERROR: others not last. {1:11;-1:1}
              when 7 => 24);
 
      J := (case I is
-             when 7 | others => 12);     -- ERROR: others not alone.
+             when 7 | others => 12);     -- ERROR: others not alone. {1:11;1}
 
      J := (case I is
              when 7 => 36,
-             when others | 5 => 12);     -- ERROR: others not alone.
+             when others | 5 => 12);     -- ERROR: others not alone. {2:11;1}
 
      J := (case I is
              when 7 => 43,
-             when 1 | others | 3 => 12); -- ERROR: others not alone.
+             when 1 | others | 3 => 12); -- ERROR: others not alone. {2:11;1}
 
      J := (case I is
              when 3 | 4 => 52,
-             when 1 | others => 12);     -- ERROR: others not alone.
+             when 1 | others => 12);     -- ERROR: others not alone. {2:11;1}
 
 end B457002;

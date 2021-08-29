@@ -47,7 +47,8 @@
 --      07 Jun 05   H K     Initial version.
 --      30 Dec 13   RLB     Created from three submitted tests and several
 --                          additional cases.
---
+--      22 Apr 21   RLB     Added error location indicators.
+--!
 package B730008A is
    type Iface is interface;
    procedure Foo (X : Iface) is abstract;
@@ -136,127 +137,127 @@ package B730008 is
 
 private
    type Priv01 is abstract new B730008A.Iface
-                     with null record;                       -- OK.
+                     with null record;                       -- OK. {1:4;1}
 
    -- Different interface:
    type Priv02 is abstract new B730008A.L_Iface
-                     with null record;                       -- ERROR:
+                     with null record;                       -- ERROR: {1:4;1}
 
    -- Partial view isn't descended from the interface defined by Priv03
    -- (see AARM 7.3(7.cc/2)):
-   type Priv03 is interface and B730008A.Iface;              -- ERROR:
+   type Priv03 is interface and B730008A.Iface;              -- ERROR: {4;1}
 
-   type Priv04 is new B730008A.Parent_2 with null record;    -- OK.
+   type Priv04 is new B730008A.Parent_2 with null record;    -- OK. {4;1}
 
    -- Partial view doesn't have L_IFace:
-   type Priv05 is new B730008A.Parent_3 with null record;    -- ERROR:
+   type Priv05 is new B730008A.Parent_3 with null record;    -- ERROR: {4;1}
 
    -- Partial view doesn't have IFace:
    type Priv10 is new B730008A.Parent_1 and
-                      B730008A.Iface with null record;       -- ERROR:
+                      B730008A.Iface with null record;       -- ERROR: {1:4;1}
    procedure Foo (X : Priv10) is null;
 
    -- Partial view doesn't have IFace:
-   type Priv11 is new B730008A.Parent_2 with null record;    -- ERROR:
+   type Priv11 is new B730008A.Parent_2 with null record;    -- ERROR: {4;1}
 
 
-   type Priv20 is new B730008A.Parent_2 with null record;    -- OK.
+   type Priv20 is new B730008A.Parent_2 with null record;    -- OK. {4;1}
 
    type Priv21 is new B730008A.Parent_1 and
-                      B730008A.Iface with null record;       -- OK.
+                      B730008A.Iface with null record;       -- OK. {1:4;1}
    procedure Foo (X : Priv21) is null;
 
    -- Different interface:
    type Priv22 is new B730008A.Parent_1 and
-                      B730008A.L_Iface with null record;     -- ERROR:
+                      B730008A.L_Iface with null record;     -- ERROR: {1:4;1}
 
    -- Different interface:
-   type Priv23 is new B730008A.Parent_3 with null record;    -- ERROR:
+   type Priv23 is new B730008A.Parent_3 with null record;    -- ERROR: {4;1}
 
    -- Missing interface:
-   type Priv24 is new B730008A.Parent_1 with null record;    -- ERROR:
+   type Priv24 is new B730008A.Parent_1 with null record;    -- ERROR: {4;1}
 
    type Priv30 is new B730008A.Parent_2 and
-                      B730008A.L_Iface with null record;     -- OK.
+                      B730008A.L_Iface with null record;     -- OK. {1:4;1}
 
    -- Missing interface:
    type Priv31 is new B730008A.Parent_1 and
-                      B730008A.L_Iface with null record;     -- ERROR:
+                      B730008A.L_Iface with null record;     -- ERROR: {1:4;1}
 
    -- Partial view doesn't have IFace:
-   type Priv40 is new B730008A.Iface with null record;       -- ERROR:
+   type Priv40 is new B730008A.Iface with null record;       -- ERROR: {4;1}
    procedure Foo (X : Priv40) is null;
 
    -- Partial view doesn't have IFace:
-   type Priv41 is new B730008A.Parent_2 with null record;    -- ERROR:
+   type Priv41 is new B730008A.Parent_2 with null record;    -- ERROR: {4;1}
 
-   type Priv42 is new B730008A.Parent_1 with null record;    -- OK.
+   type Priv42 is new B730008A.Parent_1 with null record;    -- OK. {4;1}
 
    -- Partial view isn't descended from the interface defined by Priv42:
-   type Priv43 is interface;                                 -- ERROR:
+   type Priv43 is interface;                                 -- ERROR: {4;1}
 
    -- Partial view is not tagged:
-   type Priv50 is new B730008A.Iface with null record;       -- OK.
+   type Priv50 is new B730008A.Iface with null record;       -- OK. {4;1}
    procedure Foo (X : Priv50) is null;
 
    -- Partial view is not tagged:
-   type Priv51 is new B730008A.Parent_2 with null record;    -- OK.
+   type Priv51 is new B730008A.Parent_2 with null record;    -- OK. {4;1}
 
    -- Partial view is not tagged:
-   type Priv52 is new B730008A.Parent_1 with null record;    -- OK.
+   type Priv52 is new B730008A.Parent_1 with null record;    -- OK. {4;1}
 
    -- Missing interface:
-   protected type Priv60 is                                  -- ERROR:
+   protected type Priv60 is                                  -- ERROR: {4}
    private
       Foo : Natural;
    end Priv60;
 
    -- Wrong interface:
-   protected type Priv61 is new B730008A.L_Iface with        -- ERROR:
+   protected type Priv61 is new B730008A.L_Iface with        -- ERROR: {4}
    private
       Foo : Natural;
    end Priv61;
 
-   protected type Priv62 is new B730008A.S_Iface with        -- OK.
+   protected type Priv62 is new B730008A.S_Iface with        -- OK. {4}
    private
       Foo : Natural;
    end Priv62;
 
    -- Partial view doesn't have L_IFace:
    protected type Priv63 is new B730008A.S_Iface and
-                                B730008A.L_Iface with        -- ERROR:
+                                B730008A.L_Iface with        -- ERROR: {1:4}
    private
       Foo : Natural;
    end Priv63;
 
    -- Missing interface:
-   task type Priv64 is                                       -- ERROR:
+   task type Priv64 is                                       -- ERROR: {4}
    end Priv64;
 
    -- Wrong interface:
-   task type Priv65 is new B730008A.L_Iface with             -- ERROR:
+   task type Priv65 is new B730008A.L_Iface with             -- ERROR: {4}
    end Priv65;
 
-   task type Priv66 is new B730008A.S_Iface with             -- OK.
+   task type Priv66 is new B730008A.S_Iface with             -- OK. {4}
    end Priv66;
 
    -- Partial view doesn't have L_IFace:
    task type Priv67 is new B730008A.L_Iface and
-                           B730008A.S_Iface with             -- ERROR:
+                           B730008A.S_Iface with             -- ERROR: {1:4}
    end Priv67;
 
    -- Missing interface:
-   protected type Priv70 is new B730008A.S_Iface with        -- ERROR:
+   protected type Priv70 is new B730008A.S_Iface with        -- ERROR: {4}
    private
       Foo : Natural;
    end Priv70;
 
    -- Missing interface:
-   task type Priv71 is new B730008A.L_Iface with             -- ERROR:
+   task type Priv71 is new B730008A.L_Iface with             -- ERROR: {4}
    end Priv71;
 
    -- Partial view isn't descended from the interface defined by Priv42:
    type Priv80 is synchronized interface and
-                           B730008A.S_Iface;                 -- ERROR:
+                           B730008A.S_Iface;                 -- ERROR: {1:4;1}
 
 end B730008;

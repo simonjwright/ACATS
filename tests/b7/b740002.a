@@ -52,6 +52,7 @@
 --      21 Aug 07   RLB   Removed Cnst_Priv_22 pending resolution of
 --                        AI05-0062.
 --      05 Dec 07   RLB   Replaced Cnst_Priv_22.
+--      22 Apr 21   RLB   Added error location indicators.
 --!
 
 package B740002 is
@@ -103,48 +104,48 @@ private
 
    -- Check static matching:
 
-   Cnst_Priv_1 : constant access Priv_Comp := null;            -- OK.
+   Cnst_Priv_1 : constant access Priv_Comp := null;           -- OK. {4;1}
 
-   Cnst_Priv_2 : constant access constant Priv_Comp := null;   -- ERROR:
+   Cnst_Priv_2 : constant access constant Priv_Comp := null;  -- ERROR: {4;1}
 
-   Cnst_Priv_3 : constant access Priv_Comp := null;            -- ERROR:
+   Cnst_Priv_3 : constant access Priv_Comp := null;           -- ERROR: {4;1}
 
-   Cnst_Priv_4 : constant access constant Priv_Comp := null;   -- OK.
+   Cnst_Priv_4 : constant access constant Priv_Comp := null;  -- OK. {4;1}
 
-   Cnst_Priv_5 : constant access Priv_Comp := Priv_Obj'Access; -- ERROR:
+   Cnst_Priv_5 : constant access Priv_Comp := Priv_Obj'Access;-- ERROR: {4;1}
 
    Cnst_Priv_6 : constant not null access Priv_Comp :=
-                    Priv_Obj'Access;                           -- OK.
+                    Priv_Obj'Access;                          -- OK. {1:4;1}
 
    Cnst_Priv_7 : constant access constant Priv_Comp :=
-                    Priv_Obj'Access;                           -- ERROR:
+                    Priv_Obj'Access;                          -- ERROR: {1:4;1}
 
    Cnst_Priv_8 : constant not null access constant Priv_Comp :=
-                    Priv_Obj'Access;                           -- OK.
+                    Priv_Obj'Access;                          -- OK. {1:4;1}
 
    Cnst_Priv_9 : constant not null access Priv_Comp :=
-                    Priv_Obj'Access;                           -- ERROR:
+                    Priv_Obj'Access;                          -- ERROR: {1:4;1}
 
    Cnst_Priv_10: constant not null access constant Priv_Comp :=
-                    Priv_Obj'Access;                           -- ERROR:
+                    Priv_Obj'Access;                          -- ERROR: {1:4;1}
 
-   Cnst_Priv_11 : constant Acc_to_Priv := null;                -- ERROR:
+   Cnst_Priv_11 : constant Acc_to_Priv := null;               -- ERROR: {4;1}
 
-   Cnst_Priv_12 : constant Acc_to_Priv := null;                -- OK.
+   Cnst_Priv_12 : constant Acc_to_Priv := null;               -- OK. {4;1}
 
-   Cnst_Priv_13 : constant access Priv_Comp := null;           -- ERROR:
+   Cnst_Priv_13 : constant access Priv_Comp := null;          -- ERROR: {4;1}
 
-   Cnst_Priv_14 : constant access Small_Int := null;           -- ERROR:
+   Cnst_Priv_14 : constant access Small_Int := null;          -- ERROR: {4;1}
 
    -- Check null exclusions:
 
    Cnst_Priv_21 : constant not null Acc_to_Priv :=
-                    Priv_Obj'Access;                           -- OK.
+                    Priv_Obj'Access;                          -- OK. {1:4;1}
 
    Cnst_Priv_22 : constant not null Acc_to_Priv :=
-                    Priv_Obj'Access;                           -- OK.
+                    Priv_Obj'Access;                          -- OK. {1:4;1}
 
    Cnst_Priv_23 : constant Acc_to_Priv :=
-                    Priv_Obj'Access;                           -- ERROR:
+                    Priv_Obj'Access;                          -- ERROR: {1:4;1}
 
 end B740002;

@@ -35,7 +35,10 @@
 --    contiguous set of index values because a subtype has a static predicate.
 --
 --  CHANGE HISTORY:
---     03 Jun 2014 RLB Created test based on existing tests B43201C and B540001.
+--     03 Jun 2014  RLB    Created test based on existing tests B43201C and
+--                         B540001.
+--     23 Apr 2021  RLB    Added error location indicators.
+--!
 
 procedure B433002 is
 
@@ -57,9 +60,11 @@ procedure B433002 is
 
    subtype Small is Integer range 0 .. 20;
    subtype Small_Even is Small
-      with Static_Predicate => Small_Even in 0 | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20;
+      with Static_Predicate => 
+             Small_Even in 0 | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20;
    subtype Small_Odd is Small
-      with Static_Predicate => Small_Odd in 1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19;
+      with Static_Predicate => 
+             Small_Odd in 1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19;
    subtype Small_Power_of_Two is Small
       with Static_Predicate => Small_Power_of_Two in 2 | 4 | 8 | 16;
    subtype Small_Power_of_Three is Small
@@ -96,44 +101,44 @@ procedure B433002 is
 
    type UT5 is array (Score_Base range <>) of Boolean;
 
-   AA1 : UT1 := (1 .. 4 => Red);                              -- OK.
-   AA2 : UT1 := (Small_Tiny => Red);                          -- OK.
+   AA1 : UT1 := (1 .. 4 => Red);                             -- OK. {17;1}
+   AA2 : UT1 := (Small_Tiny => Red);                         -- OK. {17;1}
 
-   AA3 : UT1 := (Small_Power_of_Two => Green);                -- ERROR:
+   AA3 : UT1 := (Small_Power_of_Two => Green);               -- ERROR: {17;1}
 
    AA4 : UT1 := (Small_Power_of_Two => Blue,
-                 Small_Power_of_Three => Green);              -- ERROR:
+                 Small_Power_of_Three => Green);             -- ERROR: {1:17;1}
 
    AA5 : UT2 := (Small_Power_of_Three => (1 .. 4 => Green),
-                 Small_Tiny           => (1 .. 4 => Yellow)); -- OK.
+                 Small_Tiny           => (1 .. 4 => Yellow));-- OK. {1:17;1}
 
    AA6 : UT2 := (Small_Even => (Small_Tiny => Green),
-                 Small_Odd  => (Small_Tiny => Yellow));       -- OK.
+                 Small_Odd  => (Small_Tiny => Yellow));      -- OK. {1:17;1}
 
    AA7 : UT2 := (Small_Power_of_Three => (1 => Green, 2 => Blue),
-                 1 | 5 | 7 => (1 => Yellow, 2 => Red));       -- ERROR:
+                 1 | 5 | 7 => (1 => Yellow, 2 => Red));      -- ERROR: {1:17;1}
 
-   AB1 : UT3 := (Rainbow => True, Total_Colors => False);     -- OK.
+   AB1 : UT3 := (Rainbow => True, Total_Colors => False);    -- OK. {17;1}
 
    AB2 : UT3 := (Primary_Colors => True,
-                 Secondary_Colors => False);                  -- OK.
+                 Secondary_Colors => False);                 -- OK. {1:17;1}
 
    AB3 : UT3 := (Primary_Colors => True,
-                 Green | White => False);                     -- ERROR:
+                 Green | White => False);                    -- ERROR: {1:17;1}
 
    AB4 : UT3 := (Secondary_Colors => True,
-                 Total_Colors => False);                      -- ERROR:
+                 Total_Colors => False);                     -- ERROR: {1:17;1}
 
-   AB5 : UT3 := (Total_Colors => True);                       -- ERROR:
+   AB5 : UT3 := (Total_Colors => True);                      -- ERROR: {17;1}
 
-   AC1 : UT5 := (Single => True);                             -- OK.
+   AC1 : UT5 := (Single => True);                            -- OK. {17;1}
 
-   AC2 : UT5 := (Treble => True);                             -- ERROR:
+   AC2 : UT5 := (Treble => True);                            -- ERROR: {17;1}
 
-   AC3 : UT5 := (Single => True, Double_Only => False);       -- ERROR:
+   AC3 : UT5 := (Single => True, Double_Only => False);      -- ERROR: {17;1}
 
    AC4 : UT5 := (Single | Double_Only | Treble_Only | 25 | 50 => True,
-                 0 | 61 .. 63 => False);                      -- ERROR:
+                 0 | 61 .. 63 => False);                     -- ERROR: {1:17;1}
 
    procedure Proc1 (A1 : UT1) is
    begin
@@ -152,32 +157,32 @@ procedure B433002 is
 
 begin
    AB1 := (P_Colors => True,
-           White | Black => False);                           -- ERROR:
+           White | Black => False);                          -- ERROR: {1:11;1}
       -- Note: This would be legal if the predicate is ignored.
 
    AB2 := (Primary_Colors => True,
-           Green => False);                                   -- ERROR:
+           Green => False);                                  -- ERROR: {1:11;1}
 
    Proc1 (A1 => (Small_Power_of_Two => Blue,
-                 Small_Power_of_Three => Green));             -- ERROR:
+                 Small_Power_of_Three => Green));            -- ERROR: {1:17;2}
 
    Proc1 (A1 => (2 | 4 | 8  => Yellow,
-                 Small_Power_of_Three => Red));               -- ERROR:
+                 Small_Power_of_Three => Red));              -- ERROR: {1:17;2}
 
-   Proc2 (A2 => (Double => True));                            -- ERROR:
+   Proc2 (A2 => (Double => True));                           -- ERROR: {17;2}
 
-   Proc2 (A2 => (Double_Only => True, Single => False));      -- ERROR:
+   Proc2 (A2 => (Double_Only => True, Single => False));     -- ERROR: {17;2}
 
    if AC1 =
-     (Single | Double_Only | Treble_Only | 25 | 50 => True)   -- ERROR:
+     (Single | Double_Only | Treble_Only | 25 | 50 => True)  -- ERROR: {6}
        then
      Proc3 (A3 => (Red | Yellow => True,
-                   Secondary_Colors => False));               -- ERROR:
+                   Secondary_Colors => False));              -- ERROR: {1:19;1}
    elsif AB1 /= (Primary_Colors => True,
-                 Total_Colors => False) then                  -- ERROR:
+                 Total_Colors => False) then                 -- ERROR: {1:17;5}
      null;
    elsif AB1 /= (Primary_Colors => True,
-                 Secondary_Colors => False) then              -- OK.
+                 Secondary_Colors => False) then             -- OK. {1:17;5}
      null;
    end if;
 

@@ -26,7 +26,10 @@
 -- COMPONENT TYPE SPECIFICATION IN A GENERIC FORMAL
 -- ARRAY TYPE DECLARATION.
 
--- PWB  2/3/86
+-- CHANGE HISTORY:
+--      03 Feb 1986   PWB
+--      22 Apr 2021   RLB   Added error location indicators.
+--!
 
 PROCEDURE BC1201G IS
 
@@ -36,13 +39,13 @@ PROCEDURE BC1201G IS
      GENERIC
           TYPE FLOAT_4_ARRAY IS
                ARRAY ( INTEGER RANGE <> )
-               OF FLOAT_5 DIGITS 4;               -- ERROR: CONSTRAINT.
+               OF FLOAT_5 DIGITS 4;              -- ERROR: CONSTRAINT. {2:11;1}
      PROCEDURE GEN_PROC ( X : INTEGER );
 
      GENERIC
           TYPE FIXED_1_ARRAY IS
                ARRAY ( BOOLEAN )
-               OF FIXED_01 DELTA 0.1;             -- ERROR: CONSTRAINT.
+               OF FIXED_01 DELTA 0.1;            -- ERROR: CONSTRAINT. {2:11;1}
      FUNCTION GEN_FUNC ( X : INTEGER ) RETURN INTEGER;
 
      PROCEDURE GEN_PROC ( X : INTEGER ) IS

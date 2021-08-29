@@ -43,11 +43,14 @@
 --          OPERATOR SYMBOL FUNCTIONS.
 --     (H)  CHECK THAT NO LEADING OR TRAILING BLANKS ARE ALLOWED.
 
--- HISTORY:
---     CPP 06/12/84
---     JRK 12/04/84
---     DWC 09/22/87  MOVED CHECK FOR OPERATOR SYMBOL ":=" TO
---                   B67001J.ADA.
+-- CHANGE HISTORY:
+--      12 Jun 1984   CPP
+--      04 Dec 1984   JRK
+--      22 Sep 1987   DWC   MOVED CHECK FOR OPERATOR SYMBOL ":=" TO
+--                          B67001J.ADA. 
+--      23 Apr 2021   RLB   Added error location indicators; moved some error
+--                          tags so entire instance is covered.
+--!
 
 PROCEDURE B67001C IS
 
@@ -122,19 +125,19 @@ BEGIN
 
      DECLARE   -- (A)
 
-          FUNCTION "IN" IS NEW THREE_PARAMS       -- ERROR: IN.
+          FUNCTION "IN" IS NEW THREE_PARAMS       -- ERROR: IN. {11}
                (ELEMENT => INTEGER);
 
-          FUNCTION "NOT IN" IS NEW THREE_PARAMS   -- ERROR: NOT IN.
+          FUNCTION "NOT IN" IS NEW THREE_PARAMS   -- ERROR: NOT IN. {11}
                (ELEMENT => INTEGER);
 
-          FUNCTION "AND THEN" IS NEW TWO_PARAMS   -- ERROR: AND THEN.
+          FUNCTION "AND THEN" IS NEW TWO_PARAMS   -- ERROR: AND THEN. {11}
                (ELEMENT => BOOLEAN);
 
-          FUNCTION "OR ELSE" IS NEW TWO_PARAMS    -- ERROR: OR ELSE.
+          FUNCTION "OR ELSE" IS NEW TWO_PARAMS    -- ERROR: OR ELSE. {11}
                (ELEMENT => BOOLEAN);
 
-          FUNCTION "/=" IS NEW TWO_PARAMS         -- ERROR: /=.
+          FUNCTION "/=" IS NEW TWO_PARAMS         -- ERROR: /=. {11}
                (ELEMENT => INTEGER);
 
      BEGIN     -- (A)
@@ -145,47 +148,47 @@ BEGIN
 
      DECLARE   -- (B)
 
-          FUNCTION "AND" IS NEW ONE_PARAM    -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "AND" IS NEW ONE_PARAM
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "OR" IS NEW ONE_PARAM     -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "OR" IS NEW ONE_PARAM
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "XOR" IS NEW ONE_PARAM    -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "XOR" IS NEW ONE_PARAM
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "=" IS NEW LP_ONE_PARAM   -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => PKG.LP);
+          FUNCTION "=" IS NEW LP_ONE_PARAM
+               (ELEMENT => PKG.LP);         -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "<=" IS NEW ONE_PARAM     -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "<=" IS NEW ONE_PARAM
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "<" IS NEW ONE_PARAM      -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "<" IS NEW ONE_PARAM
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION ">=" IS NEW ONE_PARAM     -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION ">=" IS NEW ONE_PARAM
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION ">" IS NEW ONE_PARAM      -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION ">" IS NEW ONE_PARAM
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "&" IS NEW ONE_PARAM      -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "&" IS NEW ONE_PARAM
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "*" IS NEW ONE_PARAM      -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "*" IS NEW ONE_PARAM
+               (ELEMENT => INTEGER);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "/" IS NEW ONE_PARAM      -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "/" IS NEW ONE_PARAM
+               (ELEMENT => INTEGER);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "MOD" IS NEW ONE_PARAM    -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "MOD" IS NEW ONE_PARAM
+               (ELEMENT => INTEGER);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "REM" IS NEW ONE_PARAM    -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "REM" IS NEW ONE_PARAM
+               (ELEMENT => INTEGER);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "**" IS NEW ONE_PARAM     -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "**" IS NEW ONE_PARAM
+               (ELEMENT => INTEGER);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
      BEGIN     -- (B)
           NULL;
@@ -195,47 +198,47 @@ BEGIN
 
      DECLARE   -- (C)
 
-          FUNCTION "AND" IS NEW THREE_PARAMS -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "AND" IS NEW THREE_PARAMS
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "OR" IS NEW THREE_PARAMS  -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "OR" IS NEW THREE_PARAMS
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "XOR" IS NEW THREE_PARAMS -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "XOR" IS NEW THREE_PARAMS
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "=" IS NEW LP_THREE_PARAMS -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => PKG.LP);
+          FUNCTION "=" IS NEW LP_THREE_PARAMS
+               (ELEMENT => PKG.LP);         -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "<=" IS NEW THREE_PARAMS  -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "<=" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "<" IS NEW THREE_PARAMS   -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "<" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION ">=" IS NEW THREE_PARAMS  -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION ">=" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION ">" IS NEW THREE_PARAMS   -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION ">" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "&" IS NEW THREE_PARAMS   -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "&" IS NEW THREE_PARAMS
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "*" IS NEW THREE_PARAMS   -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "*" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "/" IS NEW THREE_PARAMS   -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "/" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "MOD" IS NEW THREE_PARAMS -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "MOD" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "REM" IS NEW THREE_PARAMS -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "REM" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "**" IS NEW THREE_PARAMS  -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "**" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
      BEGIN     -- (C)
           NULL;
@@ -245,11 +248,11 @@ BEGIN
 
      DECLARE   -- (D)
 
-          FUNCTION "NOT" IS NEW TWO_PARAMS   -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "NOT" IS NEW TWO_PARAMS
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "ABS" IS NEW TWO_PARAMS   -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "ABS" IS NEW TWO_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
      BEGIN     -- (D)
           NULL;
@@ -259,17 +262,17 @@ BEGIN
 
      DECLARE   -- (E)
 
-          FUNCTION "+" IS NEW NO_PARAMS      -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "+" IS NEW NO_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "-" IS NEW NO_PARAMS      -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "-" IS NEW NO_PARAMS 
+               (ELEMENT => INTEGER);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "NOT" IS NEW NO_PARAMS    -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => BOOLEAN);
+          FUNCTION "NOT" IS NEW NO_PARAMS
+               (ELEMENT => BOOLEAN);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
-          FUNCTION "ABS" IS NEW NO_PARAMS    -- ERROR: TOO FEW PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "ABS" IS NEW NO_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO FEW PARAMS. {1:11;1}
 
      BEGIN     -- (E)
           NULL;
@@ -279,10 +282,10 @@ BEGIN
 
      DECLARE   -- (F)
 
-          FUNCTION "+" IS NEW THREE_PARAMS   -- ERROR: TOO MANY PARAMS.
-               (ELEMENT => INTEGER);
+          FUNCTION "+" IS NEW THREE_PARAMS
+               (ELEMENT => INTEGER);        -- ERROR: TOO MANY PARAMS. {1:11;1}
 
-          FUNCTION "-" IS NEW THREE_PARAMS   -- ERROR: TOO MANY PARAMS.
+          FUNCTION "-" IS NEW THREE_PARAMS  -- ERROR: TOO MANY PARAMS. {1:11;1}
                (ELEMENT => INTEGER);
 
      BEGIN     -- (F)
@@ -294,7 +297,7 @@ BEGIN
      DECLARE   -- (G)
 
           FUNCTION "+" IS NEW T_PARAMS
-               (ELEMENT => INTEGER, IDN => 0);  -- ERROR: DEFAULT VALUE.
+              (ELEMENT => INTEGER, IDN => 0); -- ERROR: DEFAULT VALUE. {1:11;1}
 
      BEGIN     -- (G)
           NULL;
@@ -304,16 +307,16 @@ BEGIN
 
      DECLARE   -- (H)
 
-          FUNCTION " +" IS NEW TWO_PARAMS    -- ERROR: LEADING BLANK.
+          FUNCTION " +" IS NEW TWO_PARAMS    -- ERROR: LEADING BLANK. {11}
                (ELEMENT => INTEGER);
 
-          FUNCTION "+ " IS NEW TWO_PARAMS    -- ERROR: TRAILING BLANK.
+          FUNCTION "+ " IS NEW TWO_PARAMS    -- ERROR: TRAILING BLANK. {11}
                (ELEMENT => INTEGER);
 
-          FUNCTION "NOT " IS NEW TWO_PARAMS  -- ERROR: TRAILING BLANK.
+          FUNCTION "NOT " IS NEW TWO_PARAMS  -- ERROR: TRAILING BLANK. {11}
                (ELEMENT => BOOLEAN);
 
-          FUNCTION " NOT" IS NEW TWO_PARAMS  -- ERROR: LEADING BLANK.
+          FUNCTION " NOT" IS NEW TWO_PARAMS  -- ERROR: LEADING BLANK. {11}
                (ELEMENT => BOOLEAN);
 
      BEGIN     -- (H)

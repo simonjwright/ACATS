@@ -45,19 +45,22 @@
 --     VCL  02/04/88  CREATED ORIGINAL TEST.
 --     RDH  04/09/90  MODIFIED TEST TO ONLY HAVE ONE TASK BODY IN
 --                    EACH FILE.
+--     RLB  04/26/21  Corrected incorrect error markers; moved markers on wrong
+--                    lines; added location indicators.
+--!
 
 -- MULTIPLE TASKS ARE USED SO THAT ONLY ONE DECLARATION WHICH REQUIRES
 -- A BODY (TASK AND GENERIC UNITS) IS GIVEN IN EACH TASK.
 
 SEPARATE (B83003B0M)
 TASK BODY TSK2 IS
-     TASK TYPE E9;                                 -- ERROR: HOMOGRAPH.
+     TASK TYPE E9;                                -- ERROR: HOMOGRAPH. {6;1}
 
 -- BODY FOR THE ABOVE HOMOGRAPH.
 
-     TASK BODY E9 IS                            -- OPTIONAL ERR MESSAGE:
-     BEGIN                                      --  BODY OF AN INVALID
-          NULL;                                 --  TASK TYPE.
+     TASK BODY E9 IS                              -- OPTIONAL ERROR: {6}
+     BEGIN                                        --  BODY OF AN INVALID
+          NULL;                                   --  TASK TYPE.
      END E9;
 BEGIN
      NULL;

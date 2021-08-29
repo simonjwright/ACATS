@@ -31,6 +31,9 @@
 
 -- HISTORY:
 --     VCL  02/02/88  CREATED ORIGINAL TEST.
+--     RLB  04/26/21  Corrected incorrect error markers; moved markers on wrong
+--                    lines; added location indicators.
+--!
 
 PROCEDURE B83001A IS
 
@@ -42,22 +45,22 @@ PROCEDURE B83001A IS
 
      --  DECLARATIONS OF HOMOGRAPHS.
 
-          TYPE D1 IS ARRAY (1..15) OF CHARACTER;    -- ERROR: HOMOGRAPH.
-          SUBTYPE D1 IS STRING(1..12);              -- ERROR: HOMOGRAPH.
-          D1 : CONSTANT CHARACTER := 'A';           -- ERROR: HOMOGRAPH.
-          D1 : CONSTANT := 5.0;                     -- ERROR: HOMOGRAPH.
-          D1 : STRING(1..10);                       -- ERROR: HOMOGRAPH.
-          D1 : EXCEPTION;                           -- ERROR: HOMOGRAPH.
+          TYPE D1 IS ARRAY (1..15) OF CHARACTER;  -- ERROR: HOMOGRAPH. {11;1}
+          SUBTYPE D1 IS STRING(1..12);            -- ERROR: HOMOGRAPH. {11;1}
+          D1 : CONSTANT CHARACTER := 'A';         -- ERROR: HOMOGRAPH. {11;1}
+          D1 : CONSTANT := 5.0;                   -- ERROR: HOMOGRAPH. {11;1}
+          D1 : STRING(1..10);                     -- ERROR: HOMOGRAPH. {11;1}
+          D1 : EXCEPTION;                         -- ERROR: HOMOGRAPH. {11;1}
 
-          PACKAGE D1 IS END D1;                     -- ERROR: HOMOGRAPH.
+          PACKAGE D1 IS END D1;                   -- ERROR: HOMOGRAPH. {11;1}
 
-          TASK D1;                                  -- ERROR: HOMOGRAPH.
+          TASK D1;                                -- ERROR: HOMOGRAPH. {11;1}
 
      -- BODY OF HOMOGRAPH.
 
-          TASK BODY D1 IS                       -- OPTIONAL ERR MESSAGE:
-          BEGIN                                 --  BODY OF AN INVALID
-               NULL;                            --  TASK OBJECT.
+          TASK BODY D1 IS                         -- OPTIONAL ERROR: {11}
+          BEGIN                                   --  BODY OF AN INVALID
+               NULL;                              --  TASK OBJECT.
           END D1;
 
 
@@ -71,16 +74,16 @@ PROCEDURE B83001A IS
 
      --  DECLARATION OF HOMOGRAPH.
 
-          GENERIC                                   -- ERROR: HOMOGRAPH.
-          PACKAGE D2 IS END D2;
+          GENERIC                               
+          PACKAGE D2 IS END D2;                   -- ERROR: HOMOGRAPH. {1:11;1}
 
-          TASK TYPE D2;                             -- ERROR: HOMOGRAPH.
+          TASK TYPE D2;                           -- ERROR: HOMOGRAPH. {11;1}
 
      -- BODY OF HOMOGRAPH.
 
-          TASK BODY D2 IS                       -- OPTIONAL ERR MESSAGE:
-          BEGIN                                 --  BODY OF AN INVALID
-               NULL;                            --  TASK TYPE.
+          TASK BODY D2 IS                         -- OPTIONAL ERROR: {11}
+          BEGIN                                   --  BODY OF AN INVALID
+               NULL;                              --  TASK TYPE.
           END D2;
 
 
@@ -94,14 +97,14 @@ PROCEDURE B83001A IS
 
      --  DECLARATION OF HOMOGRAPH.
 
-          GENERIC                                   -- ERROR: HOMOGRAPH.
-          PROCEDURE D3;
+          GENERIC                       
+          PROCEDURE D3;                           -- ERROR: HOMOGRAPH. {1:11;1}
 
      -- BODY OF HOMOGRAPH.
 
-          PROCEDURE D3 IS                       -- OPTIONAL ERR MESSAGE:
-          BEGIN                                 --  BODY OF AN INVALID
-               NULL;                            --  GENERIC PROCEDURE.
+          PROCEDURE D3 IS                         -- OPTIONAL ERROR: {11}
+          BEGIN                                   --  BODY OF AN INVALID
+               NULL;                              --  GENERIC PROCEDURE.
           END D3;
 
 
@@ -115,14 +118,14 @@ PROCEDURE B83001A IS
 
      --  DECLARATION OF HOMOGRAPH.
 
-          GENERIC                                   -- ERROR: HOMOGRAPH.
-          FUNCTION D4 RETURN STRING;
+          GENERIC                                   
+          FUNCTION D4 RETURN STRING;              -- ERROR: HOMOGRAPH. {1:11;1}
 
      -- BODY OF HOMOGRAPH.
 
-          FUNCTION D4 RETURN STRING IS          -- OPTIONAL ERR MESSAGE:
-          BEGIN                                 --  BODY OF AN INVALID
-               RETURN "D4";                     --  GENERIC FUNCTION.
+          FUNCTION D4 RETURN STRING IS            -- OPTIONAL ERROR: {11}
+          BEGIN                                   --  BODY OF AN INVALID
+               RETURN "D4";                       --  GENERIC FUNCTION.
           END D4;
 
      BEGIN

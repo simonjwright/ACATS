@@ -86,20 +86,20 @@
 --      26 Oct 07   RLB     Updated the test objective, description, and
 --                          expected errors to use the preelaborable
 --                          initialization description from Amendment 1.
---
+--      26 Apr 21   RLB     Added error location indicators.
 --!
 
 with FA21A00;
 generic
 package BA21A01_0 is
    pragma Preelaborate (BA21A01_0);
-   Call : FA21A00.My_Int := FA21A00.Func;                             -- OK.
+   Call : FA21A00.My_Int := FA21A00.Func;                     -- OK. {4;1}
                                               -- Call to nonstatic function.
 end BA21A01_0;
 
 
 with BA21A01_0;
-package BA21A01_0I is new BA21A01_0;                                  -- OK.
+package BA21A01_0I is new BA21A01_0;                          -- OK. {1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -113,7 +113,7 @@ generic
 package BA21A01_1 is
    pragma Preelaborate (BA21A01_1);
 private
-   Call : Int_Type := Init;                                           -- OK.
+   Call : Int_Type := Init;                                   -- OK. {4;1}
                                                  -- Call to formal function.
 end BA21A01_1;
 
@@ -121,7 +121,7 @@ end BA21A01_1;
 with FA21A00;
 with BA21A01_1;
 package BA21A01_1I is new
-  BA21A01_1 (FA21A00.My_Int, FA21A00.Func);                           -- OK.
+  BA21A01_1 (FA21A00.My_Int, FA21A00.Func);                   -- OK. {1:1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -134,7 +134,7 @@ generic
    FObj: in FA21A00.My_Int;
 package BA21A01_2 is
    pragma Preelaborate (BA21A01_2);
-   Bool: Boolean := (FObj = 10);                                      -- OK.
+   Bool: Boolean := (FObj = 10);                              -- OK. {4;1}
                                       -- Primary that is a name of an object
                                       -- which is not a static expression.
 end BA21A01_2;
@@ -142,7 +142,7 @@ end BA21A01_2;
 
 with FA21A00;
 with BA21A01_2;
-package BA21A01_2I is new BA21A01_2 (FA21A00.Ten);                    -- OK.
+package BA21A01_2I is new BA21A01_2 (FA21A00.Ten);            -- OK. {1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -154,14 +154,14 @@ generic
 package BA21A01_3 is
    pragma Preelaborate (BA21A01_3);
 private
-   Obj: FA21A00.Prot;                                                 -- OK.
+   Obj: FA21A00.Prot;                                         -- OK. {4;1}
                                                -- Object of a protected type
                                                -- with entry declarations.
 end BA21A01_3;
 
 
 with BA21A01_3;
-package BA21A01_3I is new BA21A01_3;                                  -- OK.
+package BA21A01_3I is new BA21A01_3;                          -- OK. {1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -172,13 +172,13 @@ with FA21A00;
 generic
 package BA21A01_4 is
    pragma Preelaborate (BA21A01_4);
-   Obj: FA21A00.My_Controlled;                                        -- OK.
+   Obj: FA21A00.My_Controlled;                                -- OK. {4;1}
                          -- Default-initialized object of a controlled type.
 end BA21A01_4;
 
 
 with BA21A01_4;
-package BA21A01_4I is new BA21A01_4;                                  -- OK.
+package BA21A01_4I is new BA21A01_4;                          -- OK. {1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -190,13 +190,13 @@ generic
 package BA21A01_5 is
    pragma Preelaborate (BA21A01_5);
 private
-   Obj: FA21A00.Priv;                                                 -- OK.
+   Obj: FA21A00.Priv;                                         -- OK. {4;1}
                             -- Default-initialized object of a private type.
 end BA21A01_5;
 
 
 with BA21A01_5;
-package BA21A01_5I is new BA21A01_5;                                  -- OK.
+package BA21A01_5I is new BA21A01_5;                          -- OK. {1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -209,7 +209,7 @@ generic
    type Array_Type is array (Index) of FA21A00.Pri_Ext;
 package BA21A01_6 is
    pragma Preelaborate (BA21A01_6);
-   Arr: Array_Type;                                                   -- OK.
+   Arr: Array_Type;                                           -- OK. {4;1}
                     -- Default-initialized component of a private extension.
 end BA21A01_6;
 
@@ -217,7 +217,7 @@ end BA21A01_6;
 with FA21A00;
 with BA21A01_6;
 package BA21A01_6I is new
-  BA21A01_6 (FA21A00.Idx, FA21A00.PriExtComp);                        -- OK.
+  BA21A01_6 (FA21A00.Idx, FA21A00.PriExtComp);                -- OK. {1:1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -230,13 +230,13 @@ generic
 package BA21A01_7 is
    pragma Preelaborate (BA21A01_7);
    CT: FA21A00.My_Controlled :=
-     (Ada.Finalization.Controlled with 5);                            -- OK.
+     (Ada.Finalization.Controlled with 5);                    -- OK. {1:4;1}
               -- Extension aggregate with ancestor denoting controlled type.
 end BA21A01_7;
 
 
 with BA21A01_7;
-package BA21A01_7I is new BA21A01_7;                                  -- OK.
+package BA21A01_7I is new BA21A01_7;                          -- OK. {1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -248,14 +248,14 @@ generic
 package BA21A01_8 is
    pragma Preelaborate (BA21A01_8);
 private
-   Obj: FA21A00.RecCallDefault;                                       -- OK.
+   Obj: FA21A00.RecCallDefault;                               -- OK. {4;1}
                                          -- Call to nonstatic function (in
                                          -- component's default expression).
 end BA21A01_8;
 
 
 with BA21A01_8;
-package BA21A01_8I is new BA21A01_8;                                  -- OK.
+package BA21A01_8I is new BA21A01_8;                          -- OK. {1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -267,14 +267,14 @@ generic
    type Formal is private;
 package BA21A01_9 is
    pragma Preelaborate (BA21A01_9);
-   Obj: Formal;                                                       -- OK.
+   Obj: Formal;                                               -- OK. {4;1}
                    -- Default-initialized object of a (formal) private type.
 end BA21A01_9;
 
 
 with FA21A00;
 with BA21A01_9;
-package BA21A01_9I is new BA21A01_9 (FA21A00.Priv);                   -- OK.
+package BA21A01_9I is new BA21A01_9 (FA21A00.Priv);           -- OK. {1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -287,14 +287,14 @@ generic
 package BA21A01_10 is
    pragma Preelaborate (BA21A01_10);
 private
-   Obj: Formal;                                                       -- OK.
+   Obj: Formal;                                               -- OK. {4;1}
               -- Default-initialized object of a (formal) private extension.
 end BA21A01_10;
 
 
 with FA21A00;
 with BA21A01_10;
-package BA21A01_10I is new BA21A01_10 (FA21A00.Pri_Ext);              -- OK.
+package BA21A01_10I is new BA21A01_10 (FA21A00.Pri_Ext);      -- OK. {1;1}
                                   -- Pragma does not apply to this instance.
 
 
@@ -319,52 +319,52 @@ package BA21A01 is
    pragma Preelaborate (BA21A01);
 
 
-   package CallNonstaticFunction is new BA21A01_0;                    -- ERROR:
+   package CallNonstaticFunction is new BA21A01_0;            -- ERROR: {4;1}
                                              -- Call to nonstatic function (a).
 
    package NonstaticObjectAsPrimary is new BA21A01_2
-     (FA21A00.Ten);                                                   -- ERROR:
+     (FA21A00.Ten);                                           -- ERROR: {1:4;1}
                                        -- Primary that is a name of an object
                                        -- which is not a static expression (c).
 
    package PrivateExtensionComponent is new BA21A01_6
-     (FA21A00.Idx, FA21A00.PriExtComp);                               -- ERROR:
+     (FA21A00.Idx, FA21A00.PriExtComp);                       -- ERROR: {1:4;1}
                    -- Default-initialized component of a private extension (d).
 
-   package ControlAggregate is new BA21A01_7;                         -- ERROR:
+   package ControlAggregate is new BA21A01_7;                 -- ERROR: {4;1}
              -- Extension aggregate with ancestor denoting controlled type (e).
 
-   package CallInComponentDefault is new BA21A01_8;                   -- ERROR:
+   package CallInComponentDefault is new BA21A01_8;           -- ERROR: {4;1}
                                         -- Call to nonstatic function (in
                                         -- component's default expression) (d).
 
    package FormPriObject1 is new BA21A01_9
-     (FA21A00.Priv);                                                  -- ERROR:
+     (FA21A00.Priv);                                          -- ERROR: {1:4;1}
                   -- Default-initialized object of a (formal) private type (d).
 
    package FormPriObject2 is new BA21A01_9
-     (FA21A00.Pri_Ext);                                               -- ERROR:
+     (FA21A00.Pri_Ext);                                       -- ERROR: {1:4;1}
                            -- Default-initialized object of a private extension
                            -- (passed through a formal private type) (d).
 
 private
 
    package CallFormalFunction is new BA21A01_1
-     (FA21A00.My_Int, FA21A00.Func);                                  -- ERROR:
+     (FA21A00.My_Int, FA21A00.Func);                          -- ERROR: {1:4;1}
                                     -- Call to nonstatic (formal) function (b).
 
-   package ProtectedObjectWithEntry is new BA21A01_3;                 -- ERROR:
+   package ProtectedObjectWithEntry is new BA21A01_3;         -- ERROR: {4;1}
                                                 -- Object of a protected type
                                                 -- with entry declarations (d).
 
-   package ControlledObject is new BA21A01_4;                         -- ERROR:
+   package ControlledObject is new BA21A01_4;                 -- ERROR: {4;1}
                         -- Default-initialized object of a controlled type (d).
 
-   package PrivateObject is new BA21A01_5;                            -- ERROR:
+   package PrivateObject is new BA21A01_5;                    -- ERROR: {4;1}
                            -- Default-initialized object of a private type (d).
 
    package FormPriExtObject is new BA21A01_10
-     (FA21A00.Pri_Ext);                                               -- ERROR:
+     (FA21A00.Pri_Ext);                                       -- ERROR: {1:4;1}
              -- Default-initialized object of a (formal) private extension (d).
 
 end BA21A01;

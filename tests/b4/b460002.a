@@ -68,7 +68,7 @@
 -- CHANGE HISTORY:
 --      26 May 95   SAIC    Initial prerelease version.
 --      01 May 96   Dianne  Added an instantiation using a derived access type.
---
+--      28 Apr 21   RLB     Added error location indicators.
 --!
 
 package B460002_0 is
@@ -146,7 +146,7 @@ end B460002_1;
 
                --==============================================--
 
-                                                               -- [ Level = 0 ]
+                                                             -- [ Level = 0 ]
 with B460002_0;
 with B460002_1;
 package B460002_1_InstanceL0 is new B460002_1
@@ -154,7 +154,7 @@ package B460002_1_InstanceL0 is new B460002_1
    Formal_Operand_Type     => B460002_0.External_Operand_Type_L0,
    Formal_Operand          => B460002_0.Operand_L0,
    Formal_Disc_Record_Type => B460002_0.Disc_Record_Type,
-   Formal_AccDisc          => B460002_0.AccDisc_L0);                  -- OK.
+   Formal_AccDisc          => B460002_0.AccDisc_L0);         -- OK. {5:1;1}
 
 
      --==================================================================--
@@ -179,12 +179,12 @@ end B460002_2;
 
                --==============================================--
 
-                                                               -- [ Level = 0 ]
+                                                             -- [ Level = 0 ]
 with B460002_0;
 with B460002_2;
 package B460002_2_InstanceL0 is new B460002_2
   (Designated_Type    => B460002_0.Tagged_Type,
-   Formal_Target_Type => B460002_0.External_Target_Type_L0);          -- OK.
+   Formal_Target_Type => B460002_0.External_Target_Type_L0); -- OK. {2:1;1}
 
 
      --==================================================================--
@@ -209,12 +209,12 @@ end B460002_3;
 
                --==============================================--
 
-                                                               -- [ Level = 0 ]
+                                                             -- [ Level = 0 ]
 with B460002_0;
 with B460002_3;
 package B460002_3_InstanceL0 is new B460002_3
   (Formal_Disc_Record_Type => B460002_0.Disc_Record_Type,
-   Formal_AccDisc          => B460002_0.AccDisc_L0);                  -- OK.
+   Formal_AccDisc          => B460002_0.AccDisc_L0);         -- OK. {2:1;1}
 
 
      --==================================================================--
@@ -243,12 +243,12 @@ end B460002_4;
 
                --==============================================--
 
-                                                               -- [ Level = 0 ]
+                                                             -- [ Level = 0 ]
 with B460002_0;
 with B460002_4;
 package B460002_4_InstanceL0 is new B460002_4
   (Designated_Type     => B460002_0.Tagged_Type,
-   Formal_Operand_Type => B460002_0.External_Operand_Type_L0);        -- OK.
+   Formal_Operand_Type => B460002_0.External_Operand_Type_L0); -- OK. {2:1;1}
 
 
      --==================================================================--
@@ -273,14 +273,14 @@ end B460002_5;
 
                --==============================================--
 
-                                                               -- [ Level = 0 ]
+                                                             -- [ Level = 0 ]
 with B460002_0;
 with B460002_5;
 package B460002_5_InstanceL0 is new B460002_5
   (Designated_Type     => B460002_0.Tagged_Type,
    Formal_Operand_Type => B460002_0.External_Operand_Type_L0,
    Formal_Operand      => B460002_0.Operand_L0,
-   Formal_Target_Type  => B460002_0.External_Target_Type_L0);         -- OK.
+   Formal_Target_Type  => B460002_0.External_Target_Type_L0); -- OK. {4:1;1}
 
 
      --==================================================================--
@@ -310,14 +310,14 @@ end B460002_6;
 
                --==============================================--
 
-                                                               -- [ Level = 0 ]
+                                                             -- [ Level = 0 ]
 with B460002_0;
 with B460002_6;
 package B460002_6_InstanceL0 is new B460002_6
   (Designated_Type         => B460002_0.Tagged_Type,
    Formal_Target_Type      => B460002_0.External_Target_Type_L0,
    Formal_Disc_Record_Type => B460002_0.Disc_Record_Type,
-   Formal_AccDisc          => B460002_0.AccDisc_L0);                  -- OK.
+   Formal_AccDisc          => B460002_0.AccDisc_L0);         -- OK. {4:1;1}
 
 
      --==================================================================--
@@ -331,7 +331,7 @@ with B460002_4;
 with B460002_5;
 with B460002_6;
 
-procedure B460002 is                                           -- [ Level = 1 ]
+procedure B460002 is                                         -- [ Level = 1 ]
 
 
    type External_Operand_Type_L1 is access all B460002_0.Tagged_Type;
@@ -349,14 +349,14 @@ procedure B460002 is                                           -- [ Level = 1 ]
    -- target type (0):
 
    package B460002_2_InstanceL1 is new B460002_2
-     (Designated_Type         => B460002_0.Tagged_Type,
-      Formal_Target_Type      => B460002_0.External_Target_Type_L0);  -- ERROR:
+     (Designated_Type       => B460002_0.Tagged_Type,
+      Formal_Target_Type    => 
+                         B460002_0.External_Target_Type_L0);  -- ERROR: {3:4;1}
                -- Accessibility level of operand type in access type conversion
                -- deeper than that of target type.
+begin -- B460002.                                            -- [ Level = 1 ]
 
-begin -- B460002.                                              -- [ Level = 1 ]
-
-   declare                                                     -- [ Level = 2 ]
+   declare                                                   -- [ Level = 2 ]
 
       type External_Operand_Type_L2  is access all B460002_0.Tagged_Type;
       Operand_L2 :  External_Operand_Type_L2;
@@ -370,7 +370,7 @@ begin -- B460002.                                              -- [ Level = 1 ]
 
       package B460002_3_InstanceL2 is new B460002_3
         (Formal_Disc_Record_Type => B460002_0.Disc_Record_Type,
-         Formal_AccDisc          => AccDisc_L2);                      -- ERROR:
+         Formal_AccDisc          => AccDisc_L2);             -- ERROR: {2:7;1}
                -- Accessibility level of operand type in access type conversion
                -- deeper than that of target type.
 
@@ -380,7 +380,7 @@ begin -- B460002.                                              -- [ Level = 1 ]
 
       package B460002_4_InstanceL2 is new B460002_4
         (Designated_Type         => B460002_0.Tagged_Type,
-         Formal_Operand_Type     => External_Operand_Type_L1);        -- ERROR:
+         Formal_Operand_Type     => External_Operand_Type_L1);-- ERROR: {2:7;1}
                -- Accessibility level of operand type in access type conversion
                -- deeper than that of target type.
 
@@ -389,10 +389,10 @@ begin -- B460002.                                              -- [ Level = 1 ]
 
       package B460002_4_Instance is new B460002_4
         (Designated_Type         => B460002_0.Tagged_Type,
-         Formal_Operand_Type     => Derived_Operand_Type_L0);          -- OK.
+         Formal_Operand_Type     => Derived_Operand_Type_L0);-- OK. {2:7;1}
 
    begin
-      declare                                                  -- [ Level = 3 ]
+      declare                                                -- [ Level = 3 ]
 
          -- The following instantiation is legal because in all cases the
          -- level of the operand type is no deeper than that of the target
@@ -403,17 +403,17 @@ begin -- B460002.                                              -- [ Level = 1 ]
             Formal_Operand_Type     => External_Operand_Type_L1,
             Formal_Operand          => Operand_L1,
             Formal_Disc_Record_Type => B460002_0.Disc_Record_Type,
-            Formal_AccDisc          => AccDisc_L2);                   -- OK.
+            Formal_AccDisc          => AccDisc_L2);          -- OK. {5:10;1}
 
 
          -- The following instantiation is illegal because the level of the
          -- operand type (2) is deeper than that of the target type (1):
 
          package B460002_5_InstanceL3 is new B460002_5
-           (Designated_Type         => B460002_0.Tagged_Type,
-            Formal_Operand_Type     => External_Operand_Type_L2,
-            Formal_Operand          => Operand_L2,
-            Formal_Target_Type      => External_Target_Type_L1);      -- ERROR:
+           (Designated_Type     => B460002_0.Tagged_Type,
+            Formal_Operand_Type => External_Operand_Type_L2,
+            Formal_Operand      => Operand_L2,
+            Formal_Target_Type  => External_Target_Type_L1); -- ERROR: {4:10;1}
                -- Accessibility level of operand type in access type conversion
                -- deeper than that of target type.
 
@@ -426,7 +426,7 @@ begin -- B460002.                                              -- [ Level = 1 ]
            (Designated_Type         => B460002_0.Tagged_Type,
             Formal_Target_Type      => External_Target_Type_L1,
             Formal_Disc_Record_Type => B460002_0.Disc_Record_Type,
-            Formal_AccDisc          => AccDisc_L2);                   -- ERROR:
+            Formal_AccDisc          => AccDisc_L2);          -- ERROR: {4:10;1}
                -- Accessibility level of operand type in access type conversion
                -- deeper than that of target type.
 

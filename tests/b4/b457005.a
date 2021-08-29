@@ -44,7 +44,7 @@
 --
 -- CHANGE HISTORY:
 --      02 Jan 2015   RLB    Created test.
---
+--      26 Apr 2021   RLB     Added error location indicators.
 --!
 
 package B457005_0 is
@@ -135,72 +135,84 @@ procedure B457005 is
 
 begin
 
-   Specific_Type_Var := (if Bool then Dynamic_Tagged_Obj
-                                 else Specific_Type_Const);          -- ERROR:
+   Specific_Type_Var :=
+        (if Bool then Dynamic_Tagged_Obj
+                 else Specific_Type_Const);                  -- ERROR: {1:9;1}
 
-   Specific_Type_Var := (if Bool then Dynamic_Tagged_Obj
-                                 else B457005_0.Indeterminate);      -- ERROR:
+   Specific_Type_Var :=
+        (if Bool then Dynamic_Tagged_Obj      
+                 else B457005_0.Indeterminate);              -- ERROR: {1:9;1}
 
-   Specific_Type_Var := (case Team is
-                            when Red | Yellow => Dynamic_Tagged_Obj,
-                            when Blue => B457005_0.No_Parm,
-                            when Green => Specific_Type_Const);      -- ERROR:
+   Specific_Type_Var :=
+        (case Team is
+            when Red | Yellow => Dynamic_Tagged_Obj,
+            when Blue => B457005_0.No_Parm,
+            when Green => Specific_Type_Const);              -- ERROR: {3:9;1}
 
-   Specific_Type_Var := (case Team is
-                            when Red | Yellow => B457005_0.Indeterminate,
-                            when Blue => B457005_0.No_Parm,
-                            when Green => Dynamic_Tagged_Obj);       -- ERROR:
+   Specific_Type_Var :=
+        (case Team is
+            when Red | Yellow => B457005_0.Indeterminate,
+            when Blue => B457005_0.No_Parm,
+            when Green => Dynamic_Tagged_Obj);               -- ERROR: {3:9;1}
 
    -- Dispatching calls:
-   B457005_0.Proc_One_Parm (if Bool then Specific_Type_Var
-                                   else Specific_Type_Const);        -- OK.
-   B457005_0.Proc_One_Parm (case Team is
-                            when Red | Yellow => Specific_Type_Const,
-                            when Blue | Green => Specific_Type_Var); -- OK.
+   B457005_0.Proc_One_Parm 
+        (if Bool then Specific_Type_Var
+                 else Specific_Type_Const);                  -- OK. {1:9;1}
+   B457005_0.Proc_One_Parm 
+        (case Team is
+            when Red | Yellow => Specific_Type_Const,
+            when Blue | Green => Specific_Type_Var);         -- OK. {2:9;1}
 
-   B457005_0.Proc_One_Parm (if Bool then Dynamic_Tagged_Obj
-                                   else B457005_0.No_Parm);          -- OK.
-   B457005_0.Proc_One_Parm (case Team is
-                            when Red | Yellow => Dynamic_Tagged_Obj,
-                            when Blue | Green => B457005_0.No_Parm); -- OK.
+   B457005_0.Proc_One_Parm 
+        (if Bool then Dynamic_Tagged_Obj
+                 else B457005_0.No_Parm);                    -- OK. {1:9;1}
+   B457005_0.Proc_One_Parm 
+        (case Team is
+            when Red | Yellow => Dynamic_Tagged_Obj,
+            when Blue | Green => B457005_0.No_Parm);         -- OK. {2:9;1}
 
-   B457005_0.Proc_One_Parm (if Bool then Specific_Type_Const
-                            elsif (not Bool) then Specific_Type_Var
-                                   else B457005_0.No_Parm);          -- ERROR:
+   B457005_0.Proc_One_Parm 
+        (if Bool then Specific_Type_Const
+                 elsif (not Bool) then Specific_Type_Var
+                 else B457005_0.No_Parm);                    -- ERROR: {2:9;1}
 
-   B457005_0.Proc_One_Parm (case Team is
-                            when Red | Yellow =>
-                                 B457005_0.One_Parm (B457005_0.No_Parm),
-                            when Blue => Specific_Type_Var,
-                            when Green => Specific_Type_Const);      -- ERROR:
+   B457005_0.Proc_One_Parm 
+        (case Team is
+            when Red | Yellow => B457005_0.One_Parm (B457005_0.No_Parm),
+            when Blue => Specific_Type_Var,
+            when Green => Specific_Type_Const);              -- ERROR: {3:9;1}
 
-   B457005_0.Proc_One_Parm (if Bool then B457005_0.Indeterminate
-                                 else B457005_0.No_Parm);            -- ERROR:
+   B457005_0.Proc_One_Parm 
+        (if Bool then B457005_0.Indeterminate
+                 else B457005_0.No_Parm);                    -- ERROR: {1:9;1}
 
-   B457005_0.Proc_One_Parm (case Team is
-                            when Red | Yellow =>
-                                 B457005_0.One_Parm (B457005_0.No_Parm),
-                            when Blue => B457005_0.Indeterminate,
-                            when Green => Dynamic_Tagged_Obj);       -- ERROR:
+   B457005_0.Proc_One_Parm
+        (case Team is
+            when Red | Yellow => B457005_0.One_Parm (B457005_0.No_Parm),
+            when Blue => B457005_0.Indeterminate,
+            when Green => Dynamic_Tagged_Obj);               -- ERROR: {3:9;1}
 
-   B457005_0.Proc_One_Parm (if Bool then B457005_0.Indeterminate
-                                 else Specific_Type_Const);          -- OK.
+   B457005_0.Proc_One_Parm 
+        (if Bool then B457005_0.Indeterminate
+                 else Specific_Type_Const);                  -- OK. {1:9;1}
 
-   B457005_0.Proc_One_Parm (case Team is
-                            when Red | Yellow =>
-                                 B457005_0.One_Parm (Specific_Type_Var),
-                            when Blue => B457005_0.Indeterminate,
-                            when Green => Specific_Type_Const);      -- OK.
+   B457005_0.Proc_One_Parm 
+        (case Team is
+            when Red | Yellow => B457005_0.One_Parm (Specific_Type_Var),
+            when Blue => B457005_0.Indeterminate,
+            when Green => Specific_Type_Const);              -- OK. {3:9;1}
 
    -- If the expression is dynamically tagged, the rule doesn't apply:
-   Dynamic_Tagged_Obj := (if Bool then Dynamic_Tagged_Obj
-                                 else Specific_Type_Const);          -- OK.
+   Dynamic_Tagged_Obj := 
+        (if Bool then Dynamic_Tagged_Obj
+                 else Specific_Type_Const);                  -- OK. {1:9;1}
 
-   Dynamic_Tagged_Obj := (case Team is
-                            when Red | Yellow => Dynamic_Tagged_Obj,
-                            when Blue => B457005_0.No_Parm,
-                            when Green => Specific_Type_Const);      -- OK.
-
+   Dynamic_Tagged_Obj := 
+        (case Team is
+            when Red | Yellow => Dynamic_Tagged_Obj,
+            when Blue => B457005_0.No_Parm,
+            when Green => Specific_Type_Const);              -- OK. {3:9;1}
 
 end B457005;
 

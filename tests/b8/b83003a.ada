@@ -29,8 +29,11 @@
 --     THIS TEST CHECKS THE CASE WHERE THE TASK SPECIFICATION AND BODY
 --     ARE IN THE SAME COMPILATION UNIT.
 
--- HISTORY:
+-- CHANGE HISTORY:
 --     VCL  02/04/88  CREATED ORIGINAL TEST.
+--     RLB  04/26/21  Corrected incorrect error markers; moved markers on wrong
+--                    lines; added location indicators.
+--!
 
 PROCEDURE B83003A IS
      TYPE FMLY IS (FE1, FE2, FE3);
@@ -53,23 +56,23 @@ BEGIN
           END TSK1;
 
           TASK BODY TSK1 IS
-               TYPE E1 IS                           -- ERROR: HOMOGRAPH.
+               TYPE E1 IS                           -- ERROR: HOMOGRAPH. {16}
                     ARRAY (1..15) OF CHARACTER;
-               SUBTYPE E2 IS STRING(1..12);         -- ERROR: HOMOGRAPH.
-               E3 : CONSTANT CHARACTER := 'A';      -- ERROR: HOMOGRAPH.
-               E4 : CONSTANT := 5.0;                -- ERROR: HOMOGRAPH.
-               E5  : STRING(1..10);                 -- ERROR: HOMOGRAPH.
-               E6  : EXCEPTION;                     -- ERROR: HOMOGRAPH.
+               SUBTYPE E2 IS STRING(1..12);         -- ERROR: HOMOGRAPH. {16;1}
+               E3 : CONSTANT CHARACTER := 'A';      -- ERROR: HOMOGRAPH. {16;1}
+               E4 : CONSTANT := 5.0;                -- ERROR: HOMOGRAPH. {16;1}
+               E5  : STRING(1..10);                 -- ERROR: HOMOGRAPH. {16;1}
+               E6  : EXCEPTION;                     -- ERROR: HOMOGRAPH. {16;1}
 
-               PACKAGE E7 IS END E7;                -- ERROR: HOMOGRAPH.
+               PACKAGE E7 IS END E7;                -- ERROR: HOMOGRAPH. {16;1}
 
-               TASK E8;                             -- ERROR: HOMOGRAPH.
+               TASK E8;                             -- ERROR: HOMOGRAPH. {16;1}
 
           -- BODY FOR THE ABOVE HOMOGRAPH.
 
-               TASK BODY E8 IS                  -- OPTIONAL ERR MESSAGE:
-               BEGIN                            --  BODY OF AN INVALID
-                    NULL;                       --  TASK OBJECT.
+               TASK BODY E8 IS                      -- OPTIONAL ERROR: {16}
+               BEGIN                                --  BODY OF AN INVALID
+                    NULL;                           --  TASK OBJECT.
                END E8;
 
           BEGIN
@@ -85,12 +88,12 @@ BEGIN
           END TSK3;
 
           TASK BODY TSK3 IS
-               GENERIC                              -- ERROR: HOMOGRAPH.
-               FUNCTION E10 RETURN STRING;
+               GENERIC                       
+               FUNCTION E10 RETURN STRING;      -- ERROR: HOMOGRAPH. {1:16;1}
 
           -- BODY FOR THE ABOVE HOMOGRAPH.
 
-               FUNCTION E10 RETURN STRING IS    -- OPTIONAL ERR MESSAGE:
+               FUNCTION E10 RETURN STRING IS    -- OPTIONAL ERROR: {16;1}
                BEGIN                            --  BODY OF AN INVALID
                     RETURN "E10";               --  GENERIC FUNCTION.
                END E10;
@@ -109,15 +112,15 @@ BEGIN
           END TSK4;
 
           TASK BODY TSK4 IS
-               GENERIC                              -- ERROR: HOMOGRAPH.
-               PROCEDURE E11;
+               GENERIC       
+               PROCEDURE E11;                   -- ERROR: HOMOGRAPH. {1:16;1}
 
-               GENERIC                              -- ERROR: HOMOGRAPH.
-               PACKAGE E12 IS END E12;
+               GENERIC                         
+               PACKAGE E12 IS END E12;          -- ERROR: HOMOGRAPH. {1:16;1}
 
           -- BODY FOR THE ABOVE HOMOGRAPH.
 
-               PROCEDURE E11 IS                 -- OPTIONAL ERR MESSAGE:
+               PROCEDURE E11 IS                 -- OPTIONAL ERROR:
                BEGIN                            --  BODY OF AN INVALID
                     NULL;                       --  GENERIC PROCEDURE.
                END E11;

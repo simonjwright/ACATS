@@ -62,6 +62,7 @@
 --
 -- CHANGE HISTORY:
 --     18 May 2015   RLB   Created test.
+--     22 Apr 2021   RLB   Added error location indicators.
 
 package BC60002 is
 
@@ -72,54 +73,54 @@ package BC60002 is
     -- First, we try every kind of type:
 
     generic
-        with procedure P (C : Color) is abstract;                -- ERROR: (1)
+        with procedure P (C : Color) is abstract;          -- ERROR: (1) {9;1}
     package G1A is
     end G1A;
 
     generic
-        with procedure P (R : Root) is abstract;                 -- OK.
+        with procedure P (R : Root) is abstract;           -- OK. {9;1}
     package G1B is
     end G1B;
 
     generic
         type UPriv is private;
-        with procedure P (U : UPriv) is abstract;                -- ERROR: (1)
+        with procedure P (U : UPriv) is abstract;          -- ERROR: (1) {9;1}
     package G1C is
     end G1C;
 
     generic
         type TPriv is tagged private;
-        with procedure P (T : TPriv) is abstract;                -- OK.
+        with procedure P (T : TPriv) is abstract;          -- OK. {9;1}
     package G1D is
     end G1D;
 
     generic
         type Disc is (<>);
-        with procedure P (D : Disc) is abstract;                 -- ERROR: (1)
+        with procedure P (D : Disc) is abstract;           -- ERROR: (1) {9;1}
     package G1E is
     end G1E;
 
     generic
         type UDer is new Color;
-        with procedure P (U : UDer) is abstract;                 -- ERROR: (1)
+        with procedure P (U : UDer) is abstract;           -- ERROR: (1) {9;1}
     package G1F is
     end G1F;
 
     generic
         type TDer is new Root with private;
-        with procedure P (T : TDer) is abstract;                 -- OK.
+        with procedure P (T : TDer) is abstract;           -- OK. {9;1}
     package G1G is
     end G1G;
 
     generic
         type Intf is limited interface;
-        with procedure P (I : Intf) is abstract;                 -- OK.
+        with procedure P (I : Intf) is abstract;           -- OK. {9;1}
     package G1H is
     end G1H;
 
     generic
         type Incomp is tagged;
-        with procedure P (I : Incomp) is abstract;               -- ERROR: (3)
+        with procedure P (I : Incomp) is abstract;         -- ERROR: (3) {9;1}
     package G1I is
     end G1I;
 
@@ -129,69 +130,69 @@ package BC60002 is
     generic
         type TPriv (<>) is abstract tagged limited private;
         with procedure P (T : in out TPriv; C : Color)
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2A is
     end G2A;
 
     generic
         type TPriv (<>) is abstract tagged limited private;
-        with procedure P (T : access TPriv) is abstract;         -- OK.
+        with procedure P (T : access TPriv) is abstract;   -- OK. {9;1}
     package G2B is
     end G2B;
 
     generic
         type TPriv (<>) is abstract tagged limited private;
         with function F (T : TPriv) return Color
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2C is
     end G2C;
 
     generic
         type TPriv (<>) is abstract tagged limited private;
         with function F (C : Color) return TPriv
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2D is
     end G2D;
 
     generic
         type TPriv (<>) is abstract tagged limited private;
         with function F (C : Color) return access TPriv
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2E is
     end G2E;
 
     generic
         type TPriv (<>) is abstract tagged limited private;
         with procedure P (Target : in out TPriv; Source : in TPriv)
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2F is
     end G2F;
 
     generic
         type TPriv (<>) is abstract tagged limited private;
         with function "=" (Left, Right : in TPriv) return Boolean
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2G is
     end G2G;
 
     generic
         type TPriv (<>) is abstract tagged limited private;
         with function F (Old : in TPriv; C : Color) return TPriv
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2H is
     end G2H;
 
     generic
         type TPriv (<>) is abstract tagged limited private;
         with procedure P (Target : in out TPriv; Source : in Root)
-                                             is abstract;        -- ERROR: (2)
+                                             is abstract;  -- ERROR: (2){1:9;1}
     package G2I is
     end G2I;
 
     generic
         type TPriv (<>) is abstract tagged limited private;
         with procedure P (Target : in out TPriv; Source : in Root'Class)
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2J is
     end G2J;
 
@@ -199,7 +200,7 @@ package BC60002 is
         type TPriv (<>) is abstract tagged limited private;
         type TDer is new Root with private;
         with function F (Old : in TPriv; C : Color) return TDer
-                                             is abstract;        -- ERROR: (2)
+                                             is abstract;  -- ERROR: (2){1:9;1}
     package G2K is
     end G2K;
 
@@ -207,7 +208,7 @@ package BC60002 is
         type TPriv (<>) is abstract tagged limited private;
         type TDer is new Root with private;
         with function F (Old : in TPriv'Class; C : Color) return TDer
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2L is
     end G2L;
 
@@ -215,7 +216,7 @@ package BC60002 is
         type TPriv (<>) is abstract tagged limited private;
         type UDer is new Color;
         with function F (Old : in TPriv; U : UDer) return TPriv
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2M is
     end G2M;
 
@@ -223,7 +224,7 @@ package BC60002 is
         type TPriv (<>) is abstract tagged limited private;
         type UDer is new Color;
         with function F (Old : in TPriv'Class; U : UDer) return Boolean
-                                             is abstract;        -- ERROR: (1)
+                                             is abstract;  -- ERROR: (1){1:9;1}
     package G2N is
     end G2N;
 
@@ -231,7 +232,7 @@ package BC60002 is
         type TPriv (<>) is abstract tagged limited private;
         type UDer is new Color;
         with function F (Old : access TPriv) return UDer
-                                             is abstract;        -- OK.
+                                             is abstract;  -- OK. {1:9;1}
     package G2O is
     end G2O;
 
@@ -239,41 +240,42 @@ package BC60002 is
         type TPriv (<>) is abstract tagged limited private;
         type UDer is new Color;
         with function F (Old : access TPriv'Class) return UDer
-                                             is abstract;        -- ERROR: (1)
+                                             is abstract;  -- ERROR: (1){1:9;1}
     package G2P is
     end G2P;
 
     generic
         type UPriv (<>) is limited private;
         with function F (Old : UPriv; C : Color) return UPriv
-                                             is abstract;        -- ERROR: (1)
+                                             is abstract;  -- ERROR: (1){1:9;1}
     package G2Q is
     end G2Q;
 
     generic
         type UPriv (<>) is limited private;
-        with function F (C : Color) return UPriv is abstract;    -- ERROR: (1)
+        with function F (C : Color) return UPriv 
+                                             is abstract;  -- ERROR: (1){1:9;1}
     package G2R is
     end G2R;
 
     generic
         type UPriv (<>) is limited private;
         with procedure P (Target : in out UPriv; Source : in UPriv)
-                                             is abstract;        -- ERROR: (1)
+                                             is abstract;  -- ERROR: (1){1:9;1}
     package G2S is
     end G2S;
 
     generic
         type UPriv (<>) is limited private;
         with function "=" (Left, Right : in UPriv) return Boolean
-                                             is abstract;        -- ERROR: (1)
+                                             is abstract;  -- ERROR: (1){1:9;1}
     package G2T is
     end G2T;
 
     generic
         type Incomp is tagged;
         with function "=" (Left, Right : in Incomp) return Boolean
-                                             is abstract;        -- ERROR: (3)
+                                             is abstract;  -- ERROR: (3){1:9;1}
     package G2U is
     end G2U;
 

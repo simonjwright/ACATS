@@ -24,8 +24,11 @@
 --*
 -- CHECK THAT AN ENTRY FAMILY NAME IS NOT OVERLOADABLE.
 
--- JWC 7/22/85
--- JRK 10/1/85
+-- CHANGE HISTORY:
+--      22 Jul 1985   JWC
+--      01 Oct 1985   JRK
+--      23 Apr 2021   RLB   Added error location indicators.
+--!
 
 PROCEDURE B95094A IS
 
@@ -33,23 +36,23 @@ PROCEDURE B95094A IS
 
      TASK T IS
 
-          ENTRY E (1 .. 10) (X : IN INTEGER);      -- OK: INITIAL
+          ENTRY E (1 .. 10) (X : IN INTEGER);      -- OK: INITIAL   {11;1}
                                                    --     DECLARATION.
 
-          ENTRY E (1 .. 10) (X : OUT INTEGER);     -- ERROR: ILLEGAL
+          ENTRY E (1 .. 10) (X : OUT INTEGER);     -- ERROR: ILLEGAL  {11;1}
                                                    --        OVERLOAD.
-          ENTRY E (1 .. 10) (X : IN OUT INTEGER);  -- ERROR: ILLEGAL
+          ENTRY E (1 .. 10) (X : IN OUT INTEGER);  -- ERROR: ILLEGAL  {11;1}
                                                    --        OVERLOAD.
-          ENTRY E (0 .. 5) (X : IN INTEGER);       -- ERROR: ILLEGAL
+          ENTRY E (0 .. 5) (X : IN INTEGER);       -- ERROR: ILLEGAL  {11;1}
                                                    --        OVERLOAD.
-          ENTRY E (1 .. 10) (X : IN NEWINT);       -- ERROR: ILLEGAL
+          ENTRY E (1 .. 10) (X : IN NEWINT);       -- ERROR: ILLEGAL  {11;1}
                                                    --        OVERLOAD.
           ENTRY E (1 .. 10) (X : IN INTEGER;
-                             Y : IN OUT INTEGER);  -- ERROR: ILLEGAL
+                             Y : IN OUT INTEGER);  -- ERROR: ILLEGAL  {1:11;1}
                                                    --        OVERLOAD.
-          ENTRY E ('A' .. 'Z') (Y : IN CHARACTER); -- ERROR: ILLEGAL
+          ENTRY E ('A' .. 'Z') (Y : IN CHARACTER); -- ERROR: ILLEGAL  {11;1}
                                                    --        OVERLOAD.
-          ENTRY E (Z : IN BOOLEAN);                -- ERROR: ILLEGAL
+          ENTRY E (Z : IN BOOLEAN);                -- ERROR: ILLEGAL  {11;1}
                                                    --        OVERLOAD.
 
      END T;

@@ -25,7 +25,10 @@
 -- CHECK THAT A RANGE CONSTRAINT IS NOT ALLOWED ON THE
 --   COMPONENT TYPE OF A GENERIC FORMAL ARRAY TYPE.
 
--- PWB  2/3/86
+-- CHANGE HISTORY:
+--      03 Feb 1986   PWB
+--      22 Apr 2021   RLB   Added error location indicators.
+--!
 
 PROCEDURE BC1201F IS
 
@@ -36,19 +39,19 @@ PROCEDURE BC1201F IS
           TYPE INDEX IS ( <> );
           TYPE FORMAL_ARRAY IS
                ARRAY ( INDEX )
-               OF INTEGER RANGE 1..10;         -- ERROR: CONSTRAINT.
+               OF INTEGER RANGE 1..10;         -- ERROR: CONSTRAINT. {2:11;1}
           TYPE FLT_ARRAY IS
                ARRAY ( INDEX )
-               OF FLT RANGE -1.0 .. 1.0;       -- ERROR: CONSTRAINT.
+               OF FLT RANGE -1.0 .. 1.0;       -- ERROR: CONSTRAINT. {2:11;1}
      PROCEDURE GEN_PROC ( X : INTEGER );
 
      GENERIC
           TYPE FORMAL_STRING IS
                ARRAY ( POSITIVE RANGE <> )
-               OF CHARACTER RANGE 'A' .. 'Z';  -- ERROR: CONSTRAINT.
+               OF CHARACTER RANGE 'A' .. 'Z';  -- ERROR: CONSTRAINT. {2:11;1}
           TYPE FIX_ARRAY IS
                ARRAY ( POSITIVE RANGE <> )
-               OF FIX RANGE 0.0 .. 0.5;        -- ERROR: CONSTRAINT.
+               OF FIX RANGE 0.0 .. 0.5;        -- ERROR: CONSTRAINT. {2:11;1}
      PACKAGE GEN_PACK IS
      END GEN_PACK;
 
@@ -56,7 +59,7 @@ PROCEDURE BC1201F IS
           TYPE FORMAL_TABLE IS
                ARRAY ( POSITIVE RANGE <>,
                        INTEGER RANGE <>)
-               OF BOOLEAN RANGE TRUE .. FALSE; -- ERROR: CONSTRAINT.
+               OF BOOLEAN RANGE TRUE .. FALSE; -- ERROR: CONSTRAINT. {3:11;1}
      FUNCTION GEN_FUNC ( X : INTEGER ) RETURN INTEGER;
 
      PROCEDURE GEN_PROC ( X : INTEGER ) IS

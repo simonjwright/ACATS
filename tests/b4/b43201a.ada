@@ -26,7 +26,10 @@
 -- POSITIONAL COMPONENT ASSOCIATION PRECEDING A NAMED
 -- ASSOCIATION THAT DOES NOT HAVE THE CHOICE "OTHERS".
 
--- EG  12/27/83
+-- CHANGE HISTORY:
+--      27 Dec 1983   EG
+--      22 Apr 2021   RLB   Added error location indicators.
+--!
 
 PROCEDURE B43201A IS
      
@@ -35,30 +38,30 @@ PROCEDURE B43201A IS
      TYPE T2 IS ARRAY(1 .. 2, 1 .. 2) OF TC;
 
      A1 : T1 := (GREEN, BLUE, RED, BLUE);
-     B1 : T1 := (4 => BLUE, GREEN, RED, BLUE);    -- ERROR: MIXED ASSOC.
-     C1 : T1 := (GREEN, 4 => RED, BLUE, BLUE);    -- ERROR: MIXED ASSOC.
-     D1 : T1 := (GREEN, BLUE, BLUE, 4 => RED);    -- ERROR: MIXED ASSOC.
+     B1 : T1 := (4 => BLUE, GREEN, RED, BLUE);  -- ERROR: MIXED ASSOC. {17;1}
+     C1 : T1 := (GREEN, 4 => RED, BLUE, BLUE);  -- ERROR: MIXED ASSOC. {17;1}
+     D1 : T1 := (GREEN, BLUE, BLUE, 4 => RED);  -- ERROR: MIXED ASSOC. {17;1}
      E1, F1, G1, H1 : T1;
 
      A2 : T2 := (1 => (GREEN, BLUE), 2 => (RED, BLUE));
-     B2 : T2 := ((GREEN, BLUE), (1 => RED, 2 => BLUE)); -- OK.     
+     B2 : T2 := ((GREEN, BLUE), (1 => RED, 2 => BLUE)); -- OK. {17;1}     
      C2 : T2 := ((GREEN, BLUE),
-                 2 => (RED, BLUE));               -- ERROR: MIXED ASSOC.
+                 2 => (RED, BLUE));             -- ERROR: MIXED ASSOC. {1:17;1}
      D2 : T2 := ((1 => GREEN, 2 => BLUE),
-                 (2 => RED, BLUE));               -- ERROR: MIXED ASSOC.
+                 (2 => RED, BLUE));             -- ERROR: MIXED ASSOC. {1:17;1}
      E2, F2, G2, H2 : T2;
 
      CA1 : CONSTANT T1 :=
-                   (4 => BLUE, GREEN, RED, BLUE); -- ERROR: MIXED ASSOC.
+                 (4 => BLUE, GREEN, RED, BLUE); -- ERROR: MIXED ASSOC. {18;1}
      CB1 : CONSTANT T1 :=
-                   (GREEN, 4 => RED, BLUE, BLUE); -- ERROR: MIXED ASSOC.
+                 (GREEN, 4 => RED, BLUE, BLUE); -- ERROR: MIXED ASSOC. {18;1}
      CC1 : CONSTANT T1 :=
-                   (GREEN, BLUE, BLUE, 4 => RED); -- ERROR: MIXED ASSOC.
+                 (GREEN, BLUE, BLUE, 4 => RED); -- ERROR: MIXED ASSOC. {18;1}
      
      CA2 : CONSTANT T2 := (2 => (GREEN, BLUE),
-                           (RED, BLUE));          -- ERROR: MIXED ASSOC.
+                           (RED, BLUE));        -- ERROR: MIXED ASSOC. {1:27;1}
      CB2 : CONSTANT T2 := ((GREEN, BLUE),
-                           (BLUE, 2 => RED));     -- ERROR: MIXED ASSOC.
+                           (BLUE, 2 => RED));   -- ERROR: MIXED ASSOC. {1:27;1}
      CC2 : CONSTANT T2 := ((GREEN, BLUE), (BLUE, RED));
 
      TYPE TB IS ARRAY(1 .. 4) OF BOOLEAN;
@@ -84,56 +87,56 @@ PROCEDURE B43201A IS
 
      FUNCTION FUN3 (A1 : T1; A2 : T2) RETURN T1 IS
      BEGIN
-          RETURN (4 => BLUE, GREEN, RED, BLUE);   -- ERROR: MIXED ASSOC.
+          RETURN (4 => BLUE, GREEN, RED, BLUE); -- ERROR: MIXED ASSOC. {18;1}
      END FUN3;
 
      FUNCTION FUN4 (A1 : T1; A2 : T2) RETURN T2 IS
      BEGIN
           RETURN ((GREEN, 2 => BLUE),
-                  (BLUE, RED));                   -- ERROR: MIXED ASSOC.
+                  (BLUE, RED));                 -- ERROR: MIXED ASSOC. {1:18;1}
      END FUN4;
 
 BEGIN
-    E1 := ((GREEN, BLUE), (RED, BLUE));           -- ERROR: DIMENSION.
-    F1 := (4 => BLUE, GREEN, RED, BLUE);          -- ERROR: MIXED ASSOC.
-    G1 := (GREEN, RED, 4 => BLUE, BLUE);          -- ERROR: MIXED ASSOC.
-    H1 := (GREEN, BLUE, BLUE, 4 => RED);          -- ERROR: MIXED ASSOC.
+    E1 := ((GREEN, BLUE), (RED, BLUE));         -- ERROR: DIMENSION. {11;1}
+    F1 := (4 => BLUE, GREEN, RED, BLUE);        -- ERROR: MIXED ASSOC. {11;1}
+    G1 := (GREEN, RED, 4 => BLUE, BLUE);        -- ERROR: MIXED ASSOC. {11;1}
+    H1 := (GREEN, BLUE, BLUE, 4 => RED);        -- ERROR: MIXED ASSOC. {11;1}
 
     E2 := (1 => (GREEN, BLUE), 2 => (RED, BLUE));
-    F2 := (GREEN, BLUE, RED, BLUE);               -- ERROR: DIMENSION.
-    G2 := ((GREEN, BLUE), 2 => (RED, BLUE));      -- ERROR: MIXED ASSOC.
+    F2 := (GREEN, BLUE, RED, BLUE);             -- ERROR: DIMENSION. {11;1}
+    G2 := ((GREEN, BLUE), 2 => (RED, BLUE));    -- ERROR: MIXED ASSOC. {11;1}
     H2 := ((1 => GREEN, 2 => BLUE),
-           (2 => RED, BLUE));                     -- ERROR: MIXED ASSOC.
+           (2 => RED, BLUE));                   -- ERROR: MIXED ASSOC. {1:11;1}
 
-    PROC1 (A1 => (GREEN, 4 => RED, BLUE, BLUE),   -- ERROR: MIXED ASSOC.
+    PROC1 (A1 => (GREEN, 4 => RED, BLUE, BLUE), -- ERROR: MIXED ASSOC. {18;1}
            A2 => CC2);                        
     PROC1 ((GREEN, RED, BLUE, BLUE),
-           (2 => (GREEN, BLUE), (RED, BLUE)));    -- ERROR: MIXED ASSOC.
-    A1 := FUN1(A1 => (4 => RED, RED, BLUE, BLUE), -- ERROR: MIXED ASSOC.
-               A2 => CC2);                        
+           (2 => (GREEN, BLUE), (RED, BLUE)));  -- ERROR: MIXED ASSOC. {1:11;1}
+    A1 := FUN1(A1 =>(4 => RED, RED, BLUE, BLUE),-- ERROR: MIXED ASSOC. {21;1}
+               A2 =>CC2);                        
     A1 := FUN1((GREEN, RED, BLUE, BLUE),
-               ((GREEN, BLUE), 2 => (RED, RED))); -- ERROR: MIXED ASSOC.
-    A2 := FUN2(A1 => (RED, RED, BLUE, 4 => BLUE), -- ERROR: MIXED ASSOC.
+               ((GREEN, BLUE), 2 =>(RED, RED)));-- ERROR: MIXED ASSOC. {1:15;1}
+    A2 := FUN2(A1 => (RED, RED, BLUE, 4 => BLUE), -- ERROR: MIXED ASSOC. {22;1}
                A2 => CC2);                        
     A2 := FUN2((GREEN, RED, BLUE, BLUE),
-               ((GREEN, 2 => RED), (RED, BLUE))); -- ERROR: MIXED ASSOC.
+               ((GREEN, 2 => RED),(RED, BLUE)));-- ERROR: MIXED ASSOC. {1:15;1}
 
     A3 := (FALSE, FALSE, TRUE, TRUE);
-    B3 := A3 AND (FALSE, 4 => TRUE, TRUE, FALSE); -- ERROR: MIXED ASSOC.
-    B3 := A3  OR (4 => FALSE, TRUE, TRUE, FALSE); -- ERROR: MIXED ASSOC.
-    B3 := (FALSE, FALSE, TRUE, 4 => TRUE) XOR A3; -- ERROR: MIXED ASSOC.
+    B3 := A3 AND (FALSE, 4 => TRUE, TRUE, FALSE); -- ERROR: MIXED ASSOC. {18;1}
+    B3 := A3  OR (4 => FALSE, TRUE, TRUE, FALSE); -- ERROR: MIXED ASSOC. {18;1}
+    B3 := (FALSE, FALSE, TRUE, 4 => TRUE) XOR A3; -- ERROR: MIXED ASSOC. {11;8}
 
-    B4 := (4 => 'F', 'G', 'H', 'I') & A4;         -- ERROR: MIXED ASSOC.
-    B4 := ('F', 'H', 4 => 'G', 'I') & A4;         -- ERROR: MIXED ASSOC.
-    B4 := A4 & ('G', 'H', 'I', 4 => 'F');         -- ERROR: MIXED ASSOC.
+    B4 := (4 => 'F', 'G', 'H', 'I') & A4;       -- ERROR: MIXED ASSOC. {11;6}
+    B4 := ('F', 'H', 4 => 'G', 'I') & A4;       -- ERROR: MIXED ASSOC. {11;6}
+    B4 := A4 & ('G', 'H', 'I', 4 => 'F');       -- ERROR: MIXED ASSOC. {16;1}
 
-    IF ( A3 = (FALSE, 4 => TRUE, TRUE, FALSE) )   -- ERROR: MIXED ASSOC.
+    IF ( A3 = (FALSE, 4 => TRUE, TRUE, FALSE) ) -- ERROR: MIXED ASSOC. {15;2}
        THEN NULL;
     END IF;
-    IF ( (4 => FALSE, TRUE, TRUE, FALSE) < A3 )   -- ERROR: MIXED ASSOC.
+    IF ( (4 => FALSE, TRUE, TRUE, FALSE) < A3 ) -- ERROR: MIXED ASSOC. {10;7}
        THEN NULL;
     END IF;
-    IF ( (FALSE, TRUE, TRUE, 4 => TRUE) >= A3 )   -- ERROR: MIXED ASSOC.
+    IF ( (FALSE, TRUE, TRUE, 4 => TRUE) >= A3 ) -- ERROR: MIXED ASSOC. {10;8}
        THEN NULL;
     END IF;
 END B43201A;

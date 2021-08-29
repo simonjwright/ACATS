@@ -63,14 +63,21 @@
 --       (G) A language-defined aspect cannot be specified on the completion
 --           of a subprogram; 13.1.1(18/3).
 --
+-- PASS/FAIL CRITERIA:
+--     This test contains several lines marked POSSIBLE ERROR: [Setnn].
+--     For each value of n, the implementation must detect one or more of
+--     these possible errors. For instance, an error must be detected on
+--     at least one of the lines labeled POSSIBLE ERROR: [Set1] for an
+--     implementation to pass.
+--
 -- CHANGE HISTORY:
 --     11 Jan 12   SWB     Initial pre-release version.
 --     30 Jan 12   SWB     Restructured test to have main subprogram.
 --     25 Apr 14   RLB     Changes to issue in ACATS 4.0; reorganized test
 --                         cases and added several additional test cases.
+--     22 Apr 21   RLB     Added error location indicators, and set error
+--                         tags for freezing checks.
 --!
-
-
 
 procedure BD11001 is
 
@@ -83,15 +90,19 @@ procedure BD11001 is
         use Pkg0;
 
         type Bad_Vector is array (Positive range <>) of Integer with
-          Default_Component_Value => Default_Vector_Element_Value;
+          Default_Component_Value => 
+              Default_Vector_Element_Value;  -- POSSIBLE ERROR: [Set1] {2:11;1}
         type Good_Vector is array (Positive range <>) of Integer with
-          Default_Component_Value => Default_Vector_Element_Value;
+          Default_Component_Value => 
+              Default_Vector_Element_Value;  -- OK. {1:11;1}
 
-        Bad_Freezer : constant Bad_Vector := (1, 2, 3);        -- ERROR: (A)
+        Bad_Freezer : constant Bad_Vector := 
+                              (1, 2, 3);  -- POSSIBLE ERROR: (A) [Set1] {1:9;1}
          -- Name "Default_Vector_Element_Value" does not resolve to
          -- the same entity here as it does at the end of Pkg1.
 
-        Default_Vector_Element_Value : constant := 456;
+        Default_Vector_Element_Value : constant := 
+                                 456;     -- POSSIBLE ERROR: (A) [Set1] {1:9;1}
 
         Good_Freezer : constant Good_Vector := (1, 2, 3);
 
@@ -100,15 +111,18 @@ procedure BD11001 is
         package Nested is
            -- Direct visibility subtest:
            type Bad_Int is range 0 .. 1000
-              with Default_Value => Some_Value;
+              with Default_Value => 
+                            Some_Value; -- POSSIBLE ERROR: (A) [Set2] {2:15;1} 
            type Good_Int is range 0 .. 1000
-              with Default_Value => Some_Value;
+              with Default_Value => 
+                            Some_Value; -- OK. {1:15;1}
 
-           Bad_Freezer : constant Bad_Int := 18;               -- ERROR: (A)
+           Bad_Freezer : constant Bad_Int :=
+                                  18;   -- POSSIBLE ERROR: (A) [Set2] {1:12;1} 
               -- Name "Some_Value" does not resolve to
               -- the same entity here as it does at the end of Pkg1.Nested.
 
-           Some_Value : constant := 52;
+           Some_Value : constant := 52; -- POSSIBLE ERROR: (A) [Set2] {12;1}
 
            Good_Freezer : constant Good_Int := 26;
         end Nested;
@@ -116,33 +130,34 @@ procedure BD11001 is
 
     package Pkg2 is
         Integer_Variable : Integer := 1
-           with Dynamic_Predicate => Integer_Variable /= 0;    -- ERROR: (B)
+           with Dynamic_Predicate => 
+                            Integer_Variable /= 0;       -- ERROR: (B) {2:12;1}
              -- Not an aspect of an object.
 
         package Nested is
             type Priv is private
-               with Default_Component_Value => 123;            -- ERROR: (B)
+               with Default_Component_Value => 123;      -- ERROR: (B) {1:16;1}
              -- Not an aspect of a private type.
         private
             type Priv is array (Character) of Integer;
         end Nested;
 
-        type Bad_Flags is array (1 .. 32) of Boolean with
-          Pack => True, Size => 32,
-          Component_Size => 1, Pack => True;                   -- ERROR: (C)
+        type Bad_Flags is array (1 .. 32) of Boolean
+           with Pack => True, Size => 32,
+                Component_Size => 1, Pack => True;       -- ERROR: (C) {1:12;1}
             -- Aspect "Pack" specified more than once.
 
-        type Good_Flags is array (1 .. 32) of Boolean with
-          Size => 32, Component_Size => 1, Pack;
+        type Good_Flags is array (1 .. 32) of Boolean
+           with Size => 32, Component_Size => 1, Pack;   -- OK. {1:12;1}
 
         procedure Proc (A, B : Natural)
            with Pre => A > 10,
-                Pre => B > A;                                  -- ERROR: (C)
+                Pre => B > A;                            -- ERROR: (C) {1:12;1}
             -- Aspect "Pre" specified more than once.
 
         subtype Large_Even is Natural
            with Dynamic_Predicate => Large_Even mod 2 = 0,
-                Dynamic_Predicate => Large_Even >= 10000;      -- ERROR: (C)
+                Dynamic_Predicate => Large_Even >= 10000;-- ERROR: (C) {1:12;1}
     end Pkg2;
 
     package body Pkg2 is
@@ -154,26 +169,26 @@ procedure BD11001 is
 
     package Pkg3 is
         type Bad_Predicate is new Integer
-           with Dynamic_Predicate;                             -- ERROR: (D)
+           with Dynamic_Predicate;                       -- ERROR: (D) {1:12;1}
 
         type Bad_Value is digits 3
-           with Default_Value;                                 -- ERROR: (D)
+           with Default_Value;                           -- ERROR: (D) {1:12;1}
 
         type Bad_Access is access Natural
-           with Storage_Size;                                  -- ERROR: (D)
+           with Storage_Size;                            -- ERROR: (D) {1:12;1}
 
         function Foo (A, B : Natural) return Natural
-           with Convention;                                    -- ERROR: (D)
+           with Convention;                              -- ERROR: (D) {1:12;1}
 
         type Has_Untagged_View is private;
 
         procedure Primitive_Op
           (X : Has_Untagged_View; A, B : Integer)
-           with Pre'Class => A <= B;                           -- ERROR: (E)
+           with Pre'Class => A <= B;                     -- ERROR: (E) {2:12;1}
            -- Must be a primitive operation of a tagged type.
 
         type Untagged_Type is private
-           with Type_Invariant'Class => True;                  -- ERROR: (E)
+           with Type_Invariant'Class => True;            -- ERROR: (E) {1:12;1}
 
     private
         type Has_Untagged_View is tagged null record;
@@ -195,17 +210,17 @@ procedure BD11001 is
         procedure Overloaded (X : Integer);
         procedure Overloaded (X, Y : Integer);
         procedure Unary (Z : Integer) renames Overloaded
-           with Inline;                                        -- ERROR: (F)
+           with Inline;                                  -- ERROR: (F) {1:12;1}
            -- No language-defined aspects allowed on renames.
 
         procedure Any  (N : Natural);
         procedure Even (N : Natural) renames Any
-           with Pre => N mod 2 = 0;                            -- ERROR: (F)
+           with Pre => N mod 2 = 0;                      -- ERROR: (F) {1:12;1}
 
         generic
            type Formal_Array_Type is array (Character) of Boolean
-              with Pack;                                       -- ERROR: (F)
-              -- No language-defined aspects allowed on a formal type.
+              with Pack;                                 -- ERROR: (F) {1:15;1}
+              -- Most language-defined aspects not allowed on a formal type.
         package Generic_Pkg is
         end Generic_Pkg;
     end Pkg4;
@@ -221,7 +236,7 @@ procedure BD11001 is
 
     package Pkg5 is
         type Enum is (Aaa, Bbb, Ccc)
-          with Unrecognized_Aspect_Name_Xyzzy => True;         -- ERROR: (B)
+           with Unrecognized_Aspect_Name_Xyzzy => True;  -- ERROR: (B) {12;1}
               -- This doesn't identify any aspect.
     end Pkg5;
 
@@ -238,17 +253,17 @@ procedure BD11001 is
 
     package body Pkg6 is
         procedure Prim1 (A : in out Priv)
-           with Pre => A.I >= 0 is                             -- ERROR: (G)
+           with Pre => A.I >= 0 is                       -- ERROR: (G) {1:12;1}
         begin
            A.I := A.I / 2;
         end Prim1;
 
         procedure Prim2 (B : in out Priv) is null
-           with Post'Class => B.I = B'Old.I;                   -- ERROR: (G)
+           with Post'Class => B.I = B'Old.I;             -- ERROR: (G) {1:12;1}
            -- Null subprogram acting as a completion.
 
         function Prim3 (C : in Priv) return Natural is (C.I)
-           with Post => C'Old.I = Prim3'Result;                -- ERROR: (G)
+           with Post => C'Old.I = Prim3'Result;          -- ERROR: (G) {1:12;1}
            -- Expression function acting as a completion.
 
     end Pkg6;

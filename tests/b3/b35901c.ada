@@ -25,24 +25,27 @@
 -- CHECK THAT A FIXED POINT TYPE DEFINITION MUST BE REJECTED IF IT 
 -- REQUIRES MORE THAN SYSTEM.MAX_MANTISSA BITS.
  
--- RJW 2/24/86
+-- CHANGE HISTORY:
+--      24 Feb 86   RJW     
+--      21 Apr 21   RLB     Added error location indicators, moved tags.
  
 WITH SYSTEM; USE SYSTEM;
 
 PROCEDURE B35901C IS
 
-     TYPE FIXED_TYPE1 IS DELTA 2.0 ** (-MAX_MANTISSA)       -- OK.
-                        RANGE -1.0 .. 1.0;
+     TYPE FIXED_TYPE1 IS DELTA 2.0 ** (-MAX_MANTISSA)
+                        RANGE -1.0 .. 1.0;                  -- OK.    {1:6;1}
 
-     TYPE FIXED_TYPE2 IS DELTA 2.0 ** (-(MAX_MANTISSA + 1)) -- ERROR: 
-                        RANGE -1.0 .. 1.0;                  -- TOO 
+     TYPE FIXED_TYPE2 IS DELTA 2.0 ** (-(MAX_MANTISSA + 1)) 
+                        RANGE -1.0 .. 1.0;                  -- ERROR: {1:6;1}
+                                                            -- TOO 
                                                             -- MANY 
                                                             -- BITS.
      TYPE FIXED_TYPE3 IS DELTA 1.0 
-               RANGE -10.0 .. 2.0 ** MAX_MANTISSA;          -- OK.
+               RANGE -10.0 .. 2.0 ** MAX_MANTISSA;          -- OK.    {1:6;1}
 
      TYPE FIXED_TYPE4 IS DELTA 1.0 
-               RANGE -10.0 .. 2.0 ** MAX_MANTISSA + 1.0;    -- ERROR: 
+               RANGE -10.0 .. 2.0 ** MAX_MANTISSA + 1.0;    -- ERROR: {1:6;1}
                                                             -- TOO
                                                             -- MANY 
                                                             -- BITS

@@ -25,7 +25,10 @@
 -- CHECK THAT A DISCRIMINANT CONSTRAINT IS NOT ALLOWED ON A COMPONENT
 -- TYPE SPECIFICATION IN A GENERIC FORMAL ARRAY TYPE DECLARATION.
 
--- PWB  2/10/86
+-- CHANGE HISTORY:
+--      10 Feb 1986   PWB
+--      22 Apr 2021   RLB   Added error location indicators.
+--!
 
 PROCEDURE BC1201I IS
 
@@ -42,29 +45,29 @@ PROCEDURE BC1201I IS
      GENERIC
           TYPE ARRAY_1 IS 
                ARRAY (INTEGER RANGE <>) OF 
-                    REC_1 (5);                  -- ERROR: CONSTRAINT.
+                    REC_1 (5);                  -- ERROR: CONSTRAINT. {2:11;1}
           TYPE ARRAY_2 IS
                ARRAY (BOOLEAN RANGE <>) OF 
-                   REC_2 (1);                   -- ERROR: CONSTRAINT.
+                   REC_2 (1);                   -- ERROR: CONSTRAINT. {2:11;1}
      PROCEDURE GEN_PROC (X : INTEGER);
 
      GENERIC
           TYPE ARRAY_1 IS
                ARRAY (BOOLEAN RANGE <>) OF 
-                    REC_1 (DISC => 5);          -- ERROR: CONSTRAINT.
+                    REC_1 (DISC => 5);          -- ERROR: CONSTRAINT. {2:11;1}
           TYPE ARRAY_2 IS
                ARRAY (INTEGER RANGE <>) OF 
-                    REC_2 (DISC => 1);          -- ERROR: CONSTRAINT.
+                    REC_2 (DISC => 1);          -- ERROR: CONSTRAINT. {2:11;1}
      FUNCTION GEN_FUNC (X : INTEGER) 
                        RETURN BOOLEAN;
 
      GENERIC
           TYPE ARRAY_1 IS
                ARRAY (CHARACTER RANGE <>) OF
-                    REC_1(4);                   -- ERROR: CONSTRAINT.
+                    REC_1(4);                   -- ERROR: CONSTRAINT. {2:11;1}
           TYPE ARRAY_2 IS
                ARRAY (BOOLEAN RANGE <>) OF 
-                    REC_2 (DISC => 3);          -- ERROR: CONSTRAINT.
+                    REC_2 (DISC => 3);          -- ERROR: CONSTRAINT. {2:11;1}
      PACKAGE GEN_PACK IS
      END GEN_PACK;
 

@@ -28,8 +28,8 @@
 --      subprogram that is neither an abstract subprogram nor a null procedure.
 --
 -- CHANGE HISTORY:
---      28 Oct 07   RLB     Created test based on existing ACATS test B393007.
---
+--      28 Oct 07   RLB   Created test based on existing ACATS test B393007.
+--      26 Apr 21   RLB   Added error location indicators.
 --!
 
 package B394001 is
@@ -37,73 +37,79 @@ package B394001 is
    package Pkg1 is
       type Interf is limited interface;
 
-      procedure My_Op (Obj : in Interf) is null;                      -- OK.
-      function "+" (Obj : in Interf) return Interf is abstract;       -- OK.
+      procedure My_Op (Obj : in Interf) is null;              -- OK. {7;1}
+      function "+" (Obj : in Interf) return Interf is abstract; -- OK. {7;1}
    end Pkg1;
 
    package Pkg2 is
       type Interf_2 is interface and Pkg1.Interf;
-      procedure My_Op (Obj : in Interf_2) is abstract;                -- OK.
+      procedure My_Op (Obj : in Interf_2) is abstract;        -- OK. {7;1}
       function "+" (Obj : in Interf_2)
-          return Interf_2 is abstract;                                -- OK.
-      procedure Another_Op (Obj : in Interf_2);                       -- ERROR:
-      function My_Func (Obj : in Interf_2) return Boolean;            -- ERROR:
-      procedure Another_Op (Cnt : in Natural; Obj : in Interf_2);     -- ERROR:
-      function Acc_Func (Obj : access Interf_2) return Boolean;       -- ERROR:
-      function Res_Func (Flag : Boolean) return access Interf_2;      -- ERROR:
-      procedure Bad_Op (Ptr : access Interf_2);                       -- ERROR:
-      procedure OK_Op (Ptr : access Interf_2) is null;                -- OK.
-      function Double_Func (Obj,Obj2 : Interf_2) return Natural;      -- ERROR:
-      procedure Copy (Target : out Interf_2; Source : in Interf_2);   -- ERROR:
-      function Bool_Func (Obj : in Interf_2'Class) return Boolean;    -- OK.
+          return Interf_2 is abstract;                        -- OK. {1:7;1}
+      procedure Another_Op (Obj : in Interf_2);               -- ERROR: {7;1}
+      function My_Func (Obj : in Interf_2) return Boolean;    -- ERROR: {7;1}
+      procedure Another_Op (Cnt : in Natural; 
+                            Obj : in Interf_2);               -- ERROR: {1:7;1}
+      function Acc_Func (Obj : access Interf_2) return Boolean; -- ERROR: {7;1}
+      function Res_Func (Flag : Boolean) return access Interf_2;-- ERROR: {7;1}
+      procedure Bad_Op (Ptr : access Interf_2);               -- ERROR: {7;1}
+      procedure OK_Op (Ptr : access Interf_2) is null;        -- OK. {7;1}
+      function Double_Func (Obj,Obj2 : Interf_2) 
+         return Natural;                                      -- ERROR: {1:7;1}
+      procedure Copy (Target : out Interf_2; 
+                      Source : in  Interf_2);                 -- ERROR: {1:7;1}
+      function Bool_Func (Obj : in Interf_2'Class) 
+         return Boolean;                                      -- OK. {1:7;1}
       procedure Convert (Result : out Interf_2'Class;
-                         Source : access Interf_2);                   -- ERROR:
+                         Source : access Interf_2);           -- ERROR: {1:7;1}
    end Pkg2;
 
    package Pkg3 is
       type Interf_3 is task interface;
-      function "+" (Op : Interf_3) return access Interf_3 is abstract;-- OK.
-      function "-" (Op : Interf_3) return access Interf_3;            -- ERROR:
-      procedure An_Op (Op : in out Interf_3) is null;                 -- OK.
-      procedure Second_Op (Op : Interf_3);                            -- ERROR:
-      procedure Third_Op (Code : in Character; Obj : in out Interf_3);-- ERROR:
+      function "+" (Op : Interf_3) return access Interf_3 
+         is abstract;                                         -- OK. {1:7;1}
+      function "-" (Op : Interf_3) return access Interf_3;    -- ERROR: {7;1}
+      procedure An_Op (Op : in out Interf_3) is null;         -- OK. {7;1}
+      procedure Second_Op (Op : Interf_3);                    -- ERROR: {7;1}
+      procedure Third_Op (Code : in Character; 
+                          Obj : in out Interf_3);             -- ERROR: {1:7;1}
    end Pkg3;
 
    package Pkg4 is
       type Interf_4 is protected interface and Pkg1.Interf;
-      procedure My_Op (Obj : in Interf_4) is abstract;                -- OK.
+      procedure My_Op (Obj : in Interf_4) is abstract;        -- OK. {7;1}
       function "+" (Obj : in Interf_4)
-         return Interf_4 is abstract;                                 -- OK.
+         return Interf_4 is abstract;                         -- OK. {1:7;1}
       package Nested is
          -- These subprograms aren't primitive.
-         procedure Second_Op (Op : in out Interf_4);                  -- OK:
-         procedure Acc_Op (Ptr : access Interf_4);                    -- OK.
-         function My_Func (Obj : Interf_4) return Boolean;            -- OK.
+         procedure Second_Op (Op : in out Interf_4);          -- OK. {10;1}
+         procedure Acc_Op (Ptr : access Interf_4);            -- OK. {10;1}
+         function My_Func (Obj : Interf_4) return Boolean;    -- OK. {10;1}
       end Nested;
    end Pkg4;
 
    generic
    package Pkg5 is
       type Interf_5 is limited interface and Pkg1.Interf;
-      procedure My_Op (Obj : in Interf_5);                            -- ERROR:
+      procedure My_Op (Obj : in Interf_5);                    -- ERROR: {7;1}
       function "+" (Obj : in Interf_5)
-          return Interf_5 is abstract;                                -- OK.
-      procedure Another_Op (Obj : in Interf_5);                       -- ERROR:
-      function My_Func (Obj : Interf_5) return Natural;               -- ERROR:
-      procedure Third_Op (Obj : access Interf_5);                     -- ERROR:
+          return Interf_5 is abstract;                        -- OK. {1:7;1}
+      procedure Another_Op (Obj : in Interf_5);               -- ERROR: {7;1}
+      function My_Func (Obj : Interf_5) return Natural;       -- ERROR: {7;1}
+      procedure Third_Op (Obj : access Interf_5);             -- ERROR: {7;1}
    end Pkg5;
 
    generic
    package Pkg6 is
       type Interf6 is synchronized interface;
       procedure Pub_Op (Pi : in Float; Obj : in out Interf6)
-           is abstract;                                               -- OK.
-      procedure Another_Op (Obj : access Interf6);                    -- ERROR:
+           is abstract;                                       -- OK. {1:7;1}
+      procedure Another_Op (Obj : access Interf6);            -- ERROR: {7;1}
       function My_Func (Obj : access Interf6)
-         return Natural;                                              -- ERROR:
+         return Natural;                                      -- ERROR: {1:7;1}
       function Acc_Func (Count : Natural)
-         return access Interf6;                                       -- ERROR:
-      procedure Third_Op (Obj : access Interf6);                      -- ERROR:
+         return access Interf6;                               -- ERROR: {1:7;1}
+      procedure Third_Op (Obj : access Interf6);              -- ERROR: {7;1}
    end Pkg6;
 
 end B394001;

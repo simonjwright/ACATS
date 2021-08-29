@@ -60,7 +60,9 @@
 --      30 Dec 13   RLB     Created from similar test B730008.
 --      23 Jan 15   RLB     Completion of Priv12 violated 7.3(10.1/3),
 --                          added limited to repair that.
---
+--      22 Apr 21   RLB     Added error location indicators.
+--!
+
 package B730009A is
    type L_Iface is limited interface;
 
@@ -75,11 +77,14 @@ end B730009A;
 
 with B730009A;
 package B730009 is
-   type Priv01 is new B730009A.S_IFace with private;  -- POSSIBLE ERROR: [Set1]
+   type Priv01 is new B730009A.S_IFace 
+                               with private;  -- POSSIBLE ERROR: [Set1] {1:4;1}
 
-   type Priv02 is new B730009A.T_IFace with private;  -- POSSIBLE ERROR: [Set2]
+   type Priv02 is new B730009A.T_IFace
+                               with private;  -- POSSIBLE ERROR: [Set2] {1:4;1}
 
-   type Priv03 is new B730009A.P_IFace with private;  -- POSSIBLE ERROR: [Set3]
+   type Priv03 is new B730009A.P_IFace 
+                               with private;  -- POSSIBLE ERROR: [Set3] {1:4;1}
 
    type Priv10 is limited new B730009A.L_IFace with private;
 
@@ -107,67 +112,68 @@ package B730009 is
 
 private
    -- The partial view Priv01 is not synchronized.
-   task type Priv01 is new B730009A.S_IFace with      -- POSSIBLE ERROR: [Set1]
+   task type Priv01 is new B730009A.S_IFace with -- POSSIBLE ERROR: [Set1] {4}
    end Priv01;
 
    -- The partial view Priv02 is not synchronized.
-   task type Priv02 is new B730009A.T_IFace with      -- POSSIBLE ERROR: [Set2]
+   task type Priv02 is new B730009A.T_IFace with -- POSSIBLE ERROR: [Set2] {4}
    end Priv02;
 
    -- The partial view Priv03 is not synchronized.
-   protected type Priv03 is new B730009A.P_IFace with -- POSSIBLE ERROR: [Set3]
+   protected type Priv03 is new B730009A.P_IFace
+                                            with -- POSSIBLE ERROR: [Set3]{1:4}
    private
       Foo : Natural;
    end Priv03;
 
    -- The partial view Priv10 is not synchronized.
-   task type Priv10 is new B730009A.L_IFace with      -- ERROR:
+   task type Priv10 is new B730009A.L_IFace with      -- ERROR: {4}
    end Priv10;
 
    -- The partial view Priv11 is not synchronized.
-   protected type Priv11 is new B730009A.L_IFace with -- ERROR:
+   protected type Priv11 is new B730009A.L_IFace with -- ERROR: {4}
    private
       Foo : Natural;
    end Priv11;
 
    type Priv12 is limited new B730009A.Type_Implementing_L_IFace
-      with null record;                               -- OK.
+      with null record;                               -- OK. {1:4;1}
 
    -- The partial view Priv20 is not synchronized.
-   task type Priv20 is                                -- ERROR:
+   task type Priv20 is                                -- ERROR: {4}
    end Priv20;
 
    -- The partial view Priv21 is not synchronized.
-   protected type Priv21 is                           -- ERROR:
+   protected type Priv21 is                           -- ERROR: {4}
    private
       Foo : Natural;
    end Priv21;
 
-   task type Priv30 is new B730009A.S_IFace with      -- OK.
+   task type Priv30 is new B730009A.S_IFace with      -- OK. {4}
    end Priv30;
 
-   task type Priv31 is new B730009A.T_IFace with      -- OK.
+   task type Priv31 is new B730009A.T_IFace with      -- OK. {4}
    end Priv31;
 
-   protected type Priv32 is new B730009A.P_IFace with -- OK.
+   protected type Priv32 is new B730009A.P_IFace with -- OK. {4}
    private
       Foo : Natural;
    end Priv32;
 
-   task type Priv40 is new B730009A.L_IFace with      -- OK.
+   task type Priv40 is new B730009A.L_IFace with      -- OK. {4}
    end Priv40;
 
-   protected type Priv41 is new B730009A.L_IFace with -- OK.
+   protected type Priv41 is new B730009A.L_IFace with -- OK. {4}
    private
       Foo : Natural;
    end Priv41;
 
    -- The completion is not synchronized.
    type Priv42 is limited new B730009A.L_IFace
-      with null record;                               -- ERROR:
+      with null record;                               -- ERROR: {1:4;1}
 
    -- The completion is not synchronized.
    type Priv43 is new B730009A.Type_Implementing_L_IFace
-      with null record;                               -- ERROR:
+      with null record;                               -- ERROR: {1:4;1}
 
 end B730009;

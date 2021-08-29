@@ -45,20 +45,23 @@
 --     VCL  02/04/88  CREATED ORIGINAL TEST.
 --     RDH  04/09/90  MODIFIED TEST TO ONLY HAVE ONE TASK BODY IN
 --                    EACH FILE.
+--     RLB  04/26/21  Corrected incorrect error markers; moved markers on wrong
+--                    lines; added location indicators.
+--!
 
 -- MULTIPLE TASKS ARE USED SO THAT ONLY ONE DECLARATION WHICH REQUIRES
 -- A BODY (TASK AND GENERIC UNITS) IS GIVEN IN EACH TASK.
 
 SEPARATE (B83003B0M)
 TASK BODY TSK3 IS
-     GENERIC                                       -- ERROR: HOMOGRAPH.
-     FUNCTION E10 RETURN STRING;
+     GENERIC                                       
+     FUNCTION E10 RETURN STRING;                  -- ERROR: HOMOGRAPH. {1:6;1}
 
 -- BODY FOR THE ABOVE HOMOGRAPH.
 
-     FUNCTION E10 RETURN STRING IS              -- OPTIONAL ERR MESSAGE:
-     BEGIN                                      --  BODY OF AN INVALID
-          RETURN "E10";                         --  GENERIC FUNCTION.
+     FUNCTION E10 RETURN STRING IS                -- OPTIONAL ERROR: {6}
+     BEGIN                                        --  BODY OF AN INVALID
+          RETURN "E10";                           --  GENERIC FUNCTION.
      END E10;
 BEGIN
      NULL;

@@ -25,7 +25,10 @@
 -- CHECK THAT UPPER AND LOWER BOUNDS OF DISCRETE RANGES MUST BE THE SAME
 -- TYPE, IN ALL CONTEXTS (EXCEPT ENTRIES).
 
--- DAT 2/2/81
+-- CHANGE HISTORY:
+--      02 Feb 81   DAT
+--      21 Apr 21   RLB     Added error location indicators; split constructs
+--                          so only one error per construct.
 
 PROCEDURE B36102A IS
 
@@ -33,11 +36,11 @@ PROCEDURE B36102A IS
      TYPE DAY IS (MON, TUE, WED, THU, FRI, SAT, SUN);
      TYPE D_BOOL IS NEW BOOLEAN;
 
-     TYPE A1 IS ARRAY (MON .. VEGA) OF DAY;       -- ERROR: VEGA.
+     TYPE A1 IS ARRAY (MON .. VEGA) OF DAY;       -- ERROR: VEGA.   {6;1}
      TYPE A2 IS ARRAY (BOOLEAN'(TRUE) ..
-                       D_BOOL'(TRUE)) OF DAY;     -- ERROR: D_BOOL.
+                       D_BOOL'(TRUE)) OF DAY;     -- ERROR: D_BOOL. {1:6;1}
      TYPE A3 IS ARRAY (BOOLEAN RANGE TRUE ..
-                       D_BOOL'(FALSE)) OF DAY;    -- ERROR: D_BOOL.
+                       D_BOOL'(FALSE)) OF DAY;    -- ERROR: D_BOOL. {1:6;1}
 
      DBF : CONSTANT D_BOOL := FALSE;
      DBT : CONSTANT D_BOOL := TRUE;
@@ -46,8 +49,13 @@ PROCEDURE B36102A IS
 
      TYPE REC1 (DISC : BOOLEAN) IS RECORD
           CASE DISC IS
-               WHEN BF .. DBF => NULL;            -- ERROR: DBF.
-               WHEN BOOLEAN RANGE TRUE .. DBT =>  -- ERROR: DBT.
+               WHEN BF .. DBF => NULL;            -- ERROR: DBF.    {1:11;1}
+               WHEN OTHERS => NULL;
+          END CASE;
+     END RECORD;
+     TYPE REC2 (DISC : BOOLEAN) IS RECORD
+          CASE DISC IS
+               WHEN BOOLEAN RANGE TRUE .. DBT =>  -- ERROR: DBT.    {1:11;1}
                     NULL;
                WHEN OTHERS => NULL;
           END CASE;
@@ -56,31 +64,34 @@ PROCEDURE B36102A IS
      TYPE BA IS ARRAY (BOOLEAN RANGE <>) OF D_BOOL;
      TYPE BB IS ARRAY (D_BOOL RANGE <>) OF BOOLEAN;
 
-     B : BB (D_BOOL RANGE FALSE .. TRUE);         -- OK.
-     X1 : BB (D_BOOL RANGE DBF .. BT);            -- ERROR: BT.
-     X2 : BA (BF .. DBT);                         -- ERROR: DBT.
-     TYPE T1 IS NEW BB (BF .. DBT);               -- ERROR: BF.
-     TYPE T2 IS NEW BA (BOOLEAN RANGE BT .. DBT); -- ERROR: DBT.
+     B : BB (D_BOOL RANGE FALSE .. TRUE);         -- OK.            {6;1}
+     X1 : BB (D_BOOL RANGE DBF .. BT);            -- ERROR: BT.     {6;1}
+     X2 : BA (BF .. DBT);                         -- ERROR: DBT.    {6;1}
+     TYPE T1 IS NEW BB (BF .. DBT);               -- ERROR: BF.     {6;1}
+     TYPE T2 IS NEW BA (BOOLEAN RANGE BT .. DBT); -- ERROR: DBT.    {6;1}
 
 BEGIN
 
-     FOR I IN BT .. DBF LOOP                      -- ERROR: BT .. DBF.
+     FOR I IN BT .. DBF LOOP                      -- ERROR: BT .. DBF. {6;1}
           NULL;
      END LOOP;
 
-     FOR I IN BOOLEAN RANGE DBT .. BT LOOP        -- ERROR: DBT.
+     FOR I IN BOOLEAN RANGE DBT .. BT LOOP        -- ERROR: DBT.    {6;1}
           NULL;
      END LOOP;
 
      CASE DBT IS
-          WHEN BT .. DBT => NULL ;                -- ERROR: BT.
-          WHEN D_BOOL RANGE BF .. DBF => NULL;    -- ERROR: BF.
-          WHEN OTHERS => NULL;
+          WHEN BT .. DBT => NULL ;                -- ERROR: BT.     {1:6;1}
+          WHEN OTHERS => NULL; 
+     END CASE;
+     CASE DBT IS
+          WHEN D_BOOL RANGE BF .. DBF => NULL;    -- ERROR: BF.     {1:6;1}
+          WHEN OTHERS => NULL; 
      END CASE;
 
-     B := (DBF .. BT => FALSE);                   -- ERROR: BT.
-     B := (D_BOOL RANGE BF .. DBT => TRUE);       -- ERROR: BF.
-     B := B (D_BOOL RANGE DBF .. BT);             -- ERROR: BT.
-     B := B (BF .. DBT);                          -- ERROR: BF.
+     B := (DBF .. BT => FALSE);                   -- ERROR: BT.     {6;1}
+     B := (D_BOOL RANGE BF .. DBT => TRUE);       -- ERROR: BF.     {6;1}
+     B := B (D_BOOL RANGE DBF .. BT);             -- ERROR: BT.     {6;1}
+     B := B (BF .. DBT);                          -- ERROR: BF.     {6;1}
 
 END B36102A;

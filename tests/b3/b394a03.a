@@ -52,100 +52,107 @@
 --      both a task type and a protected type.
 --
 -- CHANGE HISTORY:
---     29 Oct 2007 RLB Created test.
---     05 Dec 2008 RLB Corrected declarations that violate 7.3(7.1/2) and
---                     12.5.1(5/2).
---
+--     29 Oct 2007  RLB  Created test.
+--     05 Dec 2008  RLB  Corrected declarations that violate 7.3(7.1/2) and
+--                       12.5.1(5/2).
+--     26 Apr 2021  RLB  Added error location indicators.
+--!
 with F394A00;
 package B394A03 is
 
-    type Interf01 is interface and F394A00.Task_Interface;           -- ERROR:
-    type Interf02 is limited interface and F394A00.Task_Interface;   -- ERROR:
+    type Interf01 is interface and F394A00.Task_Interface;    -- ERROR: {5;1}
+    type Interf02 is limited interface 
+                             and F394A00.Task_Interface;      -- ERROR: {1:5;1}
     type Interf03 is synchronized interface
-                             and F394A00.Task_Interface;             -- ERROR:
-    type Interf04 is task interface and F394A00.Task_Interface;      -- OK.
-    type Interf05 is protected interface and F394A00.Task_Interface; -- ERROR:
+                             and F394A00.Task_Interface;      -- ERROR: {1:5;1}
+    type Interf04 is task interface and F394A00.Task_Interface;  -- OK. {5;1}
+    type Interf05 is protected interface 
+                             and F394A00.Task_Interface;      -- ERROR: {1:5;1}
     type Interf06 is limited interface and F394A00.Lim_Interface
-                             and F394A00.Task_Interface;             -- ERROR:
+                             and F394A00.Task_Interface;      -- ERROR: {1:5;1}
 
     type Der01 is limited new F394A00.Lim_Interface
-                   and F394A00.Task_Interface with null record;      -- ERROR:
+                 and F394A00.Task_Interface with null record; -- ERROR: {1:5;1}
     type Der02 is limited new Interf04
-                   and F394A00.Lim_Interface with null record;       -- ERROR:
+                 and F394A00.Lim_Interface with null record;  -- ERROR: {1:5;1}
     type Der03 is limited new F394A00.Task_Interface
-                                              with null record;      -- ERROR:
+                                           with null record;  -- ERROR: {1:5;1}
 
     type Priv01 is synchronized new F394A00.Lim_Interface
-                   and F394A00.Task_Interface with private;          -- OK.
+                   and F394A00.Task_Interface with private;   -- OK. {1:5;1}
     type Priv02 is synchronized new Interf04
-                   and F394A00.Lim_Interface with private;           -- OK.
+                   and F394A00.Lim_Interface with private;    -- OK. {1:5;1}
     type Priv03 is synchronized new F394A00.Task_Interface
-                                              with private;          -- OK.
+                                              with private;   -- OK. {1:5;1}
     type Priv04 is synchronized new F394A00.Task_Interface
-                     and F394A00.Prot_Interface with private;        -- ERROR:
+                     and F394A00.Prot_Interface with private; -- ERROR: {1:5;1}
         -- A private extension derived from both protected and task types.
 
-    task type Tsk01 is new F394A00.Task_Interface with end Tsk01;    -- OK.
+    task type Tsk01 is new F394A00.Task_Interface with end Tsk01; -- OK. {5;1}
     task Tsk02 is new F394A00.Sync_Interface
-                  and F394A00.Task_Interface with end Tsk02;         -- OK.
+                  and F394A00.Task_Interface with end Tsk02;  -- OK. {1:5;1}
 
     protected type Prot01 is new F394A00.Task_Interface with
-                                                      end Prot01;    -- ERROR:
-    protected Prot02 is new Interf04 with end Prot02;                -- ERROR:
+                                                 end Prot01;  -- ERROR: {1:5;1}
+    protected Prot02 is new Interf04 with end Prot02;         -- ERROR: {5;1}
     protected type Prot03 is new F394A00.Prot_Interface
-                                    and Interf04 with end Prot03;    -- ERROR:
+                               and Interf04 with end Prot03;  -- ERROR: {1:5;1}
 
     generic
-        type GInterf01 is interface and F394A00.Task_Interface;      -- ERROR:
+        type GInterf01 is interface and F394A00.Task_Interface; -- ERROR: {9;1}
         type GInterf02 is limited interface
-                                       and F394A00.Task_Interface;   -- ERROR:
+                                 and F394A00.Task_Interface;  -- ERROR: {1:9;1}
         type GInterf03 is synchronized interface
-                                 and F394A00.Task_Interface;         -- ERROR:
-        type GInterf04 is task interface and F394A00.Task_Interface; -- OK.
-        type GInterf05 is protected interface and
-                                             F394A00.Task_Interface; -- ERROR:
+                                 and F394A00.Task_Interface;  -- ERROR: {1:9;1}
+        type GInterf04 is task interface 
+                                 and F394A00.Task_Interface;  -- OK. {1:9;1}
+        type GInterf05 is protected interface
+                                 and F394A00.Task_Interface;  -- ERROR: {1:9;1}
 
         type GDer01 is synchronized new F394A00.Task_Interface
-                                                with private;        -- OK.
+                                                with private; -- OK. {1:9;1}
         type GDer02 is synchronized new Interf04 and F394A00.Task_Interface
-                                                with private;        -- OK.
+                                                with private; -- OK. {1:9;1}
         type GDer03 is synchronized new F394A00.Prot_Interface
-                     and F394A00.Task_Interface with private;        -- ERROR:
+                     and F394A00.Task_Interface with private; -- ERROR: {1:9;1}
             -- A private extension derived from both protected and task types.
 
     package Bad is
-        type Interf01 is interface and F394A00.Task_Interface;       -- ERROR:
+        type Interf01 is interface and F394A00.Task_Interface;-- ERROR: {9;1}
         type Interf02 is limited interface
-                                 and F394A00.Task_Interface;         -- ERROR:
-        type Interf03 is protected interface and GInterf04;          -- ERROR:
+                                 and F394A00.Task_Interface;  -- ERROR: {1:9;1}
+        type Interf03 is protected interface and GInterf04;   -- ERROR: {9;1}
 
         type Der01 is limited new Interf04 and F394A00.Lim_Interface
-                                                with null record;    -- ERROR:
+                                         with null record;    -- ERROR: {1:9;1}
         type Der02 is limited new F394A00.Lim_Interface
-                  and F394A00.Task_Interface with null record;       -- ERROR:
-        type Der03 is limited new GInterf04 with null record;        -- ERROR:
+                 and F394A00.Task_Interface with null record; -- ERROR: {1:9;1}
+        type Der03 is limited new GInterf04 with null record; -- ERROR: {9;1}
 
         type Priv01 is synchronized new GInterf04
-                         and F394A00.Prot_Interface with private;    -- ERROR:
+                  and F394A00.Prot_Interface with private;    -- ERROR: {1:9;1}
             -- A private extension derived from both protected and task types.
     private
         type Interf04 is synchronized interface
-                               and F394A00.Task_Interface;           -- ERROR:
+                               and F394A00.Task_Interface;    -- ERROR: {1:9;1}
         type Interf05 is protected interface
-                             and F394A00.Task_Interface;             -- ERROR:
-        type Interf06 is limited interface and GInterf04;            -- ERROR:
-        type Der04 is limited new GInterf04 with null record;        -- ERROR:
+                             and F394A00.Task_Interface;      -- ERROR: {1:9;1}
+        type Interf06 is limited interface and GInterf04;     -- ERROR: {9;1}
+        type Der04 is limited new GInterf04 with null record; -- ERROR: {9;1}
         type Der05 is limited new F394A00.Task_Interface
-                       and F394A00.Lim_Interface with null record;   -- ERROR:
+                and F394A00.Lim_Interface with null record;   -- ERROR: {1:9;1}
         task type Priv01 is new GInterf04
-           and F394A00.Prot_Interface with end Priv01;-- OPTIONAL ERROR: Previously reported.
+           and F394A00.Prot_Interface with
+                    end Priv01; -- OPTIONAL ERROR: Previously reported. {2:9;1}
     end Bad;
 private
     task type Priv01 is new F394A00.Lim_Interface
-                   and F394A00.Task_Interface with end Priv01;       -- OK.
+            and F394A00.Task_Interface with end Priv01;       -- OK. {1:5;1}
     task type Priv02 is new Interf04
-                   and F394A00.Lim_Interface with end Priv02;        -- OK.
-    task type Priv03 is new F394A00.Task_Interface with end Priv03;  -- OK.
+            and F394A00.Lim_Interface with end Priv02;        -- OK. {1:5;1}
+    task type Priv03 is new F394A00.Task_Interface with
+                                                 end Priv03;  -- OK. {1:5;1}
     task type Priv04 is new F394A00.Task_Interface
-       and F394A00.Prot_Interface with end Priv04;   -- OPTIONAL ERROR: Previously reported.
+       and F394A00.Prot_Interface with 
+                  end Priv04;   -- OPTIONAL ERROR: Previously reported. {2:5;1}
 end B394A03;

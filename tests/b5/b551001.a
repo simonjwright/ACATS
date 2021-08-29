@@ -61,6 +61,8 @@
 --     10 Feb 2015  BM   Initial Version.
 --     19 Mar 2015  RLB  Split into several smaller tests with fewer
 --                       objectives.
+--     26 Apr 2021  RLB  Added error location indicators; moved error tags
+--                       that were in the wrong location.
 --!
 
 with Ada.Iterator_Interfaces;
@@ -88,9 +90,9 @@ begin
             Cursor      => Natural,
             Has_Element => Has_Element);
 
-         type T1 is tagged null record with                          -- OK.
+         type T1 is tagged null record with                          
             Constant_Indexing => Cnst_Index1,
-            Default_Iterator  => Iterate;
+            Default_Iterator  => Iterate;                    -- OK. {2:10;1}
 
          function Cnst_Index1 (Container : T1; Ind : Natural) return Natural;
 
@@ -100,12 +102,12 @@ begin
          function Cnst_Index1 (Container : T1; Ind : Natural)
             return Natural is (Ind);
 
-         -- Untagged type
+         -- Untagged type.
          type T2 is null record with
             Constant_Indexing => Cnst_Index2,
-            Default_Iterator  => Iterate;                            -- ERROR:
-            -- Note: Constant_Indexing is also illegal here; either or
-            -- both errors can be reported.
+            Default_Iterator  => Iterate;                    -- ERROR: {2:10;1}
+            -- Note: Constant_Indexing is also illegal here;
+            -- either or both errors can be reported.
 
          function Cnst_Index2 (Container : T2; Ind : Natural) return Natural;
 
@@ -115,27 +117,27 @@ begin
          function Cnst_Index2 (Container : T2; Ind : Natural)
             return Natural is (Ind);
 
-         -- Missing Indexing aspect
-         type T3 is tagged null record with                          -- ERROR:
-            Default_Iterator  => Iterate;
+         -- Missing Indexing aspect.
+         type T3 is tagged null record with                          
+            Default_Iterator  => Iterate;                    -- ERROR: {1:10;1}
 
          function Iterate (Container : T3)
             return Some_Iterator.Forward_Iterator'Class;
 
 
-         -- Untagged type with missing indexing aspect
+         -- Untagged type with missing indexing aspect.
          type T4 is null record with
-            Default_Iterator  => Iterate;                            -- ERROR:
+            Default_Iterator  => Iterate;                    -- ERROR: {1:10;1}
 
          function Iterate (Container : T4)
             return Some_Iterator.Forward_Iterator'Class;
 
-         -- Untagged type
+         -- Untagged type.
          type T5 is private with
             Constant_Indexing => Cnst_Index5,
-            Default_Iterator  => Iterate;                            -- ERROR:
-            -- Note: Constant_Indexing is also illegal here; either or
-            -- both errors can be reported.
+            Default_Iterator  => Iterate;                    -- ERROR: {2:10;1}
+            -- Note: Constant_Indexing is also illegal here; 
+            -- either or both errors can be reported.
 
          function Cnst_Index5 (Container : T5; Ind : Natural) return Natural;
 
@@ -145,17 +147,17 @@ begin
          function Cnst_Index5 (Container : T5; Ind : Natural)
             return Natural is (Ind);
 
-         -- Missing Indexing aspect
+         -- Missing Indexing aspect.
          type T6 is tagged private with
-            Default_Iterator  => Iterate;                            -- ERROR:
+            Default_Iterator  => Iterate;                    -- ERROR: {1:10;1}
 
          function Iterate (Container : T6)
             return Some_Iterator.Forward_Iterator'Class;
 
 
-         -- Untagged type with missing indexing aspect
+         -- Untagged type with missing indexing aspect.
          type T7 is private with
-            Default_Iterator  => Iterate;                            -- ERROR:
+            Default_Iterator  => Iterate;                    -- ERROR: {1:10;1}
 
          function Iterate (Container : T7)
             return Some_Iterator.Forward_Iterator'Class;
@@ -275,7 +277,7 @@ begin
 
          type T1 is tagged null record with
             Constant_Indexing => Cnst_Index1,
-            Default_Iterator  => Iterate;                            -- ERROR:
+            Default_Iterator  => Iterate;                    -- ERROR: {2:10;1}
                                            -- Procedure, not a function.
 
          function Cnst_Index1 (Container : T1; Ind : Natural) return Natural;
@@ -286,7 +288,7 @@ begin
 
          type T2 is tagged null record with
             Constant_Indexing => Cnst_Index2,
-            Default_Iterator  => Iterate_Obj;                        -- ERROR:
+            Default_Iterator  => Iterate_Obj;                -- ERROR: {2:10;1}
                                           -- Object, not a function.
 
          function Cnst_Index2 (Container : T2; Ind : Natural) return Natural;
@@ -297,7 +299,7 @@ begin
 
          type T3 is tagged null record with
             Constant_Indexing => Cnst_Index3,
-            Default_Iterator  => Non_Local_Iterate;                  -- ERROR:
+            Default_Iterator  => Non_Local_Iterate;          -- ERROR: {2:10;1}
                            -- Non-local function (also wrong parameter type).
 
          function Cnst_Index3 (Container : T3; Ind : Natural) return Natural;
@@ -306,8 +308,8 @@ begin
 
          type T4 is tagged private with
             Constant_Indexing => Cnst_Index4,
-            Default_Iterator  => Inner.Iterate;                      -- ERROR:
-                                           -- Non-local function.
+            Default_Iterator  => Inner.Iterate;              -- ERROR: {2:10;1}
+                                                       -- Non-local function.
 
          function Cnst_Index4 (Container : T4; Ind : Natural) return Natural;
          function Cnst_Index4 (Container : T4; Ind : Natural)
@@ -320,7 +322,7 @@ begin
 
          type T5 is tagged private with
             Constant_Indexing => Cnst_Index5,
-            Default_Iterator  => Iterate;                            -- OK.
+            Default_Iterator  => Iterate;                    -- OK. {2:10;1}
 
          function Cnst_Index5 (Container : T5; Ind : Natural) return Natural;
 
@@ -386,7 +388,7 @@ begin
 
       type T1 is tagged null record with
         Constant_Indexing => Cnst_Index1,
-        Default_Iterator  => Iterate;                                -- ERROR:
+        Default_Iterator  => Iterate;                        -- ERROR: {2:10;1}
 
       function Cnst_Index1 (Container : T1; Ind : Natural) return Natural;
       function Cnst_Index1 (Container : T1; Ind : Natural)
@@ -418,7 +420,7 @@ begin
 
          type T1 is tagged null record with
             Constant_Indexing => Cnst_Index1,
-            Default_Iterator  => Iterate1;                           -- ERROR:
+            Default_Iterator  => Iterate1;                   -- ERROR: {2:10;1}
 
          function Cnst_Index1 (Container : T1; Ind : Natural)
             return Natural is (Ind);
@@ -428,7 +430,7 @@ begin
 
          type T2 is tagged null record with
             Constant_Indexing => Cnst_Index2,
-            Default_Iterator  => Iterate2;                           -- ERROR:
+            Default_Iterator  => Iterate2;                   -- ERROR: {2:10;1}
 
          function Iterate2 (X : Integer; Container : T2)
             return Some_Iterator.Forward_Iterator'Class;
@@ -437,7 +439,7 @@ begin
 
          type T3 is tagged null record with
             Constant_Indexing => Cnst_Index3,
-            Default_Iterator  => Iterate3;                           -- ERROR:
+            Default_Iterator  => Iterate3;                   -- ERROR: {2:10;1}
 
          function Cnst_Index3 (Container : T3; Ind : Natural)
             return Natural is (Ind);
@@ -448,7 +450,7 @@ begin
 
          type T4 is tagged null record with
             Constant_Indexing => Cnst_Index4,
-            Default_Iterator  => Iterate4;                           -- OK.
+            Default_Iterator  => Iterate4;                   -- OK. {2:10;1}
 
          function Iterate4 (Container : access constant T4'Class)
             return Some_Iterator.Forward_Iterator'Class;
@@ -458,14 +460,14 @@ begin
 
          type T5 is tagged private with
             Constant_Indexing => Cnst_Index5,
-            Default_Iterator  => Iterate4;                           -- ERROR:
+            Default_Iterator  => Iterate4;                   -- ERROR: {2:10;1}
 
          function Cnst_Index5 (Container : T5; Ind : Natural)
             return Natural is (Ind);
 
          type T6 is tagged null record with
             Constant_Indexing => Cnst_Index6,
-            Default_Iterator  => Iterate6;                           -- OK.
+            Default_Iterator  => Iterate6;                   -- OK. {2:10;1}
 
          function Iterate6 (Container : access T6)
             return Some_Iterator.Forward_Iterator'Class;
@@ -475,7 +477,7 @@ begin
 
          type T7 is tagged null record with
             Constant_Indexing => Cnst_Index7,
-            Default_Iterator  => Iterate7;                           -- OK.
+            Default_Iterator  => Iterate7;                   -- OK. {2:10;1}
 
          function Iterate7 (Container : access constant T7)
             return Some_Iterator.Forward_Iterator'Class;
@@ -485,7 +487,7 @@ begin
 
          type T8 is tagged null record with
             Constant_Indexing => Cnst_Index8,
-            Default_Iterator  => Iterate8;                           -- ERROR:
+            Default_Iterator  => Iterate8;                   -- ERROR: {2:10;1}
 
          function Iterate8 return T8;
 
@@ -494,7 +496,7 @@ begin
 
          type T9 is tagged private with
             Constant_Indexing => Cnst_Index9,
-            Default_Iterator  => Iterate9;                           -- OK.
+            Default_Iterator  => Iterate9;                   -- OK. {2:10;1}
 
          function Cnst_Index9 (Container : T9; Ind : Natural)
             return Natural is (Ind);
@@ -504,7 +506,7 @@ begin
 
          type TA is tagged private with
             Constant_Indexing => Cnst_IndexA,
-            Default_Iterator  => IterateA;                           -- OK.
+            Default_Iterator  => IterateA;                   -- OK. {2:10;1}
 
          function Cnst_IndexA (Container : TA; Ind : Natural)
             return Natural is (Ind);
@@ -620,7 +622,7 @@ begin
 
          type T1 is tagged null record with
             Constant_Indexing => Cnst_Index1,
-            Default_Iterator  => Iterate1;                           -- ERROR:
+            Default_Iterator  => Iterate1;                   -- ERROR: {2:10;1}
 
          function Cnst_Index1 (Container : T1; Ind : Natural)
             return Natural is (Ind);
@@ -630,7 +632,7 @@ begin
 
          type T2 is tagged private with
             Constant_Indexing => Cnst_Index2,
-            Default_Iterator  => Iterate2;                           -- ERROR:
+            Default_Iterator  => Iterate2;                   -- ERROR: {2:10;1}
 
          function Iterate2 (Container : T2; Count : Natural)
             return Some_Iterator.Forward_Iterator'Class;
@@ -641,7 +643,7 @@ begin
 
          type T3 is tagged null record with
             Constant_Indexing => Cnst_Index3,
-            Default_Iterator  => Iterate3;                           -- OK.
+            Default_Iterator  => Iterate3;                   -- OK. {2:10;1}
 
          function Cnst_Index3 (Container : T3; Ind : Natural)
             return Natural is (Ind);
@@ -651,7 +653,7 @@ begin
 
          type T4 is tagged private with
             Constant_Indexing => Cnst_Index4,
-            Default_Iterator  => Iterate4;                           -- OK.
+            Default_Iterator  => Iterate4;                   -- OK. {2:10;1}
 
          function Iterate4 (Container : access T4; Start : Natural := 1)
             return Some_Iterator.Forward_Iterator'Class;
@@ -733,7 +735,7 @@ begin
 
          type T1 is tagged null record with
             Constant_Indexing => Cnst_Index1,
-            Default_Iterator  => Iterate1;                           -- ERROR:
+            Default_Iterator  => Iterate1;                   -- ERROR: {2:10;1}
 
          function Cnst_Index1 (Container : T1; Ind : Natural)
             return Natural is (Ind);
@@ -742,7 +744,7 @@ begin
 
          type T2 is tagged private with
             Constant_Indexing => Cnst_Index2,
-            Default_Iterator  => Iterate2;                           -- ERROR:
+            Default_Iterator  => Iterate2;                   -- ERROR: {2:10;1}
 
          -- Neither of the following works:
          function Iterate2 (Container : T2; Start : Natural := 1)
@@ -755,7 +757,7 @@ begin
 
          type T3 is tagged null record with
             Constant_Indexing => Cnst_Index3,
-            Default_Iterator  => Iterate3;                           -- ERROR:
+            Default_Iterator  => Iterate3;                   -- ERROR: {2:10;1}
 
          function Cnst_Index3 (Container : T3; Ind : Natural)
             return Natural is (Ind);
@@ -764,7 +766,7 @@ begin
 
          type T4 is tagged private with
             Constant_Indexing => Cnst_Index4,
-            Default_Iterator  => Iterate4;                           -- ERROR:
+            Default_Iterator  => Iterate4;                   -- ERROR: {2:10;1}
 
          function Iterate4 (Container : access T4) return Character is ('A');
 
@@ -828,7 +830,7 @@ begin
 
          type T1 is tagged null record with
             Constant_Indexing => Cnst_Index1,
-            Default_Iterator  => Iterate1;                           -- ERROR:
+            Default_Iterator  => Iterate1;                   -- ERROR: {2:10;1}
 
          function Cnst_Index1 (Container : T1; Ind : Natural)
             return Natural is (Ind);
@@ -840,7 +842,7 @@ begin
 
          type T2 is tagged private with
             Constant_Indexing => Cnst_Index2,
-            Default_Iterator  => Iterate2;                           -- ERROR:
+            Default_Iterator  => Iterate2;                   -- ERROR: {2:10;1}
 
          function Iterate2 (Container : T2)
             return Some_Iterator.Forward_Iterator'Class;
@@ -851,7 +853,7 @@ begin
 
          type T3 is tagged private with
             Constant_Indexing => Cnst_Index3,
-            Default_Iterator  => Iterate3;                           -- ERROR:
+            Default_Iterator  => Iterate3;                   -- ERROR: {2:10;1}
 
          function Cnst_Index3 (Container : T3; Ind : Natural)
             return Natural is (Ind);
@@ -863,7 +865,7 @@ begin
 
          type T4 is tagged private with
             Constant_Indexing => Cnst_Index4,
-            Default_Iterator  => Iterate4;                           -- OK.
+            Default_Iterator  => Iterate4;                   -- OK. {2:10;1}
 
          function Cnst_Index4 (Container : T4; Ind : Natural)
             return Natural is (Ind);
@@ -943,7 +945,5 @@ begin
    begin
       null;
    end Objective_G;
-
-
 
 end B551001;

@@ -44,7 +44,7 @@
 -- CHANGE HISTORY:
 --      28 Oct 07   RLB     Created interface version based on tests B393001 &
 --                          B393003.
---
+--      26 Apr 21   RLB     Added error location indicators.
 --!
 
 package B393009_0 is
@@ -59,7 +59,7 @@ package B393009_0 is
 
    type Syn_Interface is synchronized interface;
 
-   function Return_Lim_Interface return Lim_Interface is abstract;  -- OK.
+   function Return_Lim_Interface return Lim_Interface is abstract; -- OK. {4;1}
 
    type Concrete is new Non_Lim_Interface with null record;
 
@@ -70,42 +70,42 @@ procedure B393009 is
 
    type Interface_Ptr is access Syn_Interface;
 
-   Object1 : Lim_Interface;                                           -- ERROR:
+   Object1 : Lim_Interface;                                   -- ERROR: {4;1}
                                                  -- Type of object is abstract.
-   Object2 : aliased Syn_Interface;                                   -- ERROR:
+   Object2 : aliased Syn_Interface;                           -- ERROR: {4;1}
                                                  -- Type of object is abstract.
-   Abs_Ptr : Interface_Ptr := new Syn_Interface;                      -- ERROR:
+   Abs_Ptr : Interface_Ptr := new Syn_Interface;              -- ERROR: {4;1}
                                        -- Type of allocated object is abstract.
 
    type Rec1 is record
-      Component : Lim_Interface;                                      -- ERROR:
+      Component : Lim_Interface;                              -- ERROR: {7;1}
    end record;                                -- Type of component is abstract.
 
    type Rec2 is record
-      Component : Interface_Ptr := new Syn_Interface;                 -- ERROR:
+      Component : Interface_Ptr := new Syn_Interface;         -- ERROR: {7;1}
    end record;                        -- Trying to allocate an abstract object.
 
    type Rec3 is abstract tagged limited record
-      Component : Task_Interface;                                     -- ERROR:
+      Component : Task_Interface;                             -- ERROR: {7;1}
    end record;                                -- Type of component is abstract.
 
-   type Arr1 is array (1 .. 5) of Prot_Interface;                     -- ERROR:
+   type Arr1 is array (1 .. 5) of Prot_Interface;             -- ERROR: {4;1}
                                               -- Type of component is abstract.
 
-   type Arr2 is array (1 .. 5) of Interface_Ptr;                      -- OK.
+   type Arr2 is array (1 .. 5) of Interface_Ptr;              -- OK. {4;1}
 
-   Object3 : Arr2 := (others => new Syn_Interface);                   -- ERROR:
+   Object3 : Arr2 := (others => new Syn_Interface);           -- ERROR: {4;1}
                                       -- Trying to allocate an abstract object.
 
-   function Non_Abstract_Func1 return Task_Interface;                 -- ERROR:
+   function Non_Abstract_Func1 return Task_Interface;         -- ERROR: {4;1}
                        -- Function is not abstract but result type is abstract.
 
    function Non_Abstract_Func2 (Left, Right : Integer)
-     return Prot_Interface;                                           -- ERROR:
+     return Prot_Interface;                                   -- ERROR: {1:4;1}
                        -- Function is not abstract but result type is abstract.
 
    function Non_Abstract_Func3 (Count : Integer)
-     return Non_Lim_Interface'Class;                                  -- OK.
+     return Non_Lim_Interface'Class;                          -- OK. {1:4;1}
 
    function Non_Abstract_Func3 (Count : Integer)
      return Non_Lim_Interface'Class is
@@ -114,7 +114,7 @@ procedure B393009 is
      return Object4;
    end Non_Abstract_Func3;
 
-   function Abstract_Func1 return Lim_Interface is abstract;          -- OK.
+   function Abstract_Func1 return Lim_Interface is abstract;  -- OK. {4;1}
 
    Object5 : Concrete;
    Object6 : Concrete;
@@ -122,14 +122,14 @@ procedure B393009 is
    procedure Assign (Target : in out Non_Lim_Interface'Class;
                      Source : in     Non_Lim_Interface'Class) is
    begin
-       Non_Lim_Interface(Target) := Non_Lim_Interface(Source);        -- ERROR:
+       Non_Lim_Interface(Target) := Non_Lim_Interface(Source); -- ERROR: {7;1}
                       -- Target of an assignment operation may not be abstract.
    end Assign;
 
 begin
-   Assign (Object5, Object6);                                         -- OK.
-   Assign (Object6, Non_Lim_Interface'(others => <>));                -- ERROR:
+   Assign (Object5, Object6);                                 -- OK. {4;1}
+   Assign (Object6, Non_Lim_Interface'(others => <>));        -- ERROR: {4;1}
                       -- Aggregate may not have an abstract type.
-   Assign (Object5, Non_Lim_Interface'(null record));                 -- ERROR:
+   Assign (Object5, Non_Lim_Interface'(null record));         -- ERROR: {4;1}
                       -- Aggregate may not have an abstract type.
 end B393009;

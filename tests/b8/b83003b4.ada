@@ -45,23 +45,26 @@
 --     VCL  02/04/88  CREATED ORIGINAL TEST.
 --     RDH  04/09/90  MODIFIED TEST TO ONLY HAVE ONE TASK BODY IN
 --                    EACH FILE.
+--     RLB  04/26/21  Corrected incorrect error markers; moved markers on wrong
+--                    lines; added location indicators.
+--!
 
 -- MULTIPLE TASKS ARE USED SO THAT ONLY ONE DECLARATION WHICH REQUIRES
 -- A BODY (TASK AND GENERIC UNITS) IS GIVEN IN EACH TASK.
 
 SEPARATE (B83003B0M)
 TASK BODY TSK4 IS
-     GENERIC                                       -- ERROR: HOMOGRAPH.
-     PROCEDURE E11;
+     GENERIC                                      
+     PROCEDURE E11;                               -- ERROR: HOMOGRAPH. {1:6;1}
 
-     GENERIC                                       -- ERROR: HOMOGRAPH.
-     PACKAGE E12 IS END E12;
+     GENERIC                                      
+     PACKAGE E12 IS END E12;                      -- ERROR: HOMOGRAPH. {1:6;1}
 
      -- BODY FOR THE ABOVE HOMOGRAPH.
 
-     PROCEDURE E11 IS                           -- OPTIONAL ERR MESSAGE:
-     BEGIN                                      --  BODY OF AN INVALID
-          NULL;                                 --  GENERIC PROCEDURE.
+     PROCEDURE E11 IS                             -- OPTIONAL ERROR: {6}
+     BEGIN                                        --  BODY OF AN INVALID
+          NULL;                                   --  GENERIC PROCEDURE.
      END E11;
 BEGIN
      NULL;

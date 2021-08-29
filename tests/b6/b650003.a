@@ -47,7 +47,7 @@
 --
 -- CHANGE HISTORY:
 --      26 Sep 2007   RLB   Created test.
---
+--      30 Apr 2021   RLB   Added error location indicators.
 --!
 package B650003_0 is
     type Vis_Root is tagged null record;
@@ -74,31 +74,31 @@ procedure B650003 is
         begin
             case N is
                 when 1 =>
-                    return B650003_0.Vis_Root'(null record);    -- OK.
+                    return B650003_0.Vis_Root'(null record); -- OK. {21;1}
                 when 2 =>
-                    return Der_Vis'(null record);               -- OK.
+                    return Der_Vis'(null record);            -- OK. {21;1}
                 when 3 =>
-                    return Nest_Vis'(null record);              -- ERROR:
+                    return Nest_Vis'(null record);           -- ERROR: {21;1}
                 when 4 =>
-                    return Inner_Vis'(null record);             -- ERROR:
+                    return Inner_Vis'(null record);          -- ERROR: {21;1}
                 when 5 =>
                     return Obj : B650003_0.Vis_Root'Class :=
-                           B650003_0.Vis_Root'(null record) do  -- OK.
+                           B650003_0.Vis_Root'(null record) do -- OK. {1:21}
                         null;
                     end return;
                 when 6 =>
                     return Obj : B650003_0.Vis_Root'Class :=
-                           Der_Vis'(null record) do             -- OK.
+                           Der_Vis'(null record) do          -- OK. {1:21}
                         null;
                     end return;
                 when 7 =>
                     return Obj : B650003_0.Vis_Root'Class :=
-                           Nest_Vis'(null record) do            -- ERROR:
+                           Nest_Vis'(null record) do         -- ERROR: {1:21}
                         null;
                     end return;
                 when 8 =>
                     return Obj : B650003_0.Vis_Root'Class :=
-                           Inner_Vis'(null record) do           -- ERROR:
+                           Inner_Vis'(null record) do        -- ERROR: {1:21}
                         null;
                     end return;
                 when others => raise Program_Error;
@@ -116,35 +116,35 @@ procedure B650003 is
         begin
             case N is
                 when 1 =>
-                    return B650003_0.Prv_Root_Obj;              -- OK.
+                    return B650003_0.Prv_Root_Obj;           -- OK. {21;1}
                 when 2 =>
                     return Der_Prv'(B650003_0.Prv_Root_Obj with
-                                    null record);               -- OK.
+                                    null record);            -- OK. {1:21;1}
                 when 3 =>
-                    return Nest_Prv_Obj;                        -- ERROR:
+                    return Nest_Prv_Obj;                     -- ERROR: {21;1}
                 when 4 =>
                     return Inner_Prv'(B650003_0.Prv_Root_Obj with
-                                      null record);             -- ERROR:
+                                      null record);          -- ERROR: {1:21;1}
                 when 5 =>
                     return Obj : B650003_0.Prv_Root'Class :=
-                           B650003_0.Prv_Root_Obj do            -- OK.
+                           B650003_0.Prv_Root_Obj do         -- OK. {21}
                         null;
                     end return;
                 when 6 =>
                     return Obj : B650003_0.Prv_Root'Class :=
                            Der_Prv'(B650003_0.Prv_Root_Obj with
-                                    null record) do             -- OK.
+                                    null record) do          -- OK. {2:21}
                         null;
                     end return;
                 when 7 =>
                     return Obj : B650003_0.Prv_Root'Class :=
-                           Nest_Prv_Obj do                      -- ERROR:
+                           Nest_Prv_Obj do                   -- ERROR: {1:21}
                         null;
                     end return;
                 when 8 =>
                     return Obj : B650003_0.Prv_Root'Class :=
                            Inner_Prv'(B650003_0.Prv_Root_Obj with
-                                      null record) do           -- ERROR:
+                                      null record) do        -- ERROR: {2:21}
                         null;
                     end return;
                 when others => raise Program_Error;
@@ -160,24 +160,24 @@ procedure B650003 is
         begin
             case N is
                 when 2 =>
-                    return Impl'(null record);                   -- OK.
+                    return Impl'(null record);               -- OK. {21;1}
                 when 3 =>
-                    return Nest_Impl'(null record);              -- ERROR:
+                    return Nest_Impl'(null record);          -- ERROR: {21;1}
                 when 4 =>
-                    return Inner_Impl'(null record);             -- ERROR:
+                    return Inner_Impl'(null record);         -- ERROR: {21;1}
                 when 6 =>
                     return Obj : B650003_0.Intf'Class :=
-                           Impl'(null record) do                 -- OK.
+                           Impl'(null record) do             -- OK. {1:21}
                         null;
                     end return;
                 when 7 =>
                     return Obj : B650003_0.Intf'Class :=
-                           Nest_Impl'(null record) do            -- ERROR:
+                           Nest_Impl'(null record) do        -- ERROR: {1:21}
                         null;
                     end return;
                 when 8 =>
                     return Obj : B650003_0.Intf'Class :=
-                           Inner_Impl'(null record) do           -- ERROR:
+                           Inner_Impl'(null record) do       -- ERROR: {1:21}
                         null;
                     end return;
                 when others => raise Program_Error;

@@ -26,8 +26,10 @@
 -- OR OPERATOR SYMBOL, THEN THE NAMED ASSOCIATIONS ARE NOT ALLOWED
 -- FOR THE CORRESPONDING ACTUAL GENERIC PARAMETERS
 
--- KEI 3/4/82
--- RJK 1/24/84     ADDED TO ACVC
+-- HISTORY:
+--      04 Mar 1982   KEI
+--      24 Jan 1984   RJK   Added to ACVC.
+--      22 Apr 2021   RLB   Added error location indicators.
 
 PROCEDURE BC3018A IS
 
@@ -58,25 +60,25 @@ PROCEDURE BC3018A IS
           RETURN X+Y;
      END REA_PLUS;
 
-     PACKAGE PACK_1 IS NEW PACK1(INT_PLUS,REA_PLUS);    -- OK.
+     PACKAGE PACK_1 IS NEW PACK1(INT_PLUS,REA_PLUS);    -- OK. {6;1}
 
      PACKAGE PACK_2 IS NEW PACK1(INT_PLUS,
-                                 "+" => REA_PLUS);      -- ERROR: "+".
+                                 "+" => REA_PLUS);      -- ERROR: "+". {1:6;1}
 
      PACKAGE PACK_3 IS NEW PACK1("+" => INT_PLUS,
-                                 "+" => REA_PLUS);      -- ERROR: "+".
+                                 "+" => REA_PLUS);      -- ERROR: "+". {1:6;1}
 
-     PACKAGE PACK_4 IS NEW PACK1 ("+" => INT_PLUS);     -- ERROR: "+".
+     PACKAGE PACK_4 IS NEW PACK1 ("+" => INT_PLUS);     -- ERROR: "+". {6;1}
 
-     PACKAGE PACK_5 IS NEW PACK2(INT_PLUS,REA_PLUS);    -- OK.
+     PACKAGE PACK_5 IS NEW PACK2(INT_PLUS,REA_PLUS);    -- OK. {6;1}
 
      PACKAGE PACK_6 IS NEW PACK2(INT_PLUS,
-                                 PLUS => REA_PLUS);     -- ERROR: PLUS.
+                                 PLUS => REA_PLUS);     -- ERROR: PLUS. {1:6;1}
 
      PACKAGE PACK_7 IS NEW PACK2(PLUS => INT_PLUS,
-                                 PLUS => REA_PLUS);     -- ERROR: PLUS.
+                                 PLUS => REA_PLUS);     -- ERROR: PLUS. {1:6;1}
 
-     PACKAGE PACK_8 IS NEW PACK2 (PLUS => INT_PLUS);    -- ERROR: PLUS.
+     PACKAGE PACK_8 IS NEW PACK2 (PLUS => INT_PLUS);    -- ERROR: PLUS. {6;1}
 
 BEGIN
      NULL;
