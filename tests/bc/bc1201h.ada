@@ -25,7 +25,10 @@
 -- CHECK THAT AN INDEX CONSTRAINT IS NOT ALLOWED ON A COMPONENT
 -- TYPE SPECIFICATION IN A GENERIC FORMAL ARRAY TYPE DECLARATION.
 
--- PWB  2/10/86
+-- CHANGE HISTORY:
+--      10 Feb 1986   PWB
+--      22 Apr 2021   RLB   Added error location indicators.
+--!
 
 PROCEDURE BC1201H IS
 
@@ -41,27 +44,27 @@ PROCEDURE BC1201H IS
      GENERIC
           TYPE B_I_ARRAY IS 
                ARRAY (ENUM RANGE <>) OF 
-                    B_I (1..5);                   -- ERROR: CONSTRAINT.
+                    B_I (1..5);                 -- ERROR: CONSTRAINT. {2:11;1}
           TYPE STRING_ARRAY IS
                ARRAY (BOOLEAN RANGE <>) OF 
-                    STRING(1..20);                -- ERROR: CONSTRAINT.
+                    STRING(1..20);              -- ERROR: CONSTRAINT. {2:11;1}
      PROCEDURE GEN_PROC (X : INTEGER);
 
      GENERIC
           TYPE I_B_ARRAY IS
                ARRAY (ENUM RANGE <>) OF
-                    I_B (BOOLEAN);                -- ERROR: CONSTRAINT.
+                    I_B (BOOLEAN);              -- ERROR: CONSTRAINT. {2:11;1}
           TYPE I_B_E_ARRAY IS
                ARRAY (INTEGER RANGE <>) OF 
                     I_B_ENUM (TRUE..TRUE, 
-                         ENUM'FIRST..ENUM'LAST);  -- ERROR: CONSTRAINT.
+                         ENUM'FIRST..ENUM'LAST);-- ERROR: CONSTRAINT. {3:11;1}
      FUNCTION GEN_FUNC (X : INTEGER) 
                        RETURN BOOLEAN;
 
      GENERIC
           TYPE NULL_ENTRIES IS 
                ARRAY (BOOLEAN RANGE <>) OF 
-                    I_B (TRUE..FALSE);            -- ERROR: CONSTRAINT.
+                    I_B (TRUE..FALSE);          -- ERROR: CONSTRAINT. {2:11;1}
      PACKAGE GEN_PACK IS
      END GEN_PACK;
 

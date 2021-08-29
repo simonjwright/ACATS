@@ -66,7 +66,7 @@
 -- CHANGE HISTORY:
 --      30 Nov 2015   RLB     Created test.
 --       1 Dec 2015   RLB     Fixed incorrect declarations.
---
+--      26 Apr 2021   RLB     Added error location indicators.
 --!
 
 procedure B457007 is
@@ -105,7 +105,7 @@ begin
 
    -- Condition:
 
-   if (if A then C > 4 else True) then                               -- OK.
+   if (if A then C > 4 else True) then                       -- OK. {7;5}
       null;
    end if;
       -- Note: Here, the expression meets all of 4.5.7(8-13/3) when
@@ -115,104 +115,104 @@ begin
       -- Similar logic applies to all correct expressions using overloaded
       -- enumeration literals.
 
-   if (if A then C > 4 else OK) then                                 -- ERROR:
+   if (if A then C > 4 else OK) then                         -- ERROR: {7;5}
       null;
    end if;
 
-   if (if A then Der_Bool(C > 4) else OK) then                       -- OK.
+   if (if A then Der_Bool(C > 4) else OK) then               -- OK. {7;5}
       null;
    end if;
 
-   C := (if (if A then D > 4 else B) then 66 else 92);               -- OK.
+   C := (if (if A then D > 4 else B) then 66 else 92);       -- OK. {9;1}
 
-   C := (if (if A then OK else B) then 66 else 92);                  -- ERROR:
+   C := (if (if A then OK else B) then 66 else 92);          -- ERROR: {9;1}
 
-   C := (if (if A then OK else Der_Bool(B)) then 66 else 92);        -- OK.
+   C := (if (if A then OK else Der_Bool(B)) then 66 else 92);-- OK. {9;1}
 
    if (case L is
          when Red   => A,
          when Green => C > 4,
-         when Blue  => True) then                                    -- OK.
+         when Blue  => True) then                            -- OK. {3:7;5}
       null;
    end if;
 
    if (case L is
          when Red   => OK,
          when Green => C > 4,
-         when Blue  => True) then                                    -- ERROR:
+         when Blue  => True) then                            -- ERROR: {3:7;5}
       null;
    end if;
 
    if (case L is
          when Red   => OK,
          when Green => Der_Bool(C > 4),
-         when Blue  => True) then                                    -- OK.
+         when Blue  => True) then                            -- OK. {3:7;5}
       null;
    end if;
 
    C := (if (case L is
                when Red   => B,
                when Green => D > 4,
-               when Blue  => False) then 66 else 92);                -- OK.
+               when Blue  => False) then 66 else 92);        -- OK. {3:9;1}
 
    C := (if (case L is
                when Red   => B,
                when Green => D > 4,
-               when Blue  => OK) then 66 else 92);                   -- ERROR:
+               when Blue  => OK) then 66 else 92);           -- ERROR: {3:9;1}
 
    -- Case expression:
 
-   case (if A then L else Green) is                                  -- OK.
+   case (if A then L else Green) is                          -- OK. {9;3}
       when Red | Green => null;
       when Blue => null;
    end case;
 
-   case (if A then L else MD) is                                     -- ERROR:
+   case (if A then L else MD) is                             -- ERROR: {9;3}
       when Red | Green => null;
       when Blue => null;
    end case;
 
-   case (if A then Red else MD) is                                   -- OK.
+   case (if A then Red else MD) is                           -- OK. {9;3}
       when Red | Green => null;
       when Blue => null;
    end case;
 
    case (case L is
             when Green => Green,
-            when Red | Blue => M) is                                 -- OK.
+            when Red | Blue => M) is                         -- OK. {2:9;3}
       when Red | Green => null;
       when Blue => null;
    end case;
 
    case (case L is
             when Green => LD,
-            when Red | Blue => M) is                                 -- ERROR:
+            when Red | Blue => M) is                         -- ERROR: {2:9;3}
       when Red | Green => null;
       when Blue => null;
    end case;
 
    case (case L is
             when Green => LD,
-            when Red | Blue => MD) is                                -- OK.
+            when Red | Blue => MD) is                        -- OK. {2:9;3}
       when Red | Green => null;
       when Blue => null;
    end case;
 
    -- Extension aggregate expression:
 
-   E2 := Ext2'((if B then R1 else E1) with null record);             -- ERROR:
+   E2 := Ext2'((if B then R1 else E1) with null record);     -- ERROR: {10;1}
 
-   E2 := Ext2'((if B then E11 else E1) with null record);            -- OK.
+   E2 := Ext2'((if B then E11 else E1) with null record);    -- OK. {10;1}
 
    E2 := Ext2'((case L is
                  when Red   => R1,
                  when Green => E1,
-                 when Blue  => E11) with null record);               -- ERROR:
+                 when Blue  => E11) with null record);       -- ERROR: {3:10;1}
 
    E2 := Ext2'((case L is
                  when Red   => E1,
                  when Green => E1,
-                 when Blue  => E11) with null record);               -- OK.
+                 when Blue  => E11) with null record);       -- OK. {3:10;1}
 
    -- Modular type definitions:
 
@@ -221,17 +221,17 @@ begin
       Clr    : constant Color := Blue;
       Nibble : constant Natural := 2**4;
       Byte   : constant Small := 2**8;
-      type M1 is mod (if Now then 2**6 else Nibble);                 -- OK.
-      type M2 is mod (if Now then Byte else Nibble);                 -- ERROR:
-      type M3 is mod (if Now then Byte else 2**2);                   -- OK.
+      type M1 is mod (if Now then 2**6 else Nibble);         -- OK. {22;1}
+      type M2 is mod (if Now then Byte else Nibble);         -- ERROR: {22;1}
+      type M3 is mod (if Now then Byte else 2**2);           -- OK. {22;1}
       type M4 is mod (case Clr is
                          when Red   => Byte,
                          when Green => 2**3,
-                         when Blue  => 7);                           -- OK.
+                         when Blue  => 7);                   -- OK. {3:22;1}
       type M5 is mod (case Clr is
                          when Red   => Byte,
                          when Green => Nibble,
-                         when Blue  => 7);                           -- ERROR:
+                         when Blue  => 7);                   -- ERROR: {3:22;1}
 
    begin
       null;

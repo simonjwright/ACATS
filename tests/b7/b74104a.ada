@@ -61,10 +61,13 @@
 --        SUPPLY MISSING DISCRIMINANT PARTS.
 --   (T)  MISUSE OF DERIVED RECORD TYPES.
 
--- JRK 2/16/84
--- PWN 11/09/95 REMOVED CHECKS WHERE CONFORMANCE RULES RELAXED.
--- PWN 02/16/96 Restored checks in Ada 95 legal format.
-
+-- CHANGE HISTORY:
+--      16 Feb 1984   JRK
+--      09 Nov 1995   PWN   Removed checks where conformance rules relaxed.
+--      16 Feb 1996   PWN   Restored checks in Ada 95 legal format.
+--      22 Apr 2021   RLB   Added error location indicators; added optional
+--                          error for possible duplicate component.
+--!
 PROCEDURE B74104A IS
 
      SUBTYPE I IS INTEGER RANGE 0..2;
@@ -169,125 +172,125 @@ PROCEDURE B74104A IS
 
      PRIVATE
 
-          TYPE T1A (D1 : I := V) IS          -- ERROR: (L) D1.
+          TYPE T1A (D1 : I := V) IS          -- ERROR: (L) D1. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T1B (D : I1 := V) IS          -- OK: (C) I1.
+          TYPE T1B (D : I1 := V) IS          -- OK: (C) I1. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T2A (D : I := V1) IS          -- ERROR: (B) V1.
+          TYPE T2A (D : I := V1) IS          -- ERROR: (B) V1. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T2B (D : I1 := (VV1)) IS      -- ERROR: (M) ()'S.
+          TYPE T2B (D : I1 := (VV1)) IS      -- ERROR: (M) ()'S. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T3 (D1 : I; D2, D3 : I) IS    -- OK: (H) D1, D2.
+          TYPE T3 (D1 : I; D2, D3 : I) IS    -- OK: (H) D1, D2. {11}
                RECORD NULL; END RECORD;
 
           TYPE T4A (D : BOOLEAN :=
-                        (TRUE = TRUE)) IS    -- ERROR: (E) AMBIGUOUS
+                        (TRUE = TRUE)) IS    -- ERROR: (E) AMBIGUOUS   {1:11}
                                              --   TRUE.
                RECORD NULL; END RECORD;
 
           TYPE T4B (D : BOOLEAN :=
-               (TRUE = BOOLEAN'(TRUE))) IS   -- ERROR: (M)
+               (TRUE = BOOLEAN'(TRUE))) IS   -- ERROR: (M) {1:11}
                                              --   QUALIFICATION.
                RECORD NULL; END RECORD;
 
-          TYPE T7A (D : I1 := WW1) IS        -- ERROR: (B) WW1.
+          TYPE T7A (D : I1 := WW1) IS        -- ERROR: (B) WW1. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T7B (D : I := P1.W2) IS       -- OK: (A) P1.W2.
+          TYPE T7B (D : I := P1.W2) IS       -- OK: (A) P1.W2. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T8A (D : I2 := W2) IS         -- OK: (A) I2, W2.
+          TYPE T8A (D : I2 := W2) IS         -- OK: (A) I2, W2. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T9A (D : I := 0 + 2) IS       -- ERROR: (G) 0 + 2.
+          TYPE T9A (D : I := 0 + 2) IS       -- ERROR: (G) 0 + 2. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T9B (D : I2 := W2) IS         -- ERROR: (L) W2.
+          TYPE T9B (D : I2 := W2) IS         -- ERROR: (L) W2. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T9C (D : I2 := "+"(2,0)) IS   -- OK.
+          TYPE T9C (D : I2 := "+"(2,0)) IS   -- OK. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T10 (D : BOOLEAN := FALSE) IS -- ERROR: (E) DIFFERENT 
+          TYPE T10 (D : BOOLEAN := FALSE) IS -- ERROR: (E) DIFFERENT  {11}
                                              --   FALSE.
                RECORD NULL; END RECORD;
 
-          TYPE T11 (D : STANDARD.BOOLEAN := STANDARD.FALSE) IS-- OK: (A)
+          TYPE T11 (D : STANDARD.BOOLEAN := STANDARD.FALSE) IS-- OK: (A)  {11}
                                                             -- STANDARD.
                RECORD NULL; END RECORD;
 
-          TYPE T12A (D : INTEGER := 00100) IS     -- OK: (D) 00100.
+          TYPE T12A (D : INTEGER := 00100) IS     -- OK: (D) 00100. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T12B (D : INTEGER := 8#144#) IS    -- OK: (D) 8#144#.
+          TYPE T12B (D : INTEGER := 8#144#) IS    -- OK: (D) 8#144#. {11}
                RECORD NULL; END RECORD;
 
           TYPE T13 (D :                      -- OK: (K) NEW COMMENT.
                         INTEGER              -- OK: (K) DIFFERENT
-                                             --   COMMENT.
+                                             --   COMMENT. {2:11}
                         := 0
                    ) IS
                RECORD NULL; END RECORD;
 
-          TYPE T14 (D : INTEGER := 3 * 1) IS -- ERROR: (N) DIFFERENT *.
+          TYPE T14 (D : INTEGER := 3 * 1) IS -- ERROR: (N) DIFFERENT *. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T15 (D : INTEGER := 3 / 1) IS -- ERROR: (N) DIFFERENT /.
+          TYPE T15 (D : INTEGER := 3 / 1) IS -- ERROR: (N) DIFFERENT /. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T16A (D : P3.T) IS            -- OK: (A) P3.T.
+          TYPE T16A (D : P3.T) IS            -- OK: (A) P3.T. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T16B (D : T) IS               -- OK: (A) T.
+          TYPE T16B (D : T) IS               -- OK: (A) T. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T16C (D : NP3.T) IS           -- OK: (I) NP3.
+          TYPE T16C (D : NP3.T) IS           -- OK: (I) NP3. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T17 (D : B74104A.P3.T) IS     -- OK: (I) B74104A.P3.T.
+          TYPE T17 (D : B74104A.P3.T) IS     -- OK: (I) B74104A.P3.T. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T18 (D : I := F1(1,0)) IS     -- ERROR: (E) DIFFERENT F1.
+          TYPE T18 (D : I := F1(1,0)) IS     -- ERROR: (E) DIFFERENT F1. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T19A (D : I := STANDARD."+"(1,0)) IS    -- OK: (O)
+          TYPE T19A (D : I := STANDARD."+"(1,0)) IS    -- OK: (O) {11}
                                                        --  STANDARD."+".
                RECORD NULL; END RECORD;
 
-          TYPE T19B (D : CHARACTER := 'A') IS          -- OK: (O) 'A'.
+          TYPE T19B (D : CHARACTER := 'A') IS          -- OK: (O) 'A'. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T19C (D : CHARACTER := STANDARD.'A') IS -- OK: (O)
+          TYPE T19C (D : CHARACTER := STANDARD.'A') IS -- OK: (O) {11}
                                                        --  STANDARD.'A'.
                RECORD NULL; END RECORD;
 
-          TYPE T20A (D : P5.I) IS            -- OK: (P) P5.I.
+          TYPE T20A (D : P5.I) IS            -- OK: (P) P5.I. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T20B (D : I := P5.V1) IS      -- ERROR: (P) P5.V1.
+          TYPE T20B (D : I := P5.V1) IS      -- ERROR: (P) P5.V1. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T21A (D : I := 0) IS          -- ERROR: (Q) := 0.
+          TYPE T21A (D : I := 0) IS          -- ERROR: (Q) := 0. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T21B (D : I) IS               -- ERROR: (Q) MISSING := 0.
+          TYPE T21B (D : I) IS               -- ERROR: (Q) MISSING := 0. {11}
                RECORD NULL; END RECORD;
 
-          TYPE T22 IS NEW RD;                -- ERROR: (R) MISSING
+          TYPE T22 IS NEW RD;                -- ERROR: (R) MISSING   {11}
                                              --   DISCRIMINANT PART,
                                              --   NEW RD.
 
-          TYPE T23 IS                        -- ERROR: (S) MISSING
+          TYPE T23 IS                        -- ERROR: (S) MISSING   {11}
                                              --   DISCRIMINANT PART.
                RECORD
-                    D : I := 0;
-               END RECORD;
+                    D : I := 0;              -- OPTIONAL ERROR: {21;1}
+               END RECORD;                   --   ALREADY HAS D.
 
-          TYPE T24 (D : I := 0) IS NEW R;    -- ERROR: (T) NEW R.
+          TYPE T24 (D : I := 0) IS NEW R;    -- ERROR: (T) NEW R. {11}
 
      END PACK1;
 

@@ -1,6 +1,3 @@
---% 09/27/96  [Gnat  3.04w ]   Caught all errors.
---% 09/27/96  [Inmet 1.756+]   Caught 6 errors; missed 4.
---%
 -- BDE0007.A
 --
 --                             Grant of Unlimited Rights
@@ -39,22 +36,11 @@
 --      clauses for these types.  The test verifies that representation clause 
 --      declaration is illegal after the type is frozen, and legal otherwise.
 --
---6 13.1(9);6.0
---6 13.14(5);6.0
---6 13.14(11);6.0
---6 13.14(14);6.0
---6 13.14(15);6.0
---6 13.14(19);6.0
---
 -- CHANGE HISTORY:
 --      27 Apr 95   SAIC    Initial prerelease version.
 --      27 Sep 96   SAIC    Replace 'Size with 'Alignment.
---
---@ INTERNAL CHANGE HISTORY
---@     27 APR 95   Dianne  Initial version.
---@     27 SEP 96   Dianne  Replaced 'Size with 'Alignment; Added compiler
---@                         results; Modified comments for Op8; Replaced 1 in
---@                         'Alignment use clause;
+--      22 Apr 21   RLB     Added error location indicators, removed left-over
+--                          development junk usually stripped.
 --!
 
 with System.Storage_Elements;
@@ -78,8 +64,8 @@ package BDE0007 is
    -- IPk1.  Therefore, the representation clause for IT1 is legal, but the 
    -- representation clause for IT2 is illegal. RM 13.14(5,19);6.0
 
-   for ITag_T1'Alignment use 2;                                       -- OK
-   for ITag_T2'Alignment use 2;                                       -- ERROR:
+   for ITag_T1'Alignment use 2;                           -- OK. {4;1}
+   for ITag_T2'Alignment use 2;                           -- ERROR: {4;1}
                               -- Representation clause of a frozen tagged type.
 
    ----------------------------------------------------------------------------
@@ -101,7 +87,7 @@ package BDE0007 is
    -- above freezes Arr_Of_Rec_2, which in turn freezes Rec_2. The 
    -- representation clause is therefore illegal.  RM 13.14(5,19);6.0
 
-   for Rec_2'Alignment use 1;                                         -- ERROR:
+   for Rec_2'Alignment use 1;                             -- ERROR: {4;1}
                                      -- Representation clause of a frozen type.
 
    ----------------------------------------------------------------------------
@@ -123,7 +109,7 @@ package BDE0007 is
    -- freezes NTag_T3. The representation clause is therefore illegal.  
    -- RM 13.14(5,19);6.0
 
-   for NTag_T3'Alignment use 1;                                       -- ERROR:
+   for NTag_T3'Alignment use 1;                           -- ERROR: {4;1}
                               -- Representation clause of a frozen tagged type.
 
    ----------------------------------------------------------------------------
@@ -142,7 +128,7 @@ package BDE0007 is
    -- freezes Op4, which in turn freezes Tag_T4.  The representation clause is 
    -- therefore illegal.  RM 13.14(5,14,19);6.0
 
-   for Tag_T4'Alignment use 1;                                        -- ERROR:
+   for Tag_T4'Alignment use 1;                            -- ERROR: {4;1}
                               -- Representation clause of a frozen tagged type.
 
    ----------------------------------------------------------------------------
@@ -160,7 +146,7 @@ package BDE0007 is
    -- above freezes ITag_T5'Class, which in turn freezes ITag_T5.  The 
    -- representation clause is therefore illegal.  RM 13.14(5,14,15,19);6.0
 
-   for ITag_T5'Alignment use 1;                                       -- ERROR:
+   for ITag_T5'Alignment use 1;                           -- ERROR: {4;1}
                               -- Representation clause of a frozen tagged type.
 
    ----------------------------------------------------------------------------
@@ -179,7 +165,7 @@ package BDE0007 is
    -- freezes Tag_T6'Class, and thus Tag_T6.  The representation clause is 
    -- therefore illegal.  RM 13.14(5,14,15,19);6.0
 
-   for Tag_T6'Alignment use 1;                                        -- ERROR:
+   for Tag_T6'Alignment use 1;                            -- ERROR: {4;1}
                               -- Representation clause of a frozen tagged type.
 
    ----------------------------------------------------------------------------
@@ -197,7 +183,7 @@ package BDE0007 is
    -- RM 13.14(5,19);6.0
 
    for ObjA'Address use
-     System.Storage_Elements.To_Address (16#FF01#);                   -- ERROR:
+     System.Storage_Elements.To_Address (16#FF01#);       -- ERROR: {1:4;1}
                                    -- Representation clause of a frozen object.
 
    ----------------------------------------------------------------------------
@@ -216,7 +202,7 @@ package BDE0007 is
    -- Op8 which in turn freezes Tag_T8.  The representation clause is 
    -- therefore illegal.  RM 13.14(5,14,19);6.0
 
-   for Tag_T8'Alignment use 1;                                        -- ERROR:
+   for Tag_T8'Alignment use 1;                            -- ERROR: {4;1}
                               -- Representation clause of a frozen tagged type.
 
    ----------------------------------------------------------------------------
@@ -236,10 +222,10 @@ package BDE0007 is
    -- being the generic actual.  The representation clauses are therefore
    -- illegal.  RM 13.14(5,19);6.0
 
-   for Type_T9'Alignment use 1;                                       -- ERROR:
+   for Type_T9'Alignment use 1;                           -- ERROR: {4;1}
                                      -- Representation clause of a frozen type.
 
-   for Type_T10'Alignment use 1;                                      -- ERROR:
+   for Type_T10'Alignment use 1;                          -- ERROR: {4;1}
                                      -- Representation clause of a frozen type.
 
 end BDE0007;

@@ -30,7 +30,10 @@
 --      TYPE MARK DENOTES A CONSTRAINED OR UNCONSTRAINED ARRAY
 --      TYPE.
 
--- EG  01/05/84
+-- CHANGE HISTORY:
+--      05 Jan 1984   EG
+--      23 Apr 2021   RLB   Added error location indicators.
+--!
 
 PROCEDURE B43202C IS
 
@@ -54,24 +57,24 @@ PROCEDURE B43202C IS
      END PROC1;
 
 BEGIN
-     BB := A0 > (1, OTHERS => 0);                      -- ERROR: A.
+     BB := A0 > (1, OTHERS => 0);                      -- ERROR: A. {17;1}
      IF ( A1 /= (1 .. 2 => (BLUE => 0,
-                            OTHERS => 1) ) ) THEN      -- ERROR: A.
-        BB := A0 <= (GREEN => 0, OTHERS => 1);         -- ERROR: A.
+                            OTHERS => 1) ) ) THEN      -- ERROR: A. {1:17;7}
+        BB := A0 <= (GREEN => 0, OTHERS => 1);         -- ERROR: A. {21;1}
      END IF;
-     IF ( ( (RED => TRUE, OTHERS => FALSE) AND A2) =   -- ERROR: A.
+     IF ( ( (RED => TRUE, OTHERS => FALSE) AND A2) =   -- ERROR: A. {13;10}
             NOT ( A2 ) ) THEN
         B2 := A2 XOR (RED => TRUE, BLUE => FALSE,
-                      OTHERS => TRUE);                 -- ERROR: A.
+                      OTHERS => TRUE);                 -- ERROR: A. {1:22;1}
      END IF;
-     C2 := C1 & (3 => 'A', 2 => 'B', OTHERS => '*');   -- ERROR: A.
-     PROC1 (NOT (OTHERS => TRUE) );                    -- ERROR: A.
-     PROC1 (A2 AND (OTHERS => TRUE) );                 -- ERROR: A.
-     PROC1 ((OTHERS => TRUE) OR A2);                   -- ERROR: A.
-     PROC1 (A2 XOR (OTHERS => FALSE) );                -- ERROR: A.
-     BB := (1 .. 2 => (RED => 3, OTHERS => 4) ) IN T1; -- ERROR: B.
-     BB := (1 .. 2 => (OTHERS => 1) ) NOT IN T1;       -- ERROR: B.
-     BB := (OTHERS => (TC => 2) ) IN T1;               -- ERROR: B.
-     BB := (OTHERS => 2) IN T3;                        -- ERROR: B.
-     BB := (TC => TRUE, OTHERS => FALSE) NOT IN T2;    -- ERROR: B.
+     C2 := C1 & (3 => 'A', 2 => 'B', OTHERS => '*');   -- ERROR: A. {17;1}
+     PROC1 (NOT (OTHERS => TRUE) );                    -- ERROR: A. {17;1}
+     PROC1 (A2 AND (OTHERS => TRUE) );                 -- ERROR: A. {20;3}
+     PROC1 ((OTHERS => TRUE) OR A2);                   -- ERROR: A. {13;1}
+     PROC1 (A2 XOR (OTHERS => FALSE) );                -- ERROR: A. {20;3}
+     BB := (1 .. 2 => (RED => 3, OTHERS => 4) ) IN T1; -- ERROR: B. {12;7}
+     BB := (1 .. 2 => (OTHERS => 1) ) NOT IN T1;       -- ERROR: B. {12;11}
+     BB := (OTHERS => (TC => 2) ) IN T1;               -- ERROR: B. {12;7}
+     BB := (OTHERS => 2) IN T3;                        -- ERROR: B. {12;7}
+     BB := (TC => TRUE, OTHERS => FALSE) NOT IN T2;    -- ERROR: B. {12;11}
 END B43202C;

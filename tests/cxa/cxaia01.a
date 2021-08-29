@@ -46,11 +46,15 @@
 --      23 Sep 13   JAC     Initial pre-release version.
 --       6 Dec 13   JAC     Second pre-release version.
 --      30 Dec 13   RLB     Moved common code to foundation. Created Amendment
---                          version, marked and commented out Ada 2012 features.
+--                          version, marked and commented out Ada 2012 
+--                          features.
 --      10 Mar 14   RLB     Created ACATS 4.0 version, replaced Ada 2012
 --                          features.
 --       3 Apr 14   RLB     Merged in tampering checks from third pre-release
 --                          version.
+--      17 Jun 21   RLB     Updated following the recommendation of
+--                          AI12-0400-1. This AI was WG 9-approved with the
+--                          approval of the Ada 202x draft.
 --
 --!
 with Ada.Containers.Indefinite_Vectors;
@@ -68,7 +72,8 @@ procedure CXAIA01 is
      (Index_Type   => Natural,
       Element_Type => String); -- Default =
 
-   package My_Sorting is new My_Indefinite_Vectors.Generic_Sorting ("<" => ">");
+   package My_Sorting is 
+               new My_Indefinite_Vectors.Generic_Sorting ("<" => ">");
    -- Sort in reverse order to check is using what specified not simply <
 
    My_Vector_1 : My_Indefinite_Vectors.Vector;
@@ -205,7 +210,8 @@ begin
          if My_Indefinite_Vectors.Element (Position => My_Cursor_1) /=
            Value_In_Ptr_Array (I).all then
 
-            Report.Failed ("Mismatch between element and what was appended #2");
+            Report.Failed 
+                   ("Mismatch between element and what was appended #2");
 
          end if;
 
@@ -434,8 +440,8 @@ begin
               (Container => My_Vector_2,
                Where     => "Update_Element");
 
-            -- Note that can only perform writes that don't change the length of
-            -- the element otherwise will fail length check, only
+            -- Note that can only perform writes that don't change the length
+            -- of the element otherwise will fail length check, only
             -- Replace_Element can change the length.
 
             -- Increment the second character of the string
@@ -456,8 +462,8 @@ begin
 
          if I mod 2 = 0 then
 
-           -- Replace by the "Keyth" string of the test data but with the second
-           -- character incremented
+           -- Replace by the "Keyth" string of the test data but with the
+           -- second character incremented
 
             My_Vector_1.Replace_Element
               (Position => My_Cursor_1,
@@ -679,11 +685,11 @@ begin
 
    end if;
 
-   My_Vector_3.Insert
+   My_Vector_3.Insert_Vector
      (Before   => My_Indefinite_Vectors.No_Element, -- At end
       New_Item => My_Vector_2);
 
-   My_Vector_3.Insert
+   My_Vector_3.Insert_Vector
      (Before   => 3,
       New_Item => My_Vector_2);
 
@@ -692,7 +698,7 @@ begin
    -- Value_In_Ptr_Array (2).all, Value_In_Ptr_Array (2).all, Default_Value,
    -- Value_In_Ptr_Array (2).all, Value_In_Ptr_Array (2).all, Default_Value
 
-   My_Vector_3.Insert
+   My_Vector_3.Insert_Vector
      (Before   => My_Indefinite_Vectors.No_Element, -- At end
       New_Item => My_Vector_2,
       Position => My_Cursor_3); -- First of added elements
@@ -752,7 +758,8 @@ begin
    end if;
 
    -- Check = Default_Value
-   if My_Indefinite_Vectors.Element (My_Vector_2.First) /= My_Default_Value then
+   if My_Indefinite_Vectors.Element (My_Vector_2.First) /= 
+      My_Default_Value then
 
       Report.Failed ("Remaining value not as expected");
 
@@ -787,7 +794,8 @@ begin
 
    end loop;
 
-   My_Cursor_1 := My_Vector_1.Reverse_Find (Item => Value_In_Ptr_Array (5).all);
+   My_Cursor_1 := 
+          My_Vector_1.Reverse_Find (Item => Value_In_Ptr_Array (5).all);
 
    My_Cursor_2 := My_Vector_2.Find (Item => Value_In_Ptr_Array (7).all);
 
@@ -1032,7 +1040,8 @@ begin
 
    -- Test To_Vector (two forms) and Element (index form)
 
-   My_Vector_1 := My_Indefinite_Vectors.To_Vector (Length => FXAIA00.Num_Tests);
+   My_Vector_1 := 
+        My_Indefinite_Vectors.To_Vector (Length => FXAIA00.Num_Tests);
 
    if My_Vector_1.Length /= FXAIA00.Num_Tests then
 
@@ -1049,7 +1058,8 @@ begin
 
    for I in FXAIA00.Array_Bounds_Type loop
 
-      if My_Vector_1.Element (Index => Natural (I) - 1) /= My_Default_Value then
+      if My_Vector_1.Element (Index => Natural (I) - 1) /= 
+         My_Default_Value then
 
          Report.Failed ("To_Vector didn't create vector of given value");
 
@@ -1093,7 +1103,7 @@ begin
    end if;
 
 
-   -- Test "&" and Append (vector form)
+   -- Test "&" and Append_Vector
 
    My_Vector_1.Clear;
    My_Vector_2.Clear;
@@ -1124,7 +1134,7 @@ begin
 
    My_Vector_2 := Value_In_Ptr_Array (7).all & Value_In_Ptr_Array (8).all;
 
-   My_Vector_3.Append (New_Item => My_Vector_2);
+   My_Vector_3.Append_Vector (New_Item => My_Vector_2);
 
    -- My Vector_3 should now contain Value_In_Ptr_Array (1).all,
    -- Value_In_Ptr_Array (2).all, Value_In_Ptr_Array (3).all,

@@ -48,7 +48,7 @@
 --
 -- CHANGE HISTORY:
 --      22 Oct 2007  RLB    Created from parts of existing test B393005.
---
+--      26 Apr 2021  RLB    Added error location indicators.
 --!
 
 package B393008 is
@@ -61,12 +61,12 @@ package B393008 is
 
   function Dispatch_W_Controlling_Access_Result return access Concrete_Root;
 
-  type Branch_1 is abstract new Concrete_Root with null record;      -- OK
+  type Branch_1 is abstract new Concrete_Root with null record; -- OK. {3;1}
 
-  type Branch_2 is abstract new Concrete_Root with null record;      -- OK
+  type Branch_2 is abstract new Concrete_Root with null record; -- OK. {3;1}
 
   function Dispatch_W_Controlling_Access_Result
-      return access Branch_2 is abstract;                            -- OK
+      return access Branch_2 is abstract;                     -- OK. {1:3;1}
 
   -- Define a abstract type, and derive abstract types from it.
 
@@ -78,49 +78,49 @@ package B393008 is
       return access Abstract_Root is abstract;
 
   type Abstract_Branch_1 is
-       abstract new Abstract_Root with null record;                 -- OK
+       abstract new Abstract_Root with null record;           -- OK. {1:3;1}
 
   type Abstract_Branch_2 is
        abstract new Abstract_Root with null record;
 
   function Dispatch_W_Controlling_Access_Result
-      return access Abstract_Branch_2 is abstract;                  -- OK
+      return access Abstract_Branch_2 is abstract;            -- OK. {1:3;1}
 
-  type Bract_1 is abstract new Branch_1 with null record;           -- OK
+  type Bract_1 is abstract new Branch_1 with null record;     -- OK. {3;1}
 
-  type Bract_2 is abstract new Abstract_Branch_1 with null record;  -- OK
+  type Bract_2 is abstract new Abstract_Branch_1 with null record; -- OK. {3;1}
 
-  type Bract_3 is abstract new Branch_1 with null record;           -- OK
+  type Bract_3 is abstract new Branch_1 with null record;     -- OK. {3;1}
   function Dispatch_W_Controlling_Access_Result
       return access Bract_3 is abstract;
 
-  type Bract_4 is abstract new Abstract_Branch_1 with null record;  -- OK
+  type Bract_4 is abstract new Abstract_Branch_1 with null record; -- OK. {3;1}
   function Dispatch_W_Controlling_Access_Result
       return access Bract_4 is abstract;
 
-  type Leaf_1 is new Branch_1 with null record;                     -- ERROR:
+  type Leaf_1 is new Branch_1 with null record;               -- ERROR: {3;1}
          -- overriding function Dispatch_W_Controlling_Access_Result required
          -- even for a null extension.
 
   type Leaf_2 is new Branch_1 with record
       C : Character := 'R';
-  end record;                                                       -- ERROR:
+  end record;                                                 -- ERROR: {2:3;1}
          -- overriding function Dispatch_W_Controlling_Access_Result required
 
-  type Leaf_3 is new Branch_2 with null record;                     -- ERROR:
+  type Leaf_3 is new Branch_2 with null record;               -- ERROR: {3;1}
          -- overriding function Dispatch_W_Controlling_Access_Result required
 
-  type Stem_1 is new Abstract_Branch_1 with null record;            -- ERROR:
+  type Stem_1 is new Abstract_Branch_1 with null record;      -- ERROR: {3;1}
          -- overriding function Dispatch_W_Controlling_Access_Result required
 
-  type Stem_3 is new Abstract_Branch_2 with null record;            -- ERROR:
+  type Stem_3 is new Abstract_Branch_2 with null record;      -- ERROR: {3;1}
          -- overriding function Dispatch_W_Controlling_Access_Result required
 
   -- abstract types should not require overriding the dispatching function
 
-  type Leaf_4 is abstract new Branch_2 with null record;            -- OK
+  type Leaf_4 is abstract new Branch_2 with null record;      -- OK. {3;1}
 
   type Stem_4 is abstract new Abstract_Branch_1
-                              with null record;                     -- OK
+                              with null record;               -- OK. {1:3;1}
 
 end B393008;

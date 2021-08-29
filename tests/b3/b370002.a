@@ -36,8 +36,8 @@
 -- TEST DESCRIPTION:
 --      Declares several discriminated record types, attempts to derive
 --      from them violating the rules for deriving from discriminated
---      types.  This test attempts to make all the violations that typify
---      user errors.
+--      types.  This test attempts to make all the violations that
+--      typify user errors.
 --
 --
 --
@@ -45,6 +45,7 @@
 --      02 MAY 95   SAIC    Initial version
 --      24 JUL 95   SAIC    Review Commentary Incorporated version
 --      26 FEB 97   PWB.CTA Removed declarations with discriminant errors
+--      21 APR 21   RLB     Added error location indicators.
 --!
 
 package B370002_0 is
@@ -105,88 +106,88 @@ package B370002 is
 
 
 
-  type Supplied_Constraint_1 is new Unconstrained_Record(Red);    -- OK
+  type Supplied_Constraint_1 is new Unconstrained_Record(Red);-- OK. {3;1}
 
   type Supplied_Constraint_2 is
-       new Multiple_Unconstrained_Record(Blue,2);                 -- OK
+       new Multiple_Unconstrained_Record(Blue,2);             -- OK. {1:3;1}
 
   type Supplied_Constraint_3 is
-       new Constrained_Tagged_Record(Green) with null record;     -- OK
+       new Constrained_Tagged_Record(Green) with null record; -- OK. {1:3;1}
 
-  type Supplied_Constraint_4 is new Discriminated_Task(Orange);   -- OK
+  type Supplied_Constraint_4 is new Discriminated_Task(Orange);-- OK. {3;1}
 
   type Supplied_Constraint_5 is
-       new Discriminated_Protected(Indigo);                       -- OK
+       new Discriminated_Protected(Indigo);                   -- OK. {1:3;1}
 
-  type Missing_Constraint_1 is new Unconstrained_Record;          -- OK
+  type Missing_Constraint_1 is new Unconstrained_Record;      -- OK. {3;1}
                                -- inherits discriminant from parent 3.7(18)
 
-  type Missing_Constraint_2 is new Multiple_Unconstrained_Record; -- OK
+  type Missing_Constraint_2 is new Multiple_Unconstrained_Record; -- OK. {3;1}
                                -- inherits discriminant from parent 3.7(18)
 
   type Only_One_Supplied_Constraint is
-       new Multiple_Unconstrained_Record(Blue);                   -- ERROR:
+       new Multiple_Unconstrained_Record(Blue);               -- ERROR: {1:3;1}
                                          -- missing constraint for The_Size
 
   type Missing_Constraint_3 is
-       new Constrained_Tagged_Record with null record;            -- OK
+       new Constrained_Tagged_Record with null record;        -- OK. {1:3;1}
                                -- inherits discriminant from parent 3.7(18)
 
-  type Missing_Constraint_4 is new Discriminated_Task;            -- OK
+  type Missing_Constraint_4 is new Discriminated_Task;        -- OK. {3;1}
                                -- inherits discriminant from parent 3.7(18)
 
-  type Missing_Constraint_5 is new Discriminated_Protected;       -- OK
+  type Missing_Constraint_5 is new Discriminated_Protected;   -- OK. {3;1}
                                -- inherits discriminant from parent 3.7(18)
 
 
   type Transferred_Constraint_1( Shadow: Color ) is
-       new Unconstrained_Record( Shadow );                        -- OK
+       new Unconstrained_Record( Shadow );                    -- OK. {1:3;1}
 
 
   type Transferred_Constraint_3( Shadow: Color := Blue ) is
-       new Discriminated_Task( Shadow );                          -- OK
+       new Discriminated_Task( Shadow );                      -- OK. {1:3;1}
 
   type Transferred_Constraint_4( Shadow: Color ) is
-       new Discriminated_Protected( Shadow );                     -- OK
+       new Discriminated_Protected( Shadow );                 -- OK. {1:3;1}
 
   type Misplaced_Constraint_1( Shadow: Color ) is
-       new Unconstrained_Record( Ultra );                         -- ERROR:
+       new Unconstrained_Record( Ultra );                     -- ERROR: {1:3;1}
             -- discriminant for new type must be used in subtype constraint
 
   type Misplaced_Constraint_2( Shadow: Color; Measure : Natural ) is
-       new Multiple_Unconstrained_Record( Indigo, 13 );           -- ERROR:
+       new Multiple_Unconstrained_Record( Indigo, 13 );       -- ERROR: {1:3;1}
             -- discriminant for new type must be used in subtype constraint
 
   type Misplaced_Constraint_3( Shadow: Color ) is
-       new Discriminated_Task( Blue );                            -- ERROR:
+       new Discriminated_Task( Blue );                        -- ERROR: {1:3;1}
             -- discriminant for new type must be used in subtype constraint
 
   type Misplaced_Constraint_4( Shadow: Color ) is
-       new Discriminated_Protected( Green );                      -- ERROR:
+       new Discriminated_Protected( Green );                  -- ERROR: {1:3;1}
             -- discriminant for new type must be used in subtype constraint
 
   type Missing_Constraint_6( Shadow: Color := Red ) is
-       new Unconstrained_Record;                                  -- ERROR:
+       new Unconstrained_Record;                              -- ERROR: {1:3;1}
             -- discriminant for new type must be used in subtype constraint
                                   -- and parent subtype must be constrained
 
   type Missing_Constraint_7( Shadow: Color; Measure : Natural ) is
-       new Multiple_Unconstrained_Record;                         -- ERROR:
+       new Multiple_Unconstrained_Record;                     -- ERROR: {1:3;1}
            -- discriminants for new type must be used in subtype constraint
                                   -- and parent subtype must be constrained
 
   type Missing_Constraint_8( Shadow: Color; Measure : Natural ) is
-       new Multiple_Unconstrained_Record( Shadow );               -- ERROR:
+       new Multiple_Unconstrained_Record( Shadow );           -- ERROR: {1:3;1}
            -- discriminants for new type must be used in subtype constraint
                                   -- and parent subtype must be constrained
 
   type Missing_Constraint_9( Shadow: Color ) is
-       new Discriminated_Task;                                    -- ERROR:
+       new Discriminated_Task;                                -- ERROR: {1:3;1}
             -- discriminant for new type must be used in subtype constraint
                                   -- and parent subtype must be constrained
 
   type Missing_Constraint_A( Shadow: Color ) is
-       new Discriminated_Protected;                               -- ERROR:
+       new Discriminated_Protected;                           -- ERROR: {1:3;1}
             -- discriminant for new type must be used in subtype constraint
                                   -- and parent subtype must be constrained
 
@@ -203,63 +204,63 @@ package B370002 is
   subtype DynCol is Color range Red..Color_Last; -- dynamic subtype
 
   type Subtype_Constraint_1( Shadow: Hue := Green ) is
-       new Unconstrained_Record( Shadow );                        -- OK
+       new Unconstrained_Record( Shadow );                    -- OK. {1:3;1}
 
 
   type Subtype_Constraint_3( Shadow: Hue ) is
-       new Constrained_Tagged_Record(Shadow) with null record;    -- OK
+       new Constrained_Tagged_Record(Shadow) with null record;-- OK. {1:3;1}
 
   type Subtype_Constraint_4( Shadow: Hue ) is
-       new Discriminated_Task( Shadow );                          -- OK
+       new Discriminated_Task( Shadow );                      -- OK. {1:3;1}
 
   type Subtype_Constraint_5( Shadow: Hue := Yellow ) is
-       new Discriminated_Protected( Shadow );                     -- OK
+       new Discriminated_Protected( Shadow );                 -- OK. {1:3;1}
 
   type Subtype_Constraint_6( Shadow: Col ) is
-       new Unconstrained_Record( Shadow );                        -- ERROR:
+       new Unconstrained_Record( Shadow );                    -- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
   type Subtype_Constraint_7( Shadow: Col; Measure : Number ) is
-       new Multiple_Unconstrained_Record( Shadow, Measure );      -- ERROR:
+       new Multiple_Unconstrained_Record( Shadow, Measure );  -- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
 
   type Subtype_Constraint_9( Shadow: Col ) is
-       new Constrained_Tagged_Record(Shadow) with null record;    -- ERROR:
+       new Constrained_Tagged_Record(Shadow) with null record;-- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
   type Subtype_Constraint_A( Shadow: Col ) is
-       new Discriminated_Task( Shadow );                          -- ERROR:
+       new Discriminated_Task( Shadow );                      -- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
   type Subtype_Constraint_B( Shadow: Col ) is
-       new Discriminated_Protected( Shadow );                     -- ERROR:
+       new Discriminated_Protected( Shadow );                 -- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
   type Subtype_Constraint_C( Shadow: DynCol ) is
-       new Unconstrained_Record( Shadow );                        -- ERROR:
+       new Unconstrained_Record( Shadow );                    -- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
   type Subtype_Constraint_D( Shadow: DynCol; Measure : Number ) is
-       new Multiple_Unconstrained_Record( Shadow, Measure );      -- ERROR:
+       new Multiple_Unconstrained_Record( Shadow, Measure );  -- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
   type Subtype_Constraint_E( Shadow: DynCol ) is
-       new Constrained_Tagged_Record(Shadow) with null record;    -- ERROR:
+       new Constrained_Tagged_Record(Shadow) with null record;-- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
   type Subtype_Constraint_F( Shadow: DynCol ) is
-       new Discriminated_Task( Shadow );                          -- ERROR:
+       new Discriminated_Task( Shadow );                      -- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
   type Subtype_Constraint_G( Shadow: DynCol ) is
-       new Discriminated_Protected( Shadow );                     -- ERROR:
+       new Discriminated_Protected( Shadow );                 -- ERROR: {1:3;1}
    -- subtype of discriminant must be statically compatible with the parent
 
   subtype Bell_Pepper is Color range Orange .. Green;
 
   type Subtype_Constraint_H( Col: Bell_Pepper ) is
-       new Discriminated_Task( Col );                             -- OK
+       new Discriminated_Task( Col );                         -- OK. {1:3;1}
    -- subtype of constraint is not matching, but is statically compatible
 
 end B370002;

@@ -26,7 +26,10 @@
 -- MAY NOT BE SELECTED FROM OUTSIDE A PACKAGE USING AN EXPANDED NAME,
 -- FOR A LIMITED PRIVATE TYPE.
 
--- TBN  7/18/86
+-- CHANGE HISTORY:
+--      18 Jul 1986   TBN
+--      22 Apr 2021   RLB   Added error location indicators.
+--!
 
 PROCEDURE B41327B IS
 
@@ -60,9 +63,9 @@ PROCEDURE B41327B IS
 
 BEGIN
 
-     BOOLEAN_1 := P."=" (P.INIT_KEY (1), P.INIT_KEY (2));      -- ERROR:
+     BOOLEAN_1 := P."=" (P.INIT_KEY (1), P.INIT_KEY (2));    -- ERROR: {6;1}
      NULL;
      BOOLEAN_1 := P."/=" (P.INIT_CHAR ('A'),
-                          P.INIT_CHAR ('B'));                  -- ERROR:
+                          P.INIT_CHAR ('B'));                -- ERROR: {1:6;1}
 
 END B41327B;

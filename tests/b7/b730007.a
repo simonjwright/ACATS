@@ -27,12 +27,6 @@
 --     has constrained discriminants, then the parent subtype of
 --     the full view imposes a statically matching constraint
 --     on those discriminants.
-
--- HISTORY:
---     DRE 09/06/02  Created test.
---     RLB 05/30/13  Changes for issuance: created main subprogram, adjusted
---                   capitalization, improved objective wording, explained
---                   errors, added derived test cases.
 --
 -- TEST DESCRIPTION:
 --
@@ -52,6 +46,14 @@
 --     these possible errors. For instance, an error must be detected on
 --     at least one of the lines labeled POSSIBLE ERROR: [Set1] for an
 --     implementation to pass.
+--
+-- CHANGE HISTORY:
+--     06 Sep 02   DRE   Created test.
+--     30 May 13   RLB   Changes for issuance: created main subprogram,
+--                       adjusted capitalization, improved objective wording,
+--                       explained errors, added derived test cases.
+--     22 Apr 21   RLB   Fixed overlong lines, header formatting issues.
+--                       Added error location indicators.
 
 procedure B730007 is
 
@@ -70,25 +72,29 @@ procedure B730007 is
        type T3 is new R1(B => False) with private;
        type T4(B: Boolean) is new R1(B => False) with private;
        type T5(B: Boolean) is new R1(B => False) with private;
-       type T6(B: Boolean) is new R1(B => B) with null record;     -- OK
-       type T7(B: Boolean) is new R1(B => B) with private;         -- POSSIBLE ERROR: [Set1]
+       type T6(B: Boolean) is new R1(B => B) with null record;  -- OK. {8;1}
+       type T7(B: Boolean) is new R1(B => B) 
+                              with private;  -- POSSIBLE ERROR: [Set1] {1:8;1}
        type T8 is new R1(B => False) with private;
        type T9 is new R1(B => False) with private;
        type T10 is new R1(B => False) with private;
        type T11 is new R1(B => False) with private;
        type T12 is new R1(B => True) with private;
     private
-       type T1 is new R1 with null record;                         -- ERROR:
-       type T2 is new R1(B => False) with null record;             -- OK
-       type T3 is new R1(B => True) with null record;              -- ERROR:
-       type T4(B: Boolean) is new R1(B => False) with null record; -- OK
-       type T5(B: Boolean) is new R1(B => True) with null record;  -- ERROR:
-       type T7(B: Boolean) is new R1(B => B) with null record;     -- POSSIBLE ERROR: [Set1]
-       type T8 is new S1 with null record;                         -- OK
-       type T9 is new S2 with null record;                         -- ERROR:
-       type T10 is new D1 with null record;                        -- ERROR:
-       type T11 is new D2 with null record;                        -- OK
-       type T12 is new D2 with null record;                        -- ERROR:
+       type T1 is new R1 with null record;                    -- ERROR: {8;1}
+       type T2 is new R1(B => False) with null record;        -- OK. {8;1}
+       type T3 is new R1(B => True) with null record;         -- ERROR: {8;1}
+       type T4(B: Boolean) is new R1(B => False) 
+                                           with null record;  -- OK. {1:8;1}
+       type T5(B: Boolean) is new R1(B => True) 
+                                           with null record;  -- ERROR: {1:8;1}
+       type T7(B: Boolean) is new R1(B => B) 
+                           with null record;  -- POSSIBLE ERROR: [Set1] {1:8;1}
+       type T8 is new S1 with null record;                    -- OK. {8;1}
+       type T9 is new S2 with null record;                    -- ERROR: {8;1}
+       type T10 is new D1 with null record;                   -- ERROR: {8;1}
+       type T11 is new D2 with null record;                   -- OK. {8;1}
+       type T12 is new D2 with null record;                   -- ERROR: {8;1}
     end Pack2;
 
 begin

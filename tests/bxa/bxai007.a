@@ -44,7 +44,9 @@
 -- CHANGE HISTORY:
 --      20 Nov 14   RLB     Created from parts of CXAI029.
 --      13 Mar 15   RLB     Eliminate overlong lines.
---
+--      15 Jun 21   RLB     Added error indicators to clarify that errors can
+--                          occur anywhere in a construct in this test.
+--!
 with Ada.Containers.Bounded_Hashed_Sets;
 with Report;
 with Ada.Exceptions;
@@ -115,12 +117,12 @@ begin
    declare
 
       My_Constant_Reference : My_Bounded_Hashed_Sets.Constant_Reference_Type :=
-                              My_Set_1.Constant_Reference
-                                  (Position => My_Set_1.First);   -- OK.
+                          My_Set_1.Constant_Reference
+                              (Position => My_Set_1.First);  -- OK. {2:7;1}
 
       My_Reference : My_Bounded_Hashed_Sets.Reference_Type :=
-                              My_Set_1.Reference
-                                  (Position => My_Set_1.First);   -- ERROR:
+                          My_Set_1.Reference
+                              (Position => My_Set_1.First);  -- ERROR: {2:7;1}
 
    begin
 
@@ -157,7 +159,7 @@ begin
                My_Bounded_Hashed_Sets.Constant_Reference(My_Set_1,
                    Position => My_Cursor_1).Element.all,
             Expected => Value_In_Array (1)+0.125,
-            Test_Case=> "Constant_Reference normal cursor");      -- OK.
+            Test_Case=> "Constant_Reference normal cursor"); -- OK. {4:7;1}
 
       Test_and_Mod (
             Value    =>
@@ -165,14 +167,15 @@ begin
                    Position => My_Cursor_1).Element.all,
             Expected => Value_In_Array (1)+0.125,
             New_Item => Value_In_Array (1),
-            Test_Case=> "Reference normal cursor");               -- ERROR:
+            Test_Case=> "Reference normal cursor");          -- ERROR: {6:7;1}
 
       -- Normal call using generalized reference:
       Test (Value    =>
                My_Bounded_Hashed_Sets.Constant_Reference(My_Set_1,
                    Position => My_Cursor_1),
             Expected => Value_In_Array (1)+0.25,
-            Test_Case=> "Constant_Reference normal generalized cursor"); -- OK.
+            Test_Case=> "Constant_Reference normal generalized cursor");
+                                                             -- OK. {5:7}
 
       Test_and_Mod (
             Value    =>
@@ -180,14 +183,14 @@ begin
                    Position => My_Cursor_1),
             Expected => Value_In_Array (1)+0.25,
             New_Item => Value_In_Array (1),
-            Test_Case=> "Reference normal generalized cursor");    -- ERROR:
+            Test_Case=>"Reference normal generalized cursor");-- ERROR: {6:7;1}
 
       -- Prefix call with all components explicit:
       Test (Value    =>
                My_Set_1.Constant_Reference(
                    Position => My_Cursor_1).Element.all,
             Expected => Value_In_Array (1),
-            Test_Case=> "Constant_Reference prefix cursor");       -- OK.
+            Test_Case=> "Constant_Reference prefix cursor"); -- OK. {4:7;1}
 
       Test_and_Mod (
             Value    =>
@@ -195,29 +198,29 @@ begin
                    Position => My_Cursor_1).Element.all,
             Expected => Value_In_Array (1),
             New_Item => Value_In_Array (1),
-            Test_Case=> "Reference prefix cursor");                -- ERROR:
+            Test_Case=> "Reference prefix cursor");          -- ERROR: {6:7;1}
 
       -- Prefix call using a generalized reference (implicit dereference):
       Test (Value    => My_Set_1.Constant_Reference(Position => My_Cursor_1),
             Expected => Value_In_Array (1),
-            Test_Case=> "Constant_Reference generalized cursor");  -- OK.
+            Test_Case=> "Constant_Reference generalized cursor");-- OK. {2:7;1}
 
       Test_and_Mod (
             Value    => My_Set_1.Reference(Position => My_Cursor_1),
             Expected => Value_In_Array (1),
             New_Item => Value_In_Array (1),
-            Test_Case=> "Reference generalized cursor");           -- ERROR:
+            Test_Case=> "Reference generalized cursor");     -- ERROR: {4:7;1}
 
       -- Object indexing, everything implicit.
       Test (Value    => My_Set_1(My_Cursor_1), -- Constant_Indexing
             Expected => Value_In_Array (1),
-            Test_Case=> "Constant object indexing by cursor");     -- OK.
+            Test_Case=> "Constant object indexing by cursor"); -- OK. {2:7;1}
 
       Test_and_Mod (
             Value    => My_Set_1(My_Cursor_1),
             Expected => Value_In_Array (1),
             New_Item => Value_In_Array (1),
-            Test_Case=> "Reference indexing by cursor");           -- ERROR:
+            Test_Case=> "Reference indexing by cursor");     -- ERROR: {4:7;1}
          -- Note: This parameter is "in out" and we have no Variable_Indexing
          -- here, so this is trying to write a constant.
    end;

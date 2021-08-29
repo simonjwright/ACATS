@@ -42,9 +42,9 @@
 -- CHANGE HISTORY:
 --      16 Nov 13   GRB     Initial version
 --      26 Nov 13   RLB     Added missing headers, fixed objective.
---      32 Apr 14   RLB     Added additional case, renamed for ACATS 4.0.
+--      22 Apr 14   RLB     Added additional case, renamed for ACATS 4.0.
+--      23 Apr 21   RLB     Added error location indicators.
 --!
-
 package B950002 is
    type Spinlock is synchronized interface;
 
@@ -64,12 +64,12 @@ package B950002 is
       with Synchronization => Optional;
 
    protected type Lock_Type is new Spinlock with
-      entry Unlock;                       -- ERROR: Must be protected procedure
+      entry Unlock;                       -- ERROR: Must be prot proc {7;1}
       procedure Unlock_2
-        with Synchronization => Optional; -- ERROR: Should be By_Prot_Proc
-      procedure Lock;                     -- ERROR: Must be entry
+        with Synchronization => Optional; -- ERROR: Ought By_Prot_Proc {1:7;1}
+      procedure Lock;                     -- ERROR: Must be entry {7;1}
       procedure Lock_2
-        with Synchronization => By_Entry; -- ERROR: Is procedure
+        with Synchronization => By_Entry; -- ERROR: Is procedure {1:7;1}
    private
       Unlocked : Boolean := True;
    end Lock_Type;
@@ -77,14 +77,14 @@ package B950002 is
    procedure Try_Lock
      (L       : in out Lock_Type;
       Success : out Boolean)
-   with Synchronization => By_Entry;      -- ERROR: Is procedure
+   with Synchronization => By_Entry;      -- ERROR: Is procedure {3:4;1}
 
    procedure Lock_3
      (L       : in out Lock_Type)
-   with Synchronization => Optional;      -- ERROR: Original is By_Entry
+   with Synchronization => Optional;      -- ERROR: Orgnl is By_Entry {2:4;1}
 
    procedure Lock_4
      (L       : in out Lock_Type)
-   with Synchronization => Optional;      -- OK.
+   with Synchronization => Optional;      -- OK. {2:4;1}
 
 end B950002;

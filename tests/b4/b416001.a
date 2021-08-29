@@ -75,6 +75,8 @@
 --                       Updated name of test; simplified objective;
 --                       corrected format of error indications; added
 --                       indications of which rule each error is testing.
+--     15 Jun 2021 RLB Commented out dubious OK pending approval of
+--                       AI12-0428-1.
 --!
 
 procedure B416001 is
@@ -138,10 +140,11 @@ procedure B416001 is
         function Priv_Func
           (P : Priv; Index : Positive) return Ref is (Null_Ref);
 
-        type Priv_2 is private;
-
-        function Priv_2_Func
-          (P : Priv_2; Index : Positive) return Ref is (Null_Ref);
+        --See below for why this is commented out.
+        --type Priv_2 is private;
+        --
+        --function Priv_2_Func
+        --  (P : Priv_2; Index : Positive) return Ref is (Null_Ref);
 
         type Priv_3 is tagged private
           with Variable_Indexing => Priv_3_Func;     -- OK.
@@ -167,8 +170,12 @@ procedure B416001 is
 
         type Priv is tagged null record;
 
-        type Priv_2 is tagged null record
-          with Variable_Indexing => Priv_2_Func;     -- OK.
+        --This case is unclear as it is not obvious if the declaration list
+        --to check for (C) is this one or the previous one. AI12-0428-1
+        --clarifies this by allowing either, but testing that has to wait
+        --for Ada 202x.
+        --type Priv_2 is tagged null record
+        --  with Variable_Indexing => Priv_2_Func;     -- OK.
 
         type Priv_3 is tagged null record;
 

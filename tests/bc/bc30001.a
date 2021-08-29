@@ -56,7 +56,7 @@
 --
 -- CHANGE HISTORY:
 --      06 Dec 94   SAIC    ACVC 2.0
---
+--      28 Apr 21   RLB     Added error location indicators.
 --!
 
 package BC30001_0 is
@@ -178,10 +178,10 @@ package BC30001 is
 -- actual in the private part or body of an instance.
 
    package Priv_Derivation is new BC30001_1.Derived_In_Private_Part
-      (BC30001_0.Tagged_Type);                                        -- OK.
+      (BC30001_0.Tagged_Type);                                -- OK. {1:4;1}
 
    package Body_Derivation is new BC30001_1.Derived_In_Body
-      (BC30001_0.Tagged_Type);                                        -- OK.
+      (BC30001_0.Tagged_Type);                                -- OK. {1:4;1}
 
 
 
@@ -190,23 +190,23 @@ package BC30001 is
 -- actual in the visible part of an instance.
 
    package Visi_Deriv_01 is new BC30001_1.Derived_In_Visible_Part
-     (BC30001_0.Tagged_Type);                                         -- ERROR:
+     (BC30001_0.Tagged_Type);                                 -- ERROR: {1:4;1}
                       -- Type derived in instance does not have extension part.
 
    package Visi_Deriv_02 is new BC30001_1.Derived_In_Visible_Part
-     (BC30001_0.Rec_Ext);                                             -- ERROR:
+     (BC30001_0.Rec_Ext);                                     -- ERROR: {1:4;1}
                       -- Type derived in instance does not have extension part.
 
    package Visi_Deriv_03 is new BC30001_1.Derived_In_Visible_Part
-     (BC30001_0.Pri_Ext);                                             -- ERROR:
+     (BC30001_0.Pri_Ext);                                     -- ERROR: {1:4;1}
                       -- Type derived in instance does not have extension part.
 
    package Visi_Deriv_04 is new BC30001_1.Derived_In_Visible_Part
-     (Formal_Private);                                                -- ERROR:
+     (Formal_Private);                                        -- ERROR: {1:4;1}
                       -- Type derived in instance does not have extension part.
 
    package Visi_Deriv_05 is new BC30001_1.Derived_In_Visible_Part
-     (Formal_Derived);                                                -- ERROR:
+     (Formal_Derived);                                        -- ERROR: {1:4;1}
                       -- Type derived in instance does not have extension part.
 
 
@@ -215,16 +215,17 @@ package BC30001 is
 
    Object    : Priv_Derivation.Derived_Type;
 
-   Var       : Priv_Derivation.Derived_Type := BC30001_0.Func;        -- ERROR:
+   Var       : Priv_Derivation.Derived_Type := BC30001_0.Func;-- ERROR: {4;1}
                       -- Function not dispatching; function returns wrong type.
 
-   ClassWide : BC30001_0.Tagged_Type'Class := Object;                 -- ERROR:
+   ClassWide : BC30001_0.Tagged_Type'Class := Object;         -- ERROR: {4;1}
                                          -- Object is not in Tagged_Type'Class.
 
-   Tag_Val   : Ada.Tags.Tag := Priv_Derivation.Derived_Type'Tag;      -- ERROR:
+   Tag_Val   : Ada.Tags.Tag := Priv_Derivation.Derived_Type'Tag;-- ERROR: {4;1}
                                    -- Attribute not defined for untagged types.
 
-   type Rec_Ext is new Priv_Derivation.Derived_Type with null record; -- ERROR:
+   type Rec_Ext is new Priv_Derivation.Derived_Type
+                                           with null record;  -- ERROR: {1:4;1}
                                                   -- Parent type is not tagged.
 
 end BC30001;

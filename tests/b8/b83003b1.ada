@@ -45,29 +45,32 @@
 --     VCL  02/04/88  CREATED ORIGINAL TEST.
 --     RDH  04/09/90  MODIFIED TEST TO ONLY HAVE ONE TASK BODEY IN
 --                    EACH FILE.
+--     RLB  04/26/21  Corrected incorrect error markers; moved markers on wrong
+--                    lines; added location indicators.
+--!
 
 -- MULTIPLE TASKS ARE USED SO THAT ONLY ONE DECLARATION WHICH REQUIRES
 -- A BODY (TASK AND GENERIC UNITS) IS GIVEN IN EACH TASK.
 
 SEPARATE (B83003B0M)
 TASK BODY TSK1 IS
-     TYPE E1 IS                                     -- ERROR: HOMOGRAPH.
-          ARRAY (1..15) OF CHARACTER;
-     SUBTYPE E2 IS STRING(1..12);                   -- ERROR: HOMOGRAPH.
-     E3 : CONSTANT CHARACTER := 'A';                -- ERROR: HOMOGRAPH.
-     E4 : CONSTANT := 5.0;                          -- ERROR: HOMOGRAPH.
-     E5  : STRING(1..10);                           -- ERROR: HOMOGRAPH.
-     E6  : EXCEPTION;                               -- ERROR: HOMOGRAPH.
+     TYPE E1 IS                                   
+          ARRAY (1..15) OF CHARACTER;             -- ERROR: HOMOGRAPH. {1:6;1}
+     SUBTYPE E2 IS STRING(1..12);                 -- ERROR: HOMOGRAPH. {6;1}
+     E3 : CONSTANT CHARACTER := 'A';              -- ERROR: HOMOGRAPH. {6;1}
+     E4 : CONSTANT := 5.0;                        -- ERROR: HOMOGRAPH. {6;1}
+     E5  : STRING(1..10);                         -- ERROR: HOMOGRAPH. {6;1}
+     E6  : EXCEPTION;                             -- ERROR: HOMOGRAPH. {6;1}
 
-     PACKAGE E7 IS END E7;                          -- ERROR: HOMOGRAPH.
+     PACKAGE E7 IS END E7;                        -- ERROR: HOMOGRAPH. {6;1}
 
-     TASK E8;                                       -- ERROR: HOMOGRAPH.
+     TASK E8;                                     -- ERROR: HOMOGRAPH. {6;1}
 
      -- BODY FOR THE ABOVE HOMOGRAPH.
 
-     TASK BODY E8 IS                            -- OPTIONAL ERR MESSAGE:
-     BEGIN                                      --  BODY OF AN INVALID
-          NULL;                                 --  TASK OBJECT.
+     TASK BODY E8 IS                              -- OPTIONAL ERROR: {6}
+     BEGIN                                        --  BODY OF AN INVALID
+          NULL;                                   --  TASK OBJECT.
      END E8;
 BEGIN
      NULL;

@@ -25,11 +25,13 @@
 -- OBJECTIVE:
 --     CHECK THAT A STATIC EXPRESSION MUST NOT CONTAIN A NAME DENOTING A
 --     VARIABLE OR A COMPONENT OF AN ARRAY OR RECORD.
-
--- HISTORY:
---     RJW 02/24/86  CREATED ORIGINAL TEST.
---     SDA 08/31/88  REVISED CODE SO THAT THERE
---                   IS ONLY ONE ERROR PER AGGREGATE.
+--
+-- CHANGE HISTORY:
+--      24 Feb 1986   RJW   Created original test.
+--      31 Aug 1988   SDA   Revised code so that there is only one error per
+--                          aggregate.
+--      23 Apr 2021   RLB   Added error location indicators.
+--!
 
 PROCEDURE B49005A IS
 
@@ -49,29 +51,29 @@ BEGIN
 
           REC : CONSTANT INT_REC := (I => 3);
 
-          TYPE INT IS RANGE 1 .. V;        -- ERROR: VARIABLE.
-          TYPE INT2 IS RANGE REC.I .. 5;   -- ERROR: RECORD COMPONENT.
-          TYPE INT3 IS RANGE CARR (1) .. 5;   -- ERROR: ARRAY
+          TYPE INT IS RANGE 1 .. V;        -- ERROR: VARIABLE. {11;1}
+          TYPE INT2 IS RANGE REC.I .. 5;   -- ERROR: RECORD COMPONENT. {11;1}
+          TYPE INT3 IS RANGE CARR (1) .. 5;   -- ERROR: ARRAY          {11;1}
                                               --        COMPONENT.
 
-          NUM  : CONSTANT := SI'POS (V);           -- ERROR: VARIABLE.
-          NUM2 : CONSTANT := SI'POS (CARR (1));    -- ERROR: ARRAY
+          NUM  : CONSTANT := SI'POS (V);           -- ERROR: VARIABLE. {11;1}
+          NUM2 : CONSTANT := SI'POS (CARR (1));    -- ERROR: ARRAY     {11;1}
                                                    --        COMPONENT.
-          NUM3 : CONSTANT := SI'POS (REC.I);       -- ERROR: RECORD
+          NUM3 : CONSTANT := SI'POS (REC.I);       -- ERROR: RECORD    {11;1}  
                                                    --        COMPONENT.
 
           TYPE OK_RANGE IS RANGE 1 .. 10;
-          FOR OK_RANGE'SIZE USE V;                 -- ERROR: VARIABLE.
+          FOR OK_RANGE'SIZE USE V;                 -- ERROR: VARIABLE. {11;1}
 
           TYPE INT_REC2 (I : INTEGER) IS
                RECORD
                     CASE I IS
-                         WHEN V        =>      -- ERROR: VARIABLE.
+                         WHEN V        =>      -- ERROR: VARIABLE.    {26}  
                               NULL;
-                         WHEN REC.I    =>      -- ERROR: RECORD
+                         WHEN REC.I    =>      -- ERROR: RECORD       {26}
                                                --        COMPONENT.
                               NULL;
-                         WHEN CARR (1) =>      -- ERROR: ARRAY
+                         WHEN CARR (1) =>      -- ERROR: ARRAY        {26}
                                                --        COMPONENT.
                               NULL;
                          WHEN OTHERS   =>
@@ -89,44 +91,44 @@ BEGIN
                     END CASE;
                END RECORD;
 
-          I2 : OK_REC (1) := (V, 0);              -- ERROR: VARIABLE.
+          I2 : OK_REC (1) := (V, 0);              -- ERROR: VARIABLE. {30;1}
 
-          ARR1 : ARR := ARR' (V          => 1,    -- ERROR: VARIABLE.
+          ARR1 : ARR := ARR' (V          => 1,    -- ERROR: VARIABLE. {25;-1:1}
                               OTHERS     => 0);
-          ARR2 : ARR := ARR' (CARR (1)   => 2,    -- ERROR: ARRAY
+          ARR2 : ARR := ARR' (CARR (1)   => 2,    -- ERROR: ARRAY     {25;-2:1}
                                                   --        COMPONENT.
                               OTHERS     => 0);
-          ARR3 : ARR := ARR' (REC.I      => 3,    -- ERROR: RECORD
+          ARR3 : ARR := ARR' (REC.I      => 3,    -- ERROR: RECORD    {25;-2:1}
                                                   --        COMPONENT.
                               OTHERS     => 0);
 
           TYPE MEDIUM IS RANGE 0 .. 1000;
-          FOR MEDIUM'SIZE USE CARR (1) * 10;      -- ERROR: ARRAY
+          FOR MEDIUM'SIZE USE CARR (1) * 10;      -- ERROR: ARRAY     {11;1}
                                                   --        COMPONENT.
 
           TYPE SHORT IS DELTA 0.1 RANGE -100.0 .. 100.0;
-          FOR SHORT'SIZE USE 4 * REC.I;          -- ERROR: RECORD
+          FOR SHORT'SIZE USE 4 * REC.I;          -- ERROR: RECORD     {11;1}
                                                  --        COMPONENT.
           F : SHORT := 0.01;
 
-          SUBTYPE SUBSHORT IS SHORT DELTA F;      -- ERROR: VARIABLE.
+          SUBTYPE SUBSHORT IS SHORT DELTA F;      -- ERROR: VARIABLE. {11;1}
 
-          TYPE REAL IS DIGITS CARR (1) RANGE -1.0 .. 1.0; -- ERROR:
+          TYPE REAL IS DIGITS CARR (1) RANGE -1.0 .. 1.0; -- ERROR:   {11;1}
                                                           -- ARRAY
                                                           -- COMPONENT.
 
           TYPE OK_TYPE IS (A, B);
-          FOR OK_TYPE USE (A => 1, B => V);       -- ERROR: VARIABLE.
+          FOR OK_TYPE USE (A => 1, B => V);       -- ERROR: VARIABLE. {11;1}
 
           I : INTEGER;
 
      BEGIN
           CASE I IS
-               WHEN V =>                -- ERROR: VARIABLE.
+               WHEN V =>                -- ERROR: VARIABLE.    {16}
                     NULL;
-               WHEN REC.I =>            -- ERROR: RECORD COMPONENT.
+               WHEN REC.I =>            -- ERROR: RECORD COMPONENT.  {16}
                     NULL;
-               WHEN CARR (1) =>         -- ERROR: ARRAY COMPONENT.
+               WHEN CARR (1) =>         -- ERROR: ARRAY COMPONENT.   {16}
                     NULL;
                WHEN OTHERS =>
                     NULL;

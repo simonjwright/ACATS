@@ -25,7 +25,9 @@
 -- CHECK THAT A SUBPROGRAM SPECIFICATION CANNOT BE USED
 -- IN A GENERIC SUBPROGRAM INSTANTIATION.
 
--- DAT 9/18/81
+-- HISTORY:
+--      18 Sep 1981   DAT
+--      22 Apr 2021   RLB   Added error location indicators.
 
 PROCEDURE BC3013A IS
 
@@ -46,13 +48,13 @@ PROCEDURE BC3013A IS
      FUNCTION F1 RETURN INTEGER IS BEGIN RETURN 0; END;
 
      PACKAGE PKG IS
-          PROCEDURE I1 (X : INTEGER) IS NEW PR; -- ERROR: FORMAL PART.
-          PROCEDURE I2 IS NEW PR;               -- OK.
-          FUNCTION I3 IS NEW F;                 -- OK.
+          PROCEDURE I1 (X : INTEGER) IS NEW PR; -- ERROR: FORMAL PART. {11;1}
+          PROCEDURE I2 IS NEW PR;               -- OK. {11;1}
+          FUNCTION I3 IS NEW F;                 -- OK. {11;1}
           FUNCTION I4 (X : INTEGER) RETURN INTEGER
-               IS NEW F;                        -- ERROR: FORMAL PART.
-          FUNCTION I5 IS NEW F1;                -- OK.
-          FUNCTION I6 RETURN INTEGER IS NEW F1; -- ERROR: RETURN.
+               IS NEW F;                        -- ERROR: FORMAL PART. {1:11;1}
+          FUNCTION I5 IS NEW F1;                -- OK. {11;1}
+          FUNCTION I6 RETURN INTEGER IS NEW F1; -- ERROR: RETURN. {11;1}
      END PKG;
 
 BEGIN

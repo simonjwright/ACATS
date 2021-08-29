@@ -53,6 +53,8 @@
 --
 -- CHANGE HISTORY:
 --      16 Apr 2015   RLB   Created from C433006.
+--      23 Apr 2021   RLB   Added error location indicators.
+--!
 
 procedure B433003 is
 
@@ -81,17 +83,17 @@ procedure B433003 is
     begin
         case A is
             when 0 =>
-                return (2, 3, others => <>);                       -- ERROR:
+                return (2, 3, others => <>);                 -- ERROR: {24;1}
             when 1 =>
-                return (5, 6, 8);                                  -- OK.
+                return (5, 6, 8);                            -- OK. {24;1}
             when 2 =>
-                return (2 => <>, others => 8);                     -- ERROR:
+                return (2 => <>, others => 8);               -- ERROR: {24;1}
             when 3 =>
-                return (((6 => <>, 8 => <>, others => 1)));        -- ERROR:
+                return (((6 => <>, 8 => <>, others => 1)));  -- ERROR: {24;1}
                     -- Two sets of extra parentheses.
             when 4 =>
                 return (5 => Ident_Int(88), 8 => <>,
-                       10 => <>, others => <>);                    -- ERROR:
+                       10 => <>, others => <>);              -- ERROR: {1:24;1}
             when others => null;
         end case;
     end Test_SR1;
@@ -100,15 +102,16 @@ procedure B433003 is
     begin
         case A is
             when 0 =>
-                return ((1, others => Ident_Int(6)));              -- ERROR:
+                return ((1, others => Ident_Int(6)));        -- ERROR: {24;1}
                     -- Extra parentheses.
             when 1 =>
-                return (Ident_Int(88), 89, 90, 91, 92);            -- OK.
+                return (Ident_Int(88), 89, 90, 91, 92);      -- OK. {24;1}
             when 2 =>
                 return (Red => Ident_Int(88), Blue => <>,
-                       Green => <>, others => <>);                 -- ERROR:
+                       Green => <>, others => <>);           -- ERROR: {1:24;1}
             when 3 =>
-                return (Yellow => <>, Blue => <>, others => 77);   -- ERROR:
+                return (Yellow => <>, Blue => <>, 
+                       others => 77);                        -- ERROR: {1:24;1}
             when others => null;
         end case;
     end Test_SR2;
@@ -117,13 +120,13 @@ procedure B433003 is
     begin
         if A /= 10 then
             return (Yellow => (7 => <>, others => 10),
-                    others => (1, 2, 3));                          -- ERROR:
+                    others => (1, 2, 3));                    -- ERROR: {1:20;1}
         elsif A = 42 then
             return ((12, others => 92),
-                    (52, others => 80));                           -- ERROR:
+                    (52, others => 80));                     -- ERROR: {1:20;1}
         else
             return ((10, others => <>),
-                    (20, others => <>));                           -- ERROR:
+                    (20, others => <>));                     -- ERROR: {1:20;1}
         end if;
     end Test_SR3;
 
@@ -133,21 +136,21 @@ procedure B433003 is
         case A is
             when 0 =>
                 return Res : Array_1 :=
-                       (2, 3, others => <>);                       -- ERROR:
+                       (2, 3, others => <>);                 -- ERROR: {24;1}
             when 1 =>
                 return Res : Array_1 :=
-                       (5, 6, 8);                                  -- OK.
+                       (5, 6, 8);                            -- OK. {24;1}
             when 2 =>
                 return Res : Array_1 :=
-                       (2 => <>, others => 8);                     -- ERROR:
+                       (2 => <>, others => 8);               -- ERROR: {24;1}
             when 3 =>
                 return Res : Array_1 :=
-                       (((6 => <>, 8 => <>, others => 1)));        -- ERROR:
+                       (((6 => <>, 8 => <>, others => 1)));  -- ERROR: {24;1}
                     -- Two sets of extra parentheses.
             when 4 =>
                 return Res : Array_1 :=
                        (5 => Ident_Int(88), 8 => <>,
-                       10 => <>, others => <>);                    -- ERROR:
+                       10 => <>, others => <>);              -- ERROR: {1:24;1}
             when others => null;
         end case;
     end Test_ER1;
@@ -157,21 +160,23 @@ procedure B433003 is
         case A is
             when 0 =>
                 return Res : Array_2 :=
-                       ((1, others => Ident_Int(6)));              -- ERROR:
+                       ((1, others => Ident_Int(6)));        -- ERROR: {24;1}
                     -- Extra parentheses.
             when 1 =>
                 return Res : Array_2 :=
-                       (Ident_Int(88), 89, 90, 91, 92);            -- OK.
+                       (Ident_Int(88), 89, 90, 91, 92);      -- OK. {24;1}
             when 2 =>
                 return Res : Sub_Arr_2 :=
                        (Red => Ident_Int(88), Blue => <>,
-                       Green => <>, others => <>);                 -- ERROR:
+                       Green => <>, others => <>);           -- ERROR: {1:24;1}
             when 3 =>
                 return Res : Sub_Arr_2 :=
-                       (Yellow => <>, Blue => <>, others => 77);   -- ERROR:
+                       (Yellow => <>, Blue => <>, 
+                       others => 77);                        -- ERROR: {1:24;1}
             when 4 =>
                 return Res : Sub_Con_Arr_2 :=
-                       (Yellow => <>, Blue => <>, others => 55);   -- OK.
+                       (Yellow => <>, Blue => <>, 
+                       others => 55);                        -- OK. {1:24;1}
             when others => null;
         end case;
     end Test_ER2;
@@ -181,55 +186,57 @@ procedure B433003 is
         if A <= 10 then
             return Res : Array_3 :=
                    (Yellow => (7 => <>, others => 10),
-                    others => (1, 2, 3));                          -- ERROR:
+                    others => (1, 2, 3));                    -- ERROR: {1:20;1}
         elsif A = 42 then
             return Res : Array_3 :=
                    ((12, others => 92),
-                    (52, others => 80));                           -- ERROR:
+                    (52, others => 80));                     -- ERROR: {1:20;1}
         elsif A = 4 then
             return Res : Sub_3_1 :=
                    ((12, others => 92),
-                    (52, others => 80));                           -- OK.
+                    (52, others => 80));                     -- OK. {1:20;1}
         else
             return Res : Array_3 :=
                    ((10, others => <>),
-                    (20, others => <>));                           -- ERROR:
+                    (20, others => <>));                     -- ERROR: {1:20;1}
         end if;
     end Test_ER3;
 
     -- Expression functions:
     function Test_XA return Array_1 is
-        (2, 3, others => <>);                                      -- ERROR:
+        (2, 3, others => <>);                                -- ERROR: {9;1}
 
     function Test_XB return Array_2 is
-        ((1, others => Ident_Int(6)));                             -- ERROR:
+        ((1, others => Ident_Int(6)));                       -- ERROR: {9;1}
        -- Extra parentheses.
 
-    function Test_XC return Array_1 is (5, 6, 8);                  -- OK.
+    function Test_XC return Array_1 is (5, 6, 8);            -- OK. {40;1}
 
-    function Test_XD return Array_1 is (2 => <>, others => 8);     -- ERROR:
+    function Test_XD return Array_1 is 
+        (2 => <>, others => 8);                              -- ERROR: {9;1}
 
     function Test_XE return Array_3 is
-       (Yellow => (7 => <>, others => 10), others => (1, 2, 3));   -- ERROR:
+        (Yellow => (7 => <>, others => 10), 
+         others => (1, 2, 3));                               -- ERROR: {1:9;1}
 
     function Test_XF return Array_1 is
-        (((6 => <>, 8 => <>, others => 1)));                       -- ERROR:
-       -- Two sets of extra parentheses.
+        (((6 => <>, 8 => <>, others => 1)));                 -- ERROR: {9;1}
+        -- Two sets of extra parentheses.
 
     function Test_XG return Sub_Arr_2 is
-       (Ident_Int(88), 89, 90, 91, 92);                            -- OK.
+        (Ident_Int(88), 89, 90, 91, 92);                     -- OK. {9;1}
 
     function Test_XH return Array_1 is
-       ((5 => Ident_Int(88), 8 => <>,
-         10 => <>, others => <>));                                 -- ERROR:
+        ((5 => Ident_Int(88), 8 => <>,
+          10 => <>, others => <>));                          -- ERROR: {1:9;1}
        -- Extra parentheses.
 
     function Test_XJ return Sub_Arr_2 is
-        (Yellow => <>, Blue => <>, others => 77);                  -- ERROR:
+        (Yellow => <>, Blue => <>, others => 77);            -- ERROR: {9;1}
 
     function Test_XK return Sub_Arr_2 is
-       ((Yellow => 101, Green => 89, Blue => 1));                  -- OK.
-       -- Extra parentheses.
+        ((Yellow => 101, Green => 89, Blue => 1));           -- OK. {9;1}
+        -- Extra parentheses.
 
 begin
     null;

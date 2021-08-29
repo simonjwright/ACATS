@@ -51,37 +51,39 @@
 --      19 Aug 2004   PHL   Initial version.
 --      18 Dec 2014   RLB   Created test from two submitted tests and some
 --                          additional cases (for the second objective).
+--      22 Apr 2021   RLB   Added error location indicators.
 
 package BC60001 is
 
    generic
-      with function Null1 (X : String) return String is null; -- ERROR: (1)
+      with function Null1 (X : String) return String 
+                                                 is null; -- ERROR: (1) {1:7;1}
    package Gen1 is
       Dummy : Natural;
    end Gen1;
 
    generic
-      with function Null2 (X : access Character) return String is
-         null;                                                -- ERROR: (1)
+      with function Null2 (X : access Character) return String
+         is null;                                         -- ERROR: (1) {1:7;1}
    package Gen2 is
    end Gen2;
 
    generic
-      with procedure Null3 (X : Float) is null;               -- OK.
+      with procedure Null3 (X : Float) is null;           -- OK.  {9;1}
    package Gen3 is
    end Gen3;
 
    generic
       type T is tagged private;
       with function Null4 (X : T) return Boolean is
-          abstract null;                                      -- ERROR: (2)
+          abstract null;                                  -- ERROR: (2) {1:7;1}
    package Gen4 is
       Dummy : Natural;
    end Gen4;
 
    generic
       type T is tagged private;
-      with procedure Null5 (X : in out T) is abstract null;   -- ERROR: (2)
+      with procedure Null5 (X : in out T) is abstract null; -- ERROR: (2) {7;1}
    package Gen5 is
       Dummy : Natural;
    end Gen5;
@@ -89,14 +91,14 @@ package BC60001 is
    generic
       type T is private;
       C : T;
-      with procedure Proc (X : T) is null;                    -- OK.
+      with procedure Proc (X : T) is null;                -- OK.  {7;1}
    package Gen6 is
       procedure Ren (X : T) renames Proc;
    end Gen6;
 
-   package Inst is new Gen6 (Integer, 42);                    -- OK.
+   package Inst is new Gen6 (Integer, 42);                -- OK.  {4;1}
 
    type Acc is access procedure (X : Integer);
-   A : Acc := Inst.Ren'Access;                                -- ERROR: (3)
+   A : Acc := Inst.Ren'Access;                            -- ERROR: (3)  {4;1}
 
 end BC60001;

@@ -62,7 +62,8 @@
 --                          requeue).
 --      28 FEB 14   RLB     Added previously commented out Ada 2012 cases
 --                          for ACATS 4.0.
---
+--      15 JUN 21   RLB     Commented out cases of dubious legality. Fixed
+--                          overlong lines. Added error indicators.
 --!
 
 
@@ -176,7 +177,7 @@ procedure B950001 is
    protected type POT2 is
       entry PE21 (Prot_In_Parm     : in     POT1;
                   Prot_In_Out_Parm : in out POT1;
-		  Intf_In_Parm     : in     Nested.Intf'Class;
+                  Intf_In_Parm     : in     Nested.Intf'Class;
                   Intf_In_Out_Parm : in out Nested.Intf'Class;
                   Int              : in     Integer);
    private
@@ -186,326 +187,388 @@ procedure B950001 is
    protected body POT2 is
       entry PE21 (Prot_In_Parm     : in     POT1;
                   Prot_In_Out_Parm : in out POT1;
-		  Intf_In_Parm     : in     Nested.Intf'Class;
+                  Intf_In_Parm     : in     Nested.Intf'Class;
                   Intf_In_Out_Parm : in out Nested.Intf'Class;
                   Int              : in     Integer) when True is
       begin
          case Int is
-           when  1 => Prot_Variable.PE11;                            -- OK.
-           when  2 => Prot_Variable.PE12(Int);                       -- OK.
-           when  3 => Prot_Variable.PP11;                            -- OK.
-           when  4 => Prot_Variable.PP12(Prot_Component);            -- OK.
-           when  5 => Sink1(Prot_Variable.PF11);                     -- OK.
-           when  6 => Sink1(Prot_Variable.PF12(2));                  -- OK.
-           when  7 => Sink2(Prot_Variable.PP11'access);              -- OK.
-           when  8 => Sink3(Prot_Variable.PF11'access);              -- OK.
+           when  1 => Prot_Variable.PE11;                    -- OK. {23;1}
+           when  2 => Prot_Variable.PE12(Int);               -- OK. {23;1}
+           when  3 => Prot_Variable.PP11;                    -- OK. {23;1}
+           when  4 => Prot_Variable.PP12(Prot_Component);    -- OK. {23;1}
+           when  5 => Sink1(Prot_Variable.PF11);             -- OK. {23;1}
+           when  6 => Sink1(Prot_Variable.PF12(2));          -- OK. {23;1}
+           when  7 => Sink2(Prot_Variable.PP11'access);      -- OK. {23;1}
+           when  8 => Sink3(Prot_Variable.PF11'access);      -- OK. {23;1}
            when  9 =>
               declare
-                 package GPE9 is new Gen1 (Prot_Variable.PE11);      -- OK.
-                 package GPP9 is new Gen1 (Prot_Variable.PP11);      -- OK.
-                 package GPF9 is new Gen2 (Prot_Variable.PF11);      -- OK.
-                 procedure RPE9 renames Prot_Variable.PE11;          -- OK.
+                 package GPE9 is 
+                         new Gen1 (Prot_Variable.PE11);      -- OK. {1:18;1}
+                 package GPP9 is
+                         new Gen1 (Prot_Variable.PP11);      -- OK. {1:18;1}
+                 package GPF9 is 
+                         new Gen2 (Prot_Variable.PF11);      -- OK. {1:18;1}
+                 procedure RPE9 renames Prot_Variable.PE11;  -- OK. {18;1}
                  procedure RPP9 (Int : in Integer)
-                                renames Prot_Variable.PP12;          -- OK.
+                                renames Prot_Variable.PP12;  -- OK. {1:18;1}
                  function RPF9 (Int : in Integer) return Boolean
-                                renames Prot_Variable.PF12;          -- OK.
+                                renames Prot_Variable.PF12;  -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 11 => Prot_Constant.PE11;                            -- ERROR:
-           when 12 => Prot_Constant.PE12(Int);                       -- ERROR:
-           when 13 => Prot_Constant.PP11;                            -- ERROR:
-           when 14 => Prot_Constant.PP12(Prot_Component);            -- ERROR:
-           when 15 => Sink1(Prot_Constant.PF11);                     -- OK.
-           when 16 => Sink1(Prot_Constant.PF12(2));                  -- OK.
-           when 17 => Sink2(Prot_Constant.PP11'access);              -- ERROR:
-           when 18 => Sink3(Prot_Constant.PF11'access);              -- OK.
+           when 11 => Prot_Constant.PE11;                    -- ERROR: {23;1}
+           when 12 => Prot_Constant.PE12(Int);               -- ERROR: {23;1}
+           when 13 => Prot_Constant.PP11;                    -- ERROR: {23;1}
+           when 14 => Prot_Constant.PP12(Prot_Component);    -- ERROR: {23;1}
+           when 15 => Sink1(Prot_Constant.PF11);             -- OK. {23;1}
+           when 16 => Sink1(Prot_Constant.PF12(2));          -- OK. {23;1}
+           when 17 => Sink2(Prot_Constant.PP11'access);      -- ERROR: {23;1}
+           when 18 => Sink3(Prot_Constant.PF11'access);      -- OK. {23;1}
            when 19 =>
               declare
-                 package GPE19 is new Gen1 (Prot_Constant.PE11);     -- ERROR:
-                 package GPP19 is new Gen1 (Prot_Constant.PP11);     -- ERROR:
-                 package GPF19 is new Gen2 (Prot_Constant.PF11);     -- OK.
-                 procedure RPE19 renames Prot_Constant.PE11;         -- ERROR:
+                 package GPE19 is
+                          new Gen1 (Prot_Constant.PE11);     -- ERROR: {1:18;1}
+                 package GPP19 is
+                          new Gen1 (Prot_Constant.PP11);     -- ERROR: {1:18;1}
+                 package GPF19 is 
+                          new Gen2 (Prot_Constant.PF11);     -- OK. {1:18;1}
+                 procedure RPE19 renames Prot_Constant.PE11; -- ERROR: {18;1}
                  procedure RPP19 (Int : in Integer)
-                                renames Prot_Constant.PP12;          -- ERROR:
+                                renames Prot_Constant.PP12;  -- ERROR: {1:18;1}
                  function RPF19 (Int : in Integer) return Boolean
-                                renames Prot_Constant.PF12;          -- OK.
+                                renames Prot_Constant.PF12;  -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 21 => Prot_In_Parm.PE11;                             -- ERROR:
-           when 22 => Prot_In_Parm.PE12(Int);                        -- ERROR:
-           when 23 => Prot_In_Parm.PP11;                             -- ERROR:
-           when 24 => Prot_In_Parm.PP12(Prot_Component);             -- ERROR:
-           when 25 => Sink1(Prot_In_Parm.PF11);                      -- OK.
-           when 26 => Sink1(Prot_In_Parm.PF12(2));                   -- OK.
-           when 27 => Sink2(Prot_In_Parm.PP11'access);               -- ERROR:
-           when 28 => Sink3(Prot_In_Parm.PF11'access);               -- OK.
+           when 21 => Prot_In_Parm.PE11;                     -- ERROR: {23;1}
+           when 22 => Prot_In_Parm.PE12(Int);                -- ERROR: {23;1}
+           when 23 => Prot_In_Parm.PP11;                     -- ERROR: {23;1}
+           when 24 => Prot_In_Parm.PP12(Prot_Component);     -- ERROR: {23;1}
+           when 25 => Sink1(Prot_In_Parm.PF11);              -- OK. {23;1}
+           when 26 => Sink1(Prot_In_Parm.PF12(2));           -- OK. {23;1}
+           when 27 => Sink2(Prot_In_Parm.PP11'access);       -- ERROR: {23;1}
+           when 28 => Sink3(Prot_In_Parm.PF11'access);       -- OK. {23;1}
            when 29 =>
               declare
-                 package GPE29 is new Gen1 (Prot_In_Parm.PE11);      -- ERROR:
-                 package GPP29 is new Gen1 (Prot_In_Parm.PP11);      -- ERROR:
-                 package GPF29 is new Gen2 (Prot_In_Parm.PF11);      -- OK.
-                 procedure RPE29 renames Prot_In_Parm.PE11;          -- ERROR:
+                 package GPE29 is 
+                          new Gen1 (Prot_In_Parm.PE11);      -- ERROR: {1:18;1}
+                 package GPP29 is 
+                          new Gen1 (Prot_In_Parm.PP11);      -- ERROR: {1:18;1}
+                 package GPF29 is 
+                          new Gen2 (Prot_In_Parm.PF11);      -- OK. {1:18;1}
+                 procedure RPE29 renames Prot_In_Parm.PE11;  -- ERROR: {18;1}
                  procedure RPP29 (Int : in Integer)
-                                renames Prot_In_Parm.PP12;           -- ERROR:
+                                renames Prot_In_Parm.PP12;   -- ERROR: {1:18;1}
                  function RPF29 (Int : in Integer) return Boolean
-                                renames Prot_In_Parm.PF12;           -- OK.
+                                renames Prot_In_Parm.PF12;   -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 31 => Prot_In_Out_Parm.PE11;                         -- OK.
-           when 32 => Prot_In_Out_Parm.PE12(Int);                    -- OK.
-           when 33 => Prot_In_Out_Parm.PP11;                         -- OK.
-           when 34 => Prot_In_Out_Parm.PP12(Prot_Component);         -- OK.
-           when 35 => Sink1(Prot_In_Out_Parm.PF11);                  -- OK.
-           when 36 => Sink1(Prot_In_Out_Parm.PF12(2));               -- OK.
-           when 37 => Sink2(Prot_In_Out_Parm.PP11'access);           -- OK.
-           when 38 => Sink3(Prot_In_Out_Parm.PF11'access);           -- OK.
+           when 31 => Prot_In_Out_Parm.PE11;                 -- OK. {23;1}
+           when 32 => Prot_In_Out_Parm.PE12(Int);            -- OK. {23;1}
+           when 33 => Prot_In_Out_Parm.PP11;                 -- OK. {23;1}
+           when 34 => Prot_In_Out_Parm.PP12(Prot_Component); -- OK. {23;1}
+           when 35 => Sink1(Prot_In_Out_Parm.PF11);          -- OK. {23;1}
+           when 36 => Sink1(Prot_In_Out_Parm.PF12(2));       -- OK. {23;1}
+           when 37 => Sink2(Prot_In_Out_Parm.PP11'access);   -- OK. {23;1}
+           when 38 => Sink3(Prot_In_Out_Parm.PF11'access);   -- OK. {23;1}
            when 39 =>
               declare
-                 package GPE39 is new Gen1 (Prot_In_Out_Parm.PE11);  -- OK.
-                 package GPP39 is new Gen1 (Prot_In_Out_Parm.PP11);  -- OK.
-                 package GPF39 is new Gen2 (Prot_In_Out_Parm.PF11);  -- OK.
-                 procedure RPE39 renames Prot_In_Out_Parm.PE11;      -- OK.
+                 package GPE39 is 
+                          new Gen1 (Prot_In_Out_Parm.PE11);  -- OK. {1:18;1}
+                 package GPP39 is 
+                          new Gen1 (Prot_In_Out_Parm.PP11);  -- OK. {1:18;1}
+                 package GPF39 is 
+                          new Gen2 (Prot_In_Out_Parm.PF11);  -- OK. {1:18;1}
+                 procedure RPE39 renames Prot_In_Out_Parm.PE11; -- OK. {18;1}
                  procedure RPP39 (Int : in Integer)
-                                renames Prot_In_Out_Parm.PP12;       -- OK.
+                             renames Prot_In_Out_Parm.PP12;  -- OK. {1:18;1}
                  function RPF39 (Int : in Integer) return Boolean
-                                renames Prot_In_Out_Parm.PF12;       -- OK.
+                             renames Prot_In_Out_Parm.PF12;  -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 41 => Prot_Func.PE11;                                -- ERROR:
-           when 42 => Prot_Func.PE12(Int);                           -- ERROR:
-           when 43 => Prot_Func.PP11;                                -- ERROR:
-           when 44 => Prot_Func.PP12(Prot_Component);                -- ERROR:
-           when 45 => Sink1(Prot_Func.PF11);                         -- OK.
-           when 46 => Sink1(Prot_Func.PF12(2));                      -- OK.
-           when 47 => Sink2(Prot_Func.PP11'access);                  -- ERROR:
-           when 48 => Sink3(Prot_Func.PF11'access);                  -- OK.
+           when 41 => Prot_Func.PE11;                        -- ERROR: {23;1}
+           when 42 => Prot_Func.PE12(Int);                   -- ERROR: {23;1}
+           when 43 => Prot_Func.PP11;                        -- ERROR: {23;1}
+           when 44 => Prot_Func.PP12(Prot_Component);        -- ERROR: {23;1}
+           when 45 => Sink1(Prot_Func.PF11);                 -- OK. {23;1}
+           when 46 => Sink1(Prot_Func.PF12(2));              -- OK. {23;1}
+           when 47 => Sink2(Prot_Func.PP11'access);          -- ERROR: {23;1}
+           when 48 => Sink3(Prot_Func.PF11'access);          -- OK. {23;1}
            when 49 =>
               declare
-                 package GPE49 is new Gen1 (Prot_Func.PE11);         -- ERROR:
-                 package GPP49 is new Gen1 (Prot_Func.PP11);         -- ERROR:
-                 package GPF49 is new Gen2 (Prot_Func.PF11);         -- OK.
-                 procedure RPE49 renames Prot_Func.PE11;             -- ERROR:
+                 package GPE49 is new Gen1 (Prot_Func.PE11); -- ERROR: {18;1}
+                 package GPP49 is new Gen1 (Prot_Func.PP11); -- ERROR: {18;1}
+                 package GPF49 is new Gen2 (Prot_Func.PF11); -- OK. {18;1}
+                 procedure RPE49 renames Prot_Func.PE11;     -- ERROR: {18;1}
                  procedure RPP49 (Int : in Integer)
-                                renames Prot_Func.PP12;              -- ERROR:
+                                renames Prot_Func.PP12;      -- ERROR: {1:18;1}
                  function RPF49 (Int : in Integer) return Boolean
-                                renames Prot_Func.PF12;              -- OK.
+                                renames Prot_Func.PF12;      -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 51 => Prot_A_Var.all.PE11;                           -- OK.
-           when 52 => Prot_A_Var.all.PE12(Int);                      -- OK.
-           when 53 => Prot_A_Var.all.PP11;                           -- OK.
-           when 54 => Prot_A_Var.all.PP12(Prot_Component);           -- OK.
-           when 55 => Sink1(Prot_A_Var.all.PF11);                    -- OK.
-           when 56 => Sink1(Prot_A_Var.all.PF12(2));                 -- OK.
-           when 57 => Sink2(Prot_A_Var.all.PP11'access);             -- OK.
-           when 58 => Sink3(Prot_A_Var.all.PF11'access);             -- OK.
+           when 51 => Prot_A_Var.all.PE11;                   -- OK. {23;1}
+           when 52 => Prot_A_Var.all.PE12(Int);              -- OK. {23;1}
+           when 53 => Prot_A_Var.all.PP11;                   -- OK. {23;1}
+           when 54 => Prot_A_Var.all.PP12(Prot_Component);   -- OK. {23;1}
+           when 55 => Sink1(Prot_A_Var.all.PF11);            -- OK. {23;1}
+           when 56 => Sink1(Prot_A_Var.all.PF12(2));         -- OK. {23;1}
+           when 57 => Sink2(Prot_A_Var.all.PP11'access);     -- OK. {23;1}
+           when 58 => Sink3(Prot_A_Var.all.PF11'access);     -- OK. {23;1}
            when 59 =>
               declare
-                 package GPE59 is new Gen1 (Prot_A_Var.all.PE11);    -- OK.
-                 package GPP59 is new Gen1 (Prot_A_Var.all.PP11);    -- OK.
-                 package GPF59 is new Gen2 (Prot_A_Var.all.PF11);    -- OK.
-                 procedure RPE59 renames Prot_A_Var.all.PE11;        -- OK.
+                 package GPE59 is 
+                          new Gen1 (Prot_A_Var.all.PE11);    -- OK. {1:18;1}
+                 package GPP59 is 
+                          new Gen1 (Prot_A_Var.all.PP11);    -- OK. {1:18;1}
+                 package GPF59 is 
+                          new Gen2 (Prot_A_Var.all.PF11);    -- OK. {1:18;1}
+                 procedure RPE59 renames Prot_A_Var.all.PE11;-- OK. {18;1}
                  procedure RPP59 (Int : in Integer)
-                                renames Prot_A_Var.all.PP12;         -- OK.
+                                renames Prot_A_Var.all.PP12; -- OK. {1:18;1}
                  function RPF59 (Int : in Integer) return Boolean
-                                renames Prot_A_Var.all.PF12;         -- OK.
+                                renames Prot_A_Var.all.PF12; -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 61 => Prot_A_Cnst.all.PE11;                          -- ERROR:
-           when 62 => Prot_A_Cnst.all.PE12(Int);                     -- ERROR:
-           when 63 => Prot_A_Cnst.all.PP11;                          -- ERROR:
-           when 64 => Prot_A_Cnst.all.PP12(Prot_Component);          -- ERROR:
-           when 65 => Sink1(Prot_A_Cnst.all.PF11);                   -- OK.
-           when 66 => Sink1(Prot_A_Cnst.all.PF12(2));                -- OK.
-           when 67 => Sink2(Prot_A_Cnst.all.PP11'access);            -- ERROR:
-           when 68 => Sink3(Prot_A_Cnst.all.PF11'access);            -- OK.
+           when 61 => Prot_A_Cnst.all.PE11;                  -- ERROR: {23;1}
+           when 62 => Prot_A_Cnst.all.PE12(Int);             -- ERROR: {23;1}
+           when 63 => Prot_A_Cnst.all.PP11;                  -- ERROR: {23;1}
+           when 64 => Prot_A_Cnst.all.PP12(Prot_Component);  -- ERROR: {23;1}
+           when 65 => Sink1(Prot_A_Cnst.all.PF11);           -- OK. {23;1}
+           when 66 => Sink1(Prot_A_Cnst.all.PF12(2));        -- OK. {23;1}
+           when 67 => Sink2(Prot_A_Cnst.all.PP11'access);    -- ERROR: {23;1}
+           when 68 => Sink3(Prot_A_Cnst.all.PF11'access);    -- OK. {23;1}
            when 69 =>
               declare
-                 package GPE69 is new Gen1 (Prot_A_Cnst.all.PE11);   -- ERROR:
-                 package GPP69 is new Gen1 (Prot_A_Cnst.all.PP11);   -- ERROR:
-                 package GPF69 is new Gen2 (Prot_A_Cnst.all.PF11);   -- OK.
-                 procedure RPE69 renames Prot_A_Cnst.all.PE11;       -- ERROR:
+                 package GPE69 is 
+                          new Gen1 (Prot_A_Cnst.all.PE11);   -- ERROR: {1:18;1}
+                 package GPP69 is 
+                          new Gen1 (Prot_A_Cnst.all.PP11);   -- ERROR: {1:18;1}
+                 package GPF69 is 
+                          new Gen2 (Prot_A_Cnst.all.PF11);   -- OK. {1:18;1}
+                 procedure RPE69 renames 
+                                 Prot_A_Cnst.all.PE11;       -- ERROR: {1:18;1}
                  procedure RPP69 (Int : in Integer)
-                                renames Prot_A_Cnst.all.PP12;        -- ERROR:
+                             renames Prot_A_Cnst.all.PP12;   -- ERROR: {1:18;1}
                  function RPF69 (Int : in Integer) return Boolean
-                                renames Prot_A_Cnst.all.PF12;        -- OK.
+                             renames Prot_A_Cnst.all.PF12;   -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 71 => Prot_R_Var.POT.PE11;                           -- OK.
-           when 72 => Prot_R_Var.POT.PE12(Int);                      -- OK.
-           when 73 => Prot_R_Var.POT.PP11;                           -- OK.
-           when 74 => Prot_R_Var.POT.PP12(Prot_Component);           -- OK.
-           when 75 => Sink1(Prot_R_Var.POT.PF11);                    -- OK.
-           when 76 => Sink1(Prot_R_Var.POT.PF12(2));                 -- OK.
-           when 77 => Sink2(Prot_R_Var.POT.PP11'access);             -- OK.
-           when 78 => Sink3(Prot_R_Var.POT.PF11'access);             -- OK.
+           when 71 => Prot_R_Var.POT.PE11;                   -- OK. {23;1}
+           when 72 => Prot_R_Var.POT.PE12(Int);              -- OK. {23;1}
+           when 73 => Prot_R_Var.POT.PP11;                   -- OK. {23;1}
+           when 74 => Prot_R_Var.POT.PP12(Prot_Component);   -- OK. {23;1}
+           when 75 => Sink1(Prot_R_Var.POT.PF11);            -- OK. {23;1}
+           when 76 => Sink1(Prot_R_Var.POT.PF12(2));         -- OK. {23;1}
+           when 77 => Sink2(Prot_R_Var.POT.PP11'access);     -- OK. {23;1}
+           when 78 => Sink3(Prot_R_Var.POT.PF11'access);     -- OK. {23;1}
            when 79 =>
               declare
-                 package GPE79 is new Gen1 (Prot_R_Var.POT.PE11);    -- OK.
-                 package GPP79 is new Gen1 (Prot_R_Var.POT.PP11);    -- OK.
-                 package GPF79 is new Gen2 (Prot_R_Var.POT.PF11);    -- OK.
-                 procedure RPE79 renames Prot_R_Var.POT.PE11;        -- OK.
+                 package GPE79 is 
+                          new Gen1 (Prot_R_Var.POT.PE11);    -- OK. {1:18;1}
+                 package GPP79 is 
+                          new Gen1 (Prot_R_Var.POT.PP11);    -- OK. {1:18;1}
+                 package GPF79 is 
+                          new Gen2 (Prot_R_Var.POT.PF11);    -- OK. {1:18;1}
+                 procedure RPE79 renames Prot_R_Var.POT.PE11;-- OK. {18;1}
                  procedure RPP79 (Int : in Integer)
-                                renames Prot_R_Var.POT.PP12;         -- OK.
+                                renames Prot_R_Var.POT.PP12; -- OK. {1:18;1}
                  function RPF79 (Int : in Integer) return Boolean
-                                renames Prot_R_Var.POT.PF12;         -- OK.
+                                renames Prot_R_Var.POT.PF12; -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 81 => Prot_R_Cnst.POT.PE11;                          -- ERROR:
-           when 82 => Prot_R_Cnst.POT.PE12(Int);                     -- ERROR:
-           when 83 => Prot_R_Cnst.POT.PP11;                          -- ERROR:
-           when 84 => Prot_R_Cnst.POT.PP12(Prot_Component);          -- ERROR:
-           when 85 => Sink1(Prot_R_Cnst.POT.PF11);                   -- OK.
-           when 86 => Sink1(Prot_R_Cnst.POT.PF12(2));                -- OK.
-           when 87 => Sink2(Prot_R_Cnst.POT.PP11'access);            -- ERROR:
-           when 88 => Sink3(Prot_R_Cnst.POT.PF11'access);            -- OK.
+           when 81 => Prot_R_Cnst.POT.PE11;                  -- ERROR: {23;1}
+           when 82 => Prot_R_Cnst.POT.PE12(Int);             -- ERROR: {23;1}
+           when 83 => Prot_R_Cnst.POT.PP11;                  -- ERROR: {23;1}
+           when 84 => Prot_R_Cnst.POT.PP12(Prot_Component);  -- ERROR: {23;1}
+           when 85 => Sink1(Prot_R_Cnst.POT.PF11);           -- OK. {23;1}
+           when 86 => Sink1(Prot_R_Cnst.POT.PF12(2));        -- OK. {23;1}
+           when 87 => Sink2(Prot_R_Cnst.POT.PP11'access);    -- ERROR: {23;1}
+           when 88 => Sink3(Prot_R_Cnst.POT.PF11'access);    -- OK. {23;1}
            when 89 =>
               declare
-                 package GPE89 is new Gen1 (Prot_R_Cnst.POT.PE11);   -- ERROR:
-                 package GPP89 is new Gen1 (Prot_R_Cnst.POT.PP11);   -- ERROR:
-                 package GPF89 is new Gen2 (Prot_R_Cnst.POT.PF11);   -- OK.
-                 procedure RPE89 renames Prot_R_Cnst.POT.PE11;       -- ERROR:
+                 package GPE89 is 
+                          new Gen1 (Prot_R_Cnst.POT.PE11);   -- ERROR: {1:18;1}
+                 package GPP89 is 
+                          new Gen1 (Prot_R_Cnst.POT.PP11);   -- ERROR: {1:18;1}
+                 package GPF89 is 
+                          new Gen2 (Prot_R_Cnst.POT.PF11);   -- OK. {1:18;1}
+                 procedure RPE89 
+                            renames Prot_R_Cnst.POT.PE11;    -- ERROR: {1:18;1}
                  procedure RPP89 (Int : in Integer)
-                                renames Prot_R_Cnst.POT.PP12;        -- ERROR:
+                            renames Prot_R_Cnst.POT.PP12;    -- ERROR: {1:18;1}
                  function RPF89 (Int : in Integer) return Boolean
-                                renames Prot_R_Cnst.POT.PF12;        -- OK.
+                            renames Prot_R_Cnst.POT.PF12;    -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 91 => Prot_Arr_Var(1).PE11;                          -- OK.
-           when 92 => Prot_Arr_Var(1).PE12(Int);                     -- OK.
-           when 93 => Prot_Arr_Var(1).PP11;                          -- OK.
-           when 94 => Prot_Arr_Var(1).PP12(Prot_Component);          -- OK.
-           when 95 => Sink1(Prot_Arr_Var(1).PF11);                   -- OK.
-           when 96 => Sink1(Prot_Arr_Var(1).PF12(2));                -- OK.
-           when 97 => Sink2(Prot_Arr_Var(1).PP11'access);            -- OK.
-           when 98 => Sink3(Prot_Arr_Var(1).PF11'access);            -- OK.
+           when 91 => Prot_Arr_Var(1).PE11;                  -- OK. {23;1}
+           when 92 => Prot_Arr_Var(1).PE12(Int);             -- OK. {23;1}
+           when 93 => Prot_Arr_Var(1).PP11;                  -- OK. {23;1}
+           when 94 => Prot_Arr_Var(1).PP12(Prot_Component);  -- OK. {23;1}
+           when 95 => Sink1(Prot_Arr_Var(1).PF11);           -- OK. {23;1}
+           when 96 => Sink1(Prot_Arr_Var(1).PF12(2));        -- OK. {23;1}
+           when 97 => Sink2(Prot_Arr_Var(1).PP11'access);    -- OK. {23;1}
+           when 98 => Sink3(Prot_Arr_Var(1).PF11'access);    -- OK. {23;1}
            when 99 =>
               declare
-                 package GPE99 is new Gen1 (Prot_Arr_Var(1).PE11);   -- OK.
-                 package GPP99 is new Gen1 (Prot_Arr_Var(1).PP11);   -- OK.
-                 package GPF99 is new Gen2 (Prot_Arr_Var(1).PF11);   -- OK.
-                 procedure RPE99 renames Prot_Arr_Var(1).PE11;       -- OK.
+                 package GPE99 is 
+                          new Gen1 (Prot_Arr_Var(1).PE11);   -- OK. {1:18;1}
+                 package GPP99 is 
+                          new Gen1 (Prot_Arr_Var(1).PP11);   -- OK. {1:18;1}
+                 package GPF99 is 
+                          new Gen2 (Prot_Arr_Var(1).PF11);   -- OK. {1:18;1}
+                 procedure RPE99 renames Prot_Arr_Var(1).PE11; -- OK. {1:18;1}
                  procedure RPP99 (Int : in Integer)
-                                renames Prot_Arr_Var(1).PP12;        -- OK.
+                                renames Prot_Arr_Var(1).PP12;-- OK. {1:18;1}
                  function RPF99 (Int : in Integer) return Boolean
-                                renames Prot_Arr_Var(1).PF12;        -- OK.
+                                renames Prot_Arr_Var(1).PF12;-- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 101 => Prot_Arr_Cnst(1).PE11;                        -- ERROR:
-           when 102 => Prot_Arr_Cnst(1).PE12(Int);                   -- ERROR:
-           when 103 => Prot_Arr_Cnst(1).PP11;                        -- ERROR:
-           when 104 => Prot_Arr_Cnst(1).PP12(Prot_Component);        -- ERROR:
-           when 105 => Sink1(Prot_Arr_Cnst(1).PF11);                 -- OK.
-           when 106 => Sink1(Prot_Arr_Cnst(1).PF12(2));              -- OK.
-           when 107 => Sink2(Prot_Arr_Cnst(1).PP11'access);          -- ERROR:
-           when 108 => Sink3(Prot_Arr_Cnst(1).PF11'access);          -- OK.
+           when 101 => Prot_Arr_Cnst(1).PE11;                -- ERROR: {24;1}
+           when 102 => Prot_Arr_Cnst(1).PE12(Int);           -- ERROR: {24;1}
+           when 103 => Prot_Arr_Cnst(1).PP11;                -- ERROR: {24;1}
+           when 104 => Prot_Arr_Cnst(1).PP12(Prot_Component);-- ERROR: {24;1}
+           when 105 => Sink1(Prot_Arr_Cnst(1).PF11);         -- OK. {24;1}
+           when 106 => Sink1(Prot_Arr_Cnst(1).PF12(2));      -- OK. {24;1}
+           when 107 => Sink2(Prot_Arr_Cnst(1).PP11'access);  -- ERROR: {24;1}
+           when 108 => Sink3(Prot_Arr_Cnst(1).PF11'access);  -- OK. {24;1}
            when 109 =>
               declare
-                 package GPE109 is new Gen1 (Prot_Arr_Cnst(1).PE11); -- ERROR:
-                 package GPP109 is new Gen1 (Prot_Arr_Cnst(1).PP11); -- ERROR:
-                 package GPF109 is new Gen2 (Prot_Arr_Cnst(1).PF11); -- OK.
-                 procedure RPE109 renames Prot_Arr_Cnst(1).PE11;     -- ERROR:
+                 package GPE109 is 
+                           new Gen1 (Prot_Arr_Cnst(1).PE11); -- ERROR: {1:18;1}
+                 package GPP109 is 
+                           new Gen1 (Prot_Arr_Cnst(1).PP11); -- ERROR: {1:18;1}
+                 package GPF109 is 
+                           new Gen2 (Prot_Arr_Cnst(1).PF11); -- OK. {1:18;1}
+                 procedure RPE109 
+                             renames Prot_Arr_Cnst(1).PE11;  -- ERROR: {1:18;1}
                  procedure RPP109 (Int : in Integer)
-                                renames Prot_Arr_Cnst(1).PP12;       -- ERROR:
+                             renames Prot_Arr_Cnst(1).PP12;  -- ERROR: {1:18;1}
                  function RPF109 (Int : in Integer) return Boolean
-                                renames Prot_Arr_Cnst(1).PF12;       -- OK.
+                             renames Prot_Arr_Cnst(1).PF12;  -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 111 => POT1'(Prot_Variable).PE11;                    -- ERROR:
-           when 112 => POT1'(Prot_Variable).PE12(Int);               -- ERROR:
-           when 113 => POT1'(Prot_Variable).PP11;                    -- ERROR:
-           when 114 => POT1'(Prot_Variable).PP12(Prot_Component);    -- ERROR:
-           when 115 => Sink1(POT1'(Prot_Variable).PF11);             -- OK.
-           when 116 => Sink1(POT1'(Prot_Variable).PF12(2));          -- OK.
-           when 117 => Sink2(POT1'(Prot_Variable).PP11'access);      -- ERROR:
-           when 118 => Sink3(POT1'(Prot_Variable).PF11'access);      -- OK.
+           when 111 => POT1'(Prot_Variable).PE11;            -- ERROR: {24;1}
+           when 112 => POT1'(Prot_Variable).PE12(Int);       -- ERROR: {24;1}
+           when 113 => POT1'(Prot_Variable).PP11;            -- ERROR: {24;1}
+           when 114 => 
+                 POT1'(Prot_Variable).PP12(Prot_Component);  -- ERROR: {24;1}
+           when 115 => Sink1(POT1'(Prot_Variable).PF11);     -- OK. {24;1}
+           when 116 => Sink1(POT1'(Prot_Variable).PF12(2));  -- OK. {24;1}
+           when 117 => Sink2(POT1'(Prot_Variable).PP11'access);-- ERROR: {24;1}
+           when 118 => Sink3(POT1'(Prot_Variable).PF11'access);-- OK. {24;1}
            when 119 =>
               declare
-                 package GPE119 is new Gen1 (POT1'(Prot_Variable).PE11); -- ERROR:
-                 package GPP119 is new Gen1 (POT1'(Prot_Variable).PP11); -- ERROR:
-                 package GPF119 is new Gen2 (POT1'(Prot_Variable).PF11); -- OK.
-                 procedure RPE119 renames POT1'(Prot_Variable).PE11;     -- ERROR:
+                 package GPE119 is 
+                       new Gen1 (POT1'(Prot_Variable).PE11); -- ERROR: {1:18;1}
+                 package GPP119 is 
+                       new Gen1 (POT1'(Prot_Variable).PP11); -- ERROR: {1:18;1}
+                 package GPF119 is 
+                       new Gen2 (POT1'(Prot_Variable).PF11); -- OK. {1:18;1}
+                 procedure RPE119 
+                          renames POT1'(Prot_Variable).PE11; -- ERROR: {1:18;1}
                  procedure RPP119 (Int : in Integer)
-                                renames POT1'(Prot_Variable).PP12;   -- ERROR:
+                          renames POT1'(Prot_Variable).PP12; -- ERROR: {1:18;1}
                  function RPF119 (Int : in Integer) return Boolean
-                                renames POT1'(Prot_Variable).PF12;   -- OK.
+                          renames POT1'(Prot_Variable).PF12; -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 121 => POT1'(Prot_In_Out_Parm).PE11;                 -- ERROR:
-           when 122 => POT1'(Prot_In_Out_Parm).PE12(Int);            -- ERROR:
-           when 123 => POT1'(Prot_In_Out_Parm).PP11;                 -- ERROR:
-           when 124 => POT1'(Prot_In_Out_Parm).PP12(Prot_Component); -- ERROR:
-           when 125 => Sink1(POT1'(Prot_In_Out_Parm).PF11);          -- OK.
-           when 126 => Sink1(POT1'(Prot_In_Out_Parm).PF12(2));       -- OK.
-           when 127 => Sink2(POT1'(Prot_In_Out_Parm).PP11'access);   -- ERROR:
-           when 128 => Sink3(POT1'(Prot_In_Out_Parm).PF11'access);   -- OK.
+           when 121 => POT1'(Prot_In_Out_Parm).PE11;         -- ERROR: {24;1}
+           when 122 => POT1'(Prot_In_Out_Parm).PE12(Int);    -- ERROR: {24;1}
+           when 123 => POT1'(Prot_In_Out_Parm).PP11;         -- ERROR: {24;1}
+           when 124 => 
+               POT1'(Prot_In_Out_Parm).PP12(Prot_Component); -- ERROR: {24;1}
+           when 125 => Sink1(POT1'(Prot_In_Out_Parm).PF11);  -- OK. {24;1}
+           when 126 => Sink1(POT1'(Prot_In_Out_Parm).PF12(2)); -- OK. {24;1}
+           when 127 => 
+                 Sink2(POT1'(Prot_In_Out_Parm).PP11'access); -- ERROR: {24;1}
+           when 128 => 
+                 Sink3(POT1'(Prot_In_Out_Parm).PF11'access); -- OK. {24;1}
            when 129 =>
               declare
-                 package GPE129 is new Gen1 (POT1'(Prot_In_Out_Parm).PE11); -- ERROR:
-                 package GPP129 is new Gen1 (POT1'(Prot_In_Out_Parm).PP11); -- ERROR:
-                 package GPF129 is new Gen2 (POT1'(Prot_In_Out_Parm).PF11); -- OK.
-                 procedure RPE129 renames POT1'(Prot_In_Out_Parm).PE11;     -- ERROR:
+                 package GPE129 is 
+                    new Gen1 (POT1'(Prot_In_Out_Parm).PE11); -- ERROR: {1:18;1}
+                 package GPP129 is 
+                    new Gen1 (POT1'(Prot_In_Out_Parm).PP11); -- ERROR: {1:18;1}
+                 package GPF129 is 
+                    new Gen2 (POT1'(Prot_In_Out_Parm).PF11); -- OK. {1:18;1}
+                 procedure RPE129 
+                       renames POT1'(Prot_In_Out_Parm).PE11; -- ERROR: {1:18;1}
                  procedure RPP129 (Int : in Integer)
-                                renames POT1'(Prot_In_Out_Parm).PP12;-- ERROR:
+                       renames POT1'(Prot_In_Out_Parm).PP12; -- ERROR: {1:18;1}
                  function RPF129 (Int : in Integer) return Boolean
-                                renames POT1'(Prot_In_Out_Parm).PF12;-- OK.
+                       renames POT1'(Prot_In_Out_Parm).PF12; -- OK. {1:18;1}
               begin
                  null;
               end;
 
-           when 131 => Intf_In_Parm.PEN1;                            -- ERROR:
-           when 133 => Intf_In_Parm.PPN1;                            -- ERROR:
-           --when 137 => Sink2(Intf_In_Parm.PPN1'access);              -- ERROR:
-           --It's unclear whether an access to PPN1 is an
-           -- access-to-protected-subprogram, so we don't test this case for now.
+           when 131 => Intf_In_Parm.PEN1;                    -- ERROR: {24;1}
+           when 133 => Intf_In_Parm.PPN1;                    -- ERROR: {24;1}
+           --when 137 => Sink2(Intf_In_Parm.PPN1'access);    -- ERROR: {24;1}
+           -- It's unclear whether an access to PPN1 is an
+           -- access-to-protected-subprogram, so we don't test this case 
+           -- for now.
            when 139 =>
               declare
-                 package GPE139 is new Gen1 (Intf_In_Parm.PEN1);     -- ERROR:
-                 package GPP139 is new Gen1 (Intf_In_Parm.PPN1);     -- ERROR:
-                 procedure RPE139 renames Intf_In_Parm.PEN1;         -- ERROR:
-                 procedure RPP139 renames Intf_In_Parm.PPN1;         -- ERROR:
+                 package GPE139 is 
+                           new Gen1 (Intf_In_Parm.PEN1);     -- ERROR: {1:18;1}
+                 package GPP139 is 
+                           new Gen1 (Intf_In_Parm.PPN1);     -- ERROR: {1:18;1}
+                 procedure RPE139 renames Intf_In_Parm.PEN1; -- ERROR: {18;1}
+                 procedure RPP139 renames Intf_In_Parm.PPN1; -- ERROR: {18;1}
               begin
                  null;
               end;
 
-           when 141 => Intf_In_Out_Parm.PEN1;                        -- OK.
-           when 143 => Intf_In_Out_Parm.PPN1;                        -- OK.
-           --when 147 => Sink2(Intf_In_Out_Parm.PPN1'access);        -- OK.
-           --It's unclear whether an access to PPN1 is an
-           -- access-to-protected-subprogram, so we don't test this case for now.
-           when 149 =>
-              declare
-                 package GPE149 is new Gen1 (Intf_In_Out_Parm.PEN1); -- OK.
-                 package GPP149 is new Gen1 (Intf_In_Out_Parm.PPN1); -- OK.
-                 procedure RPE149 renames Intf_In_Out_Parm.PEN1;     -- OK.
-                 procedure RPP149 renames Intf_In_Out_Parm.PPN1;     -- OK.
-              begin
-                 null;
-              end;
+           when 141 => Intf_In_Out_Parm.PEN1;                -- OK. {24;1}
+           when 143 => Intf_In_Out_Parm.PPN1;                -- OK. {24;1}
+           --when 147 => Sink2(Intf_In_Out_Parm.PPN1'access);  -- OK. {24;1}
+           -- It's unclear whether an access to PPN1 is an
+           -- access-to-protected-subprogram, so we don't test this case 
+           -- for now.
+           --when 149 =>
+           -- The legality of the following is unknown, so it is commented
+           -- out for now. PEN1 and PPN1 are abstract routines. A call on
+           -- Intf_In_Out_Parm.PEN1 is clearly legal as it is a dispatching
+           -- call. But a renaming or a generic formal parameter is not itself
+           -- a call, and argubly they represent an abstract routine. That's
+           -- not allowed for a generic actual subprogram, and the renaming
+           -- might be uncallable. The ARG may have to decide this eventually,
+           -- but since it hasn't come up in user code to date, we eliminate
+           -- it from this test.
+           --   declare
+           --      package GPE149 is 
+           --              new Gen1 (Intf_In_Out_Parm.PEN1);   -- OK. {1:18;1}
+           --      package GPP149 is 
+           --              new Gen1 (Intf_In_Out_Parm.PPN1);   -- OK. {1:18;1}
+           --      procedure RPE149 
+           --             renames Intf_In_Out_Parm.PEN1;       -- OK. {1:18;1}
+           --      procedure RPP149 
+           --             renames Intf_In_Out_Parm.PPN1;       -- OK. {1:18;1}
+           --   begin
+           --      null;
+           --   end;
            when others => null;
          end case;
       end PE21;
@@ -529,68 +592,79 @@ procedure B950001 is
          entry PE31 (Int : in Integer) when True is
          begin
             case Int is
-               when  1 => Prot_Variable.PE11;                        -- OK.
-               when  2 => Prot_Variable.PE12(Int);                   -- OK.
-               when  3 => Prot_Variable.PP11;                        -- OK.
-               when  4 => Prot_Variable.PP12(92);                    -- OK.
-               when  5 => Sink1(Prot_Variable.PF11);                 -- OK.
-               when  6 => Sink1(Prot_Variable.PF12(2));              -- OK.
-               when  7 => Sink2(Prot_Variable.PP11'access);          -- OK.
-               when  8 => Sink3(Prot_Variable.PF11'access);          -- OK.
+               when  1 => Prot_Variable.PE11;                -- OK. {27;1}
+               when  2 => Prot_Variable.PE12(Int);           -- OK. {27;1}
+               when  3 => Prot_Variable.PP11;                -- OK. {27;1}
+               when  4 => Prot_Variable.PP12(92);            -- OK. {27;1}
+               when  5 => Sink1(Prot_Variable.PF11);         -- OK. {27;1}
+               when  6 => Sink1(Prot_Variable.PF12(2));      -- OK. {27;1}
+               when  7 => Sink2(Prot_Variable.PP11'access);  -- OK. {27;1}
+               when  8 => Sink3(Prot_Variable.PF11'access);  -- OK. {27;1}
                when  9 =>
                   declare
-                     package GPE9 is new Gen1 (Prot_Variable.PE11);  -- OK.
-                     package GPP9 is new Gen1 (Prot_Variable.PP11);  -- OK.
-                     package GPF9 is new Gen2 (Prot_Variable.PF11);  -- OK.
-                     procedure RPE9 renames Prot_Variable.PE11;      -- OK.
+                     package GPE9 is 
+                             new Gen1 (Prot_Variable.PE11);  -- OK. {1:22;1}
+                     package GPP9 is 
+                             new Gen1 (Prot_Variable.PP11);  -- OK. {1:22;1}
+                     package GPF9 is 
+                             new Gen2 (Prot_Variable.PF11);  -- OK. {1:22;1}
+                     procedure RPE9 
+                            renames Prot_Variable.PE11;      -- OK. {1:22;1}
                      procedure RPP9 (Int : in Integer)
-                                    renames Prot_Variable.PP12;      -- OK.
+                            renames Prot_Variable.PP12;      -- OK. {1:22;1}
                      function RPF9 (Int : in Integer) return Boolean
-                                    renames Prot_Variable.PF12;      -- OK.
+                            renames Prot_Variable.PF12;      -- OK. {1:22;1}
                   begin
                      null;
                   end;
 
-               when 11 => Prot_Constant.PE11;                        -- ERROR:
-               when 12 => Prot_Constant.PE12(Int);                   -- ERROR:
-               when 13 => Prot_Constant.PP11;                        -- ERROR:
-               when 14 => Prot_Constant.PP12(Prot_Component);        -- ERROR:
-               when 15 => Sink1(Prot_Constant.PF11);                 -- OK.
-               when 16 => Sink1(Prot_Constant.PF12(2));              -- OK.
-               when 17 => Sink2(Prot_Constant.PP11'access);          -- ERROR:
-               when 18 => Sink3(Prot_Constant.PF11'access);          -- OK.
+               when 11 => Prot_Constant.PE11;                -- ERROR: {27;1}
+               when 12 => Prot_Constant.PE12(Int);           -- ERROR: {27;1}
+               when 13 => Prot_Constant.PP11;                -- ERROR: {27;1}
+               when 14 => Prot_Constant.PP12(Prot_Component);-- ERROR: {27;1}
+               when 15 => Sink1(Prot_Constant.PF11);         -- OK. {27;1}
+               when 16 => Sink1(Prot_Constant.PF12(2));      -- OK. {27;1}
+               when 17 => Sink2(Prot_Constant.PP11'access);  -- ERROR: {27;1}
+               when 18 => Sink3(Prot_Constant.PF11'access);  -- OK. {27;1}
                when 19 =>
                   declare
-                     package GPE19 is new Gen1 (Prot_Constant.PE11); -- ERROR:
-                     package GPP19 is new Gen1 (Prot_Constant.PP11); -- ERROR:
-                     package GPF19 is new Gen2 (Prot_Constant.PF11); -- OK.
-                     procedure RPE19 renames Prot_Constant.PE11;     -- ERROR:
+                     package GPE19 is 
+                              new Gen1 (Prot_Constant.PE11); -- ERROR: {1:22;1}
+                     package GPP19 is 
+                              new Gen1 (Prot_Constant.PP11); -- ERROR: {1:22;1}
+                     package GPF19 is 
+                              new Gen2 (Prot_Constant.PF11); -- OK. {1:22;1}
+                     procedure RPE19 
+                              renames Prot_Constant.PE11;    -- ERROR: {1:22;1}
                      procedure RPP19 (Int : in Integer)
-                                    renames Prot_Constant.PP12;      -- ERROR:
+                              renames Prot_Constant.PP12;    -- ERROR: {1:22;1}
                      function RPF19 (Int : in Integer) return Boolean
-                                    renames Prot_Constant.PF12;      -- OK.
+                              renames Prot_Constant.PF12;    -- OK. {1:22;1}
                   begin
                      null;
                   end;
 
-               when 21 => Formal_In.PE11;                            -- ERROR:
-               when 22 => Formal_In.PE12(Int);                       -- ERROR:
-               when 23 => Formal_In.PP11;                            -- ERROR:
-               when 24 => Formal_In.PP12(Prot_Component);            -- ERROR:
-               when 25 => Sink1(Formal_In.PF11);                     -- OK.
-               when 26 => Sink1(Formal_In.PF12(2));                  -- OK.
-               when 27 => Sink2(Formal_In.PP11'access);              -- ERROR:
-               when 28 => Sink3(Formal_In.PF11'access);              -- OK.
+               when 21 => Formal_In.PE11;                    -- ERROR: {27;1}
+               when 22 => Formal_In.PE12(Int);               -- ERROR: {27;1}
+               when 23 => Formal_In.PP11;                    -- ERROR: {27;1}
+               when 24 => Formal_In.PP12(Prot_Component);    -- ERROR: {27;1}
+               when 25 => Sink1(Formal_In.PF11);             -- OK. {27;1}
+               when 26 => Sink1(Formal_In.PF12(2));          -- OK. {27;1}
+               when 27 => Sink2(Formal_In.PP11'access);      -- ERROR: {27;1}
+               when 28 => Sink3(Formal_In.PF11'access);      -- OK. {27;1}
                when 29 =>
                   declare
-                     package GPE29 is new Gen1 (Formal_In.PE11);     -- ERROR:
-                     package GPP29 is new Gen1 (Formal_In.PP11);     -- ERROR:
-                     package GPF29 is new Gen2 (Formal_In.PF11);     -- OK.
-                     procedure RPE29 renames Formal_In.PE11;         -- ERROR:
+                     package GPE29 is 
+                               new Gen1 (Formal_In.PE11);    -- ERROR: {1:22;1}
+                     package GPP29 is 
+                               new Gen1 (Formal_In.PP11);    -- ERROR: {1:22;1}
+                     package GPF29 is 
+                               new Gen2 (Formal_In.PF11);    -- OK. {1:22;1}
+                     procedure RPE29 renames Formal_In.PE11; -- ERROR: {22;1}
                      procedure RPP29 (Int : in Integer)
-                                    renames Formal_In.PP12;          -- ERROR:
+                                    renames Formal_In.PP12;  -- ERROR: {1:22;1}
                      function RPF29 (Int : in Integer) return Boolean
-                                    renames Formal_In.PF12;          -- OK.
+                                    renames Formal_In.PF12;  -- OK. {1:22;1}
                   begin
                      null;
                   end;
@@ -607,24 +681,24 @@ procedure B950001 is
    begin
       return Ret_Obj : constant POT1 := Prot_Func do
         case Int is
-           when 221 => Ret_Obj.PE11;                                 -- ERROR:
-           when 222 => Ret_Obj.PE12(Int);                            -- ERROR:
-           when 223 => Ret_Obj.PP11;                                 -- ERROR:
-           when 224 => Ret_Obj.PP12(12);                             -- ERROR:
-           when 225 => Sink1(Ret_Obj.PF11);                          -- OK.
-           when 226 => Sink1(Ret_Obj.PF12(2));                       -- OK.
-           when 227 => Sink2(Ret_Obj.PP11'access);                   -- ERROR:
-           when 228 => Sink3(Ret_Obj.PF11'access);                   -- OK.
+           when 221 => Ret_Obj.PE11;                         -- ERROR: {24;1}
+           when 222 => Ret_Obj.PE12(Int);                    -- ERROR: {24;1}
+           when 223 => Ret_Obj.PP11;                         -- ERROR: {24;1}
+           when 224 => Ret_Obj.PP12(12);                     -- ERROR: {24;1}
+           when 225 => Sink1(Ret_Obj.PF11);                  -- OK. {24;1}
+           when 226 => Sink1(Ret_Obj.PF12(2));               -- OK. {24;1}
+           when 227 => Sink2(Ret_Obj.PP11'access);           -- ERROR: {24;1}
+           when 228 => Sink3(Ret_Obj.PF11'access);           -- OK. {24;1}
            when 229 =>
               declare
-                 package GPE229 is new Gen1 (Ret_Obj.PE11);          -- ERROR:
-                 package GPP229 is new Gen1 (Ret_Obj.PP11);          -- ERROR:
-                 package GPF229 is new Gen2 (Ret_Obj.PF11);          -- OK.
-                 procedure RPE229 renames Ret_Obj.PE11;              -- ERROR:
+                 package GPE229 is new Gen1 (Ret_Obj.PE11);  -- ERROR: {18;1}
+                 package GPP229 is new Gen1 (Ret_Obj.PP11);  -- ERROR: {18;1}
+                 package GPF229 is new Gen2 (Ret_Obj.PF11);  -- OK. {18;1}
+                 procedure RPE229 renames Ret_Obj.PE11;      -- ERROR: {18;1}
                  procedure RPP229 (Int : in Integer)
-                                renames Ret_Obj.PP12;                -- ERROR:
+                                renames Ret_Obj.PP12;        -- ERROR: {1:18;1}
                  function RPF229 (Int : in Integer) return Boolean
-                                renames Ret_Obj.PF12;                -- OK.
+                                renames Ret_Obj.PF12;        -- OK. {1:18;1}
               begin
                  null;
               end;
@@ -670,26 +744,26 @@ procedure B950001 is
 
       function PF42 (Int : in Integer) return Boolean is
       begin
-	-- Internal calls and renames:
+         -- Internal calls and renames:
          case Int is
-           when 231 => PE41;                                         -- ERROR:
-           when 232 => PE42(Int);                                    -- ERROR:
-           when 233 => PP41;                                         -- ERROR:
-           when 234 => PP42(10);                                     -- ERROR:
-           when 235 => Sink1(PF41);                                  -- OK.
-           when 236 => Sink1(PF42(2));                               -- OK.
-           when 237 => Sink2(PP41'access);                           -- ERROR:
-           when 238 => Sink3(PF41'access);                           -- OK.
+           when 231 => PE41;                                 -- ERROR: {24;1}
+           when 232 => PE42(Int);                            -- ERROR: {24;1}
+           when 233 => PP41;                                 -- ERROR: {24;1}
+           when 234 => PP42(10);                             -- ERROR: {24;1}
+           when 235 => Sink1(PF41);                          -- OK. {24;1}
+           when 236 => Sink1(PF42(2));                       -- OK. {24;1}
+           when 237 => Sink2(PP41'access);                   -- ERROR: {24;1}
+           when 238 => Sink3(PF41'access);                   -- OK. {24;1}
            when 239 =>
               declare
-                 package GPE239 is new Gen1 (PE41);                  -- ERROR:
-                 package GPP239 is new Gen1 (PP41);                  -- ERROR:
-                 package GPF239 is new Gen2 (PF41);                  -- OK.
-                 procedure RPE239 renames PE41;                      -- ERROR:
+                 package GPE239 is new Gen1 (PE41);          -- ERROR: {18;1}
+                 package GPP239 is new Gen1 (PP41);          -- ERROR: {18;1}
+                 package GPF239 is new Gen2 (PF41);          -- OK. {18;1}
+                 procedure RPE239 renames PE41;              -- ERROR: {18;1}
                  procedure RPP239 (Int : in Integer)
-                                renames PP42;                        -- ERROR:
+                                renames PP42;                -- ERROR: {1:18;1}
                  function RPF239 (Int : in Integer) return Boolean
-                                renames PF42;                        -- OK.
+                                renames PF42;                -- OK. {1:18;1}
               begin
                  null;
               end;
