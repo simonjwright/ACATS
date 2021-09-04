@@ -452,7 +452,6 @@ else
 
     target_gnatchop *.adt >> $dir/acats.log 2>&1
 
-    target_gnatmake -c -gnato -gnatE *.ads >> $dir/acats.log 2>&1
     target_gnatmake -c -gnato -gnatE *.adb >> $dir/acats.log 2>&1
 
     display " done."
