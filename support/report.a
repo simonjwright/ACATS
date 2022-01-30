@@ -79,6 +79,8 @@
 --      RLB  3/24/16  Moved the event trace Boolean to the specification
 --                    so it can be used by a future CZ test.
 --      RLB  4/27/16  Updated ACATS version string to "4.1".
+--      RLB 12/29/21  Moved the ACATS version string to a separate package,
+--                    found in Version.A.
 --
 
 package Report is
@@ -190,7 +192,7 @@ package Report is
 end Report;
 
 
-with Ada.Text_IO, Ada.Calendar;
+with Ada.Text_IO, Ada.Calendar, Version;
 use Ada.Text_IO, Ada.Calendar;
 pragma Elaborate (Ada.Text_IO, Ada.Calendar);
 
@@ -214,9 +216,6 @@ package body Report is
           -- Change it if it doesn't work.
      Max_Event_Message_Len : constant := 150;
           -- Limit event messages to this length.
-
-     ACATS_Version : constant String := "4.1";
-                                       -- Version of ACATS being run (X.XX).
 
      procedure Put_Msg (Msg : String) is
           -- Write message.  Long messages are folded (and indented).
@@ -411,7 +410,7 @@ package body Report is
 
           Put_Msg ("");
           Put_Msg (",.,. " & Test_Name (1..Test_Name_Len) & " " &
-                   "ACATS " & ACATS_Version & " " & Time_Stamp);
+                   "ACATS " & Version.ACATS_Version & " " & Time_Stamp);
           Put_Msg ("---- " & Test_Name (1..Test_Name_Len) & " " &
                    Descr & ".");
           if Generate_Event_Trace_File then
