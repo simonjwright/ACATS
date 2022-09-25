@@ -46,7 +46,7 @@
 --     This test checks 6.4.1(13.1/3). The purpose of this rule is that an
 --     actual object for an out parameter which initially has a valid value
 --     will remain valid without raising an exception before the call. This
---     should be true even if the out parameter is not written in the 
+--     should be true even if the out parameter is not written in the
 --     subprogram even if the Default_Value of the type does not belong to
 --     the subtype of the parameter.
 --
@@ -59,26 +59,28 @@
 --
 -- CHANGE HISTORY:
 --     30 Mar 21   RLB     Created test for RRS from C641002, donated to ACATS.
+--     16 Dec 21   RLB     Corrected comments to talk about predicates and
+--                         Assertion_Error.
 --
 --!
 package C641003_0 is
 
    pragma Assertion_Policy (Check);
-   
+
    type Status is (Raw, Bound, Solved, Checked, Folded, Unknown)
       with Default_Value => Unknown;
-   subtype Typical_Status is Status 
+   subtype Typical_Status is Status
       with Static_Predicate => Typical_Status in Raw | Solved | Folded;
-      
+
    Unused : constant := -16#6789#;
    type Small_Integer is range -16#8000#..16#7FFF#
       with Default_Value => Unused;
    subtype Small_Even is Small_Integer
       with Dynamic_Predicate => Small_Even mod 2 = 0;
-      
+
    type Word_16 is mod 2**16
       with Default_Value => 16#DEAD#;
-   subtype Valid_Flags is Word_16 
+   subtype Valid_Flags is Word_16
       with Dynamic_Predicate => (Valid_Flags and 16#FF40#) = 0;
           -- Only the bits not masked are used.
 
@@ -88,17 +90,17 @@ package C641003_0 is
       with Default_Value => Flt_Value;
    subtype Float_Natural is Small_Float
       with Static_Predicate => Float_Natural >= 0.0;
-    
+
    Fix_Value : constant := 3.75;
 
    type Small_Fixed is delta 0.125 range -4.0 .. 4.0
       with Small => 0.125, Default_Value => Fix_Value;
    subtype Smaller_Fixed is Small_Fixed
       with Dynamic_Predicate => abs Smaller_Fixed <= 2.0;
-    
+
 
    subtype Cases is Character range 'A' .. 'F';
-    
+
    procedure Get_Info (Usable    : out Boolean;
                        Kind      : out Typical_Status;
                        Count     : out Small_Even;
@@ -165,7 +167,7 @@ package body C641003_0 is
             Count  := 6;
       end case;
    end Get_Info;
-       
+
 end C641003_0;
 
 
@@ -194,45 +196,45 @@ begin
    begin
       if Is_Usable then
           Report.Failed ("Bad initial value - A1");
-      end if;         
+      end if;
       if The_Kind /= Folded then
           Report.Failed ("Bad initial value - A2");
-      end if;         
+      end if;
       if The_Count /= 0 then
           Report.Failed ("Bad initial value - A3");
-      end if;         
+      end if;
       if The_Flags /= 0 then
           Report.Failed ("Bad initial value - A4");
-      end if;         
+      end if;
       if The_Data /= 0.0 then
           Report.Failed ("Bad initial value - A5");
-      end if;         
+      end if;
       if The_Magnitude /= 0.0 then
           Report.Failed ("Bad initial value - A6");
-      end if;         
-      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags, 
+      end if;
+      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags,
                           The_Data, The_Magnitude, Test_Case => 'A');
           -- Should not raise an exception even if buggy, all parameter values
           -- in range.
       if not Is_Usable then
           Report.Failed ("Bad result value - A1");
-      end if;         
+      end if;
       if The_Kind /= Raw then
           Report.Failed ("Bad result value - A2");
-      end if;         
+      end if;
       if The_Count /= 0 then
           Report.Failed ("Bad result value - A3");
-      end if;         
+      end if;
       if The_Flags /= 16#0010# then
           Report.Failed ("Bad result value - A4");
-      end if;         
+      end if;
       if The_Data /= 0.0 then
           Report.Failed ("Bad result value - A5");
-      end if;         
+      end if;
       if The_Magnitude /= 0.0 then
           Report.Failed ("Bad result value - A6");
       end if;
-   end;        
+   end;
 
    -- Next, try default initialized objects with the results set:
    declare
@@ -246,44 +248,44 @@ begin
       -- Is_Usable is not initialized at all, can't pre-test it.
       if The_Kind /= Unknown then
           Report.Failed ("Bad initial value - B2");
-      end if;         
+      end if;
       if The_Count /= Unused then
           Report.Failed ("Bad initial value - B3");
-      end if;         
+      end if;
       if The_Flags /= 16#DEAD# then
           Report.Failed ("Bad initial value - B4");
-      end if;         
+      end if;
       if The_Data /= Flt_Value then
           Report.Failed ("Bad initial value - B5");
-      end if;         
+      end if;
       if The_Magnitude /= Fix_Value then
           Report.Failed ("Bad initial value - B6");
-      end if;         
-      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags, 
+      end if;
+      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags,
                           The_Data, The_Magnitude, Test_Case => 'B');
       if not Is_Usable then
           Report.Failed ("Bad result value - B1");
-      end if;         
+      end if;
       if The_Kind /= Solved then
           Report.Failed ("Bad result value - B2");
-      end if;         
+      end if;
       if The_Count /= 12 then
           Report.Failed ("Bad result value - B3");
-      end if;         
+      end if;
       if The_Flags /= 16#0012# then
           Report.Failed ("Bad result value - B4");
-      end if;         
+      end if;
       if The_Data /= 1.75 then
           Report.Failed ("Bad result value - B5");
-      end if;         
+      end if;
       if The_Magnitude /= 0.625 then
           Report.Failed ("Bad result value - B6");
       end if;
-   end;        
+   end;
 
    -- Now, try default initialized objects with the results unchanged:
-   -- Note: The defaults are outside of the parameter range, but no
-   -- exception should be raised upon the call nor on the copy-back.
+   -- Note: The defaults do not satisfy the predicates of the parameters,
+   -- but no exception should be raised upon the call nor on the copy-back.
    declare
       Is_Usable     : Boolean;
       The_Kind      : Status;
@@ -295,45 +297,45 @@ begin
       -- Is_Usable is not initialized at all, can't pre-test it.
       if The_Kind /= Unknown then
           Report.Failed ("Bad initial value - C2");
-      end if;         
+      end if;
       if The_Count /= Unused then
           Report.Failed ("Bad initial value - C3");
-      end if;         
+      end if;
       if The_Flags /= 16#DEAD# then
           Report.Failed ("Bad initial value - C4");
-      end if;         
+      end if;
       if The_Data /= Flt_Value then
           Report.Failed ("Bad initial value - C5");
-      end if;         
+      end if;
       if The_Magnitude /= Fix_Value then
           Report.Failed ("Bad initial value - C6");
-      end if;         
-      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags, 
+      end if;
+      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags,
                           The_Data, The_Magnitude, Test_Case => 'C');
       if Is_Usable then
           Report.Failed ("Bad result value - C1");
-      end if;         
+      end if;
       if The_Kind /= Unknown then
           Report.Failed ("Bad result value - C2");
-      end if;         
+      end if;
       if The_Count /= Unused then
           Report.Failed ("Bad result value - C3");
-      end if;         
+      end if;
       if The_Flags /= 16#DEAD# then
           Report.Failed ("Bad result value - C4");
-      end if;         
+      end if;
       if The_Data /= Flt_Value then
           Report.Failed ("Bad result value - C5");
-      end if;         
+      end if;
       if The_Magnitude /= Fix_Value then
           Report.Failed ("Bad result value - C6");
       end if;
-   end;        
+   end;
 
    -- Now, try default initialized objects with some written and some
    -- unchanged by the call:
-   -- Note: The defaults are outside of the parameter range, but no
-   -- exception should be raised upon the call nor on the copy-back.
+   -- Note: The defaults do not satisfy the predicates of the parameters,
+   -- but no exception should be raised upon the call nor on the copy-back.
    declare
       Is_Usable     : Boolean;
       The_Kind      : Status;
@@ -345,46 +347,46 @@ begin
       -- Is_Usable is not initialized at all, can't pre-test it.
       if The_Kind /= Unknown then
           Report.Failed ("Bad initial value - D2");
-      end if;         
+      end if;
       if The_Count /= Unused then
           Report.Failed ("Bad initial value - D3");
-      end if;         
+      end if;
       if The_Flags /= 16#DEAD# then
           Report.Failed ("Bad initial value - D4");
-      end if;         
+      end if;
       if The_Data /= Flt_Value then
           Report.Failed ("Bad initial value - D5");
-      end if;         
+      end if;
       if The_Magnitude /= Fix_Value then
           Report.Failed ("Bad initial value - D6");
-      end if;         
-      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags, 
+      end if;
+      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags,
                           The_Data, The_Magnitude, Test_Case => 'D');
       if not Is_Usable then
           Report.Failed ("Bad result value - D1");
-      end if;         
+      end if;
       if The_Kind /= Folded then
           Report.Failed ("Bad result value - D2");
-      end if;         
+      end if;
       if The_Count /= 4 then
           Report.Failed ("Bad result value - D3");
-      end if;         
+      end if;
       if The_Flags /= 16#000C# then
           Report.Failed ("Bad result value - D4");
-      end if;         
+      end if;
       if The_Data /= Flt_Value then
           Report.Failed ("Bad result value - D5");
-      end if;         
+      end if;
       if The_Magnitude /= Fix_Value then
           Report.Failed ("Bad result value - D6");
       end if;
-   end;        
+   end;
 
-   -- Now, try an object with a narrower range
+   -- Now, try an object with a more restrictive predicate
    -- so that one of the results will not fit (an exception should
    -- be raised on the copy-back).
    declare
-      subtype Small_Fixed_Natural is Small_Fixed 
+      subtype Small_Fixed_Natural is Small_Fixed
           with Static_Predicate => Small_Fixed_Natural >= 0.0;
       Is_Usable     : Boolean;
       The_Kind      : Status;
@@ -396,30 +398,30 @@ begin
       -- Is_Usable is not initialized at all, can't pre-test it.
       if The_Kind /= Unknown then
           Report.Failed ("Bad initial value - E2");
-      end if;         
+      end if;
       if The_Count /= Unused then
           Report.Failed ("Bad initial value - E3");
-      end if;         
+      end if;
       if The_Flags /= 16#DEAD# then
           Report.Failed ("Bad initial value - E4");
-      end if;         
+      end if;
       if The_Data /= Flt_Value then
           Report.Failed ("Bad initial value - E5");
-      end if;         
+      end if;
       if The_Magnitude /= Fix_Value then
           Report.Failed ("Bad initial value - E6");
-      end if;         
-      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags, 
+      end if;
+      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags,
                           The_Data, The_Magnitude, Test_Case => 'E');
-          -- The result for The_Magnitude is out of range, Constraint_Error
-          -- should be raised.
+          -- The result for The_Magnitude does not satisfy the predicate of
+          -- the object, Assertion_Error should be raised.
       Report.Failed ("Copy-back out of fixed range did not raise " &
-                     "Assertion_Error");   
+                     "Assertion_Error");
    exception
       when Ada.Assertions.Assertion_Error =>
           null; -- Expected, OK.
    end;
-   
+
    declare
       subtype Small_Very_Positive is Small_Integer
           with Static_Predicate => Small_Very_Positive > 10;
@@ -433,29 +435,29 @@ begin
       -- Is_Usable is not initialized at all, can't pre-test it.
       if The_Kind /= Unknown then
           Report.Failed ("Bad initial value - F2");
-      end if;         
+      end if;
       if The_Count /= 92 then
           Report.Failed ("Bad initial value - F3");
-      end if;         
+      end if;
       if The_Flags /= 16#DEAD# then
           Report.Failed ("Bad initial value - F4");
-      end if;         
+      end if;
       if The_Data /= Flt_Value then
           Report.Failed ("Bad initial value - F5");
-      end if;         
+      end if;
       if The_Magnitude /= Fix_Value then
           Report.Failed ("Bad initial value - F6");
-      end if;         
-      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags, 
+      end if;
+      C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags,
                           The_Data, The_Magnitude, Test_Case => 'F');
-          -- The result for The_Count is out of range, Constraint_Error
-          -- should be raised.
+          -- The result for The_Count does not satisfy the predicate of the
+          -- object, Assertion_Error should be raised.
       Report.Failed ("Copy-back out of integer range did not raise " &
-                     "Assertion_Error");   
+                     "Assertion_Error");
    exception
       when Ada.Assertions.Assertion_Error =>
           null; -- Expected, OK.
-   end;        
+   end;
 
    Report.Result;
 
