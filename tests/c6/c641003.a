@@ -59,6 +59,8 @@
 --
 -- CHANGE HISTORY:
 --     30 Mar 21   RLB     Created test for RRS from C641002, donated to ACATS.
+--     16 Dec 21   RLB     Corrected comments to talk about predicates and
+--                         Assertion_Error.
 --
 --!
 package C641003_0 is
@@ -282,8 +284,8 @@ begin
    end;        
 
    -- Now, try default initialized objects with the results unchanged:
-   -- Note: The defaults are outside of the parameter range, but no
-   -- exception should be raised upon the call nor on the copy-back.
+   -- Note: The defaults do not satisfy the predicates of the parameters,
+   -- but no exception should be raised upon the call nor on the copy-back.
    declare
       Is_Usable     : Boolean;
       The_Kind      : Status;
@@ -332,8 +334,8 @@ begin
 
    -- Now, try default initialized objects with some written and some
    -- unchanged by the call:
-   -- Note: The defaults are outside of the parameter range, but no
-   -- exception should be raised upon the call nor on the copy-back.
+   -- Note: The defaults do not satisfy the predicates of the parameters,
+   -- but no exception should be raised upon the call nor on the copy-back.
    declare
       Is_Usable     : Boolean;
       The_Kind      : Status;
@@ -380,7 +382,7 @@ begin
       end if;
    end;        
 
-   -- Now, try an object with a narrower range
+   -- Now, try an object with a more restrictive predicate
    -- so that one of the results will not fit (an exception should
    -- be raised on the copy-back).
    declare
@@ -411,8 +413,8 @@ begin
       end if;         
       C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags, 
                           The_Data, The_Magnitude, Test_Case => 'E');
-          -- The result for The_Magnitude is out of range, Constraint_Error
-          -- should be raised.
+          -- The result for The_Magnitude does not satisfy the predicate of 
+          -- the object, Assertion_Error should be raised.
       Report.Failed ("Copy-back out of fixed range did not raise " &
                      "Assertion_Error");   
    exception
@@ -448,8 +450,8 @@ begin
       end if;         
       C641003_0.Get_Info (Is_Usable, The_Kind, The_Count, The_Flags, 
                           The_Data, The_Magnitude, Test_Case => 'F');
-          -- The result for The_Count is out of range, Constraint_Error
-          -- should be raised.
+          -- The result for The_Count does not satisfy the predicate of the
+          -- object, Assertion_Error should be raised.
       Report.Failed ("Copy-back out of integer range did not raise " &
                      "Assertion_Error");   
    exception
