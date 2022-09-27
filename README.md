@@ -5,7 +5,7 @@ the [Ada Conformity Assessment Test Suite][Ada-Auth] customised for
 use with FSF GCC. Eventually it's hoped they will replace the current
 GCC tests (based on ACATS 2.6).
 
-The current version here is 4.1Z.
+The current version here is 4.1AA.
 
 ## Notes ##
 
