@@ -5,7 +5,7 @@ the [Ada Conformity Assessment Test Suite][Ada-Auth] customised for
 use with FSF GCC. Eventually it's hoped they will replace the current
 GCC tests (based on ACATS 2.6).
 
-The current version here is 4.1AA.
+The current version here is 4.1BB.
 
 ## Notes ##
 
@@ -105,17 +105,15 @@ Note, these outcome names are not ideal, but they have to match the
 requirements of the GCC test infrastructure that supports parallel
 test execution.
 
-The summary is reported in the form
+The summary is reported in the form below (this is for ACATS 4.1BB, running under GCC 12.2.0 on macOS)
 
 ``` none
         === acats Summary ===
-# of expected passes		2499
+# of expected passes		2544
 # of unexpected failures	10
-# of expected failures		1451
+# of expected failures		1493
 # of unresolved testcases	11
-# of unsupported tests		106
-*** FAILURES: cxd1003 cxd1004 cxd1005  cxd2006 cxd3001 cxd3002  cxh1001  c250002  c611a04  cxd4007
+# of unsupported tests		124
+*** FAILURES: c250002 c324006 c415001 cxa4038 cxd1003 cxd1004 cxd1005 cxd2006 cxd3001 cxd3002
 ```
-(this is from a run for GCC 8.0 on macOS).
-
 [Ada-Auth]: http://www.ada-auth.org/acats.html
