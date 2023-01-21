@@ -38,9 +38,31 @@
 --     Check that Pre'Class and Post'Class cannot be specified on a subprogram
 --     body that is acting as a completion.
 --
+-- TEST DESCRIPTION:
+--     To test the objective, we check that Pre'Class and Post'Class cannot be
+--     specified on subprogram bodies that are completing a subprogram
+--     specification. But note that Pre'Class and Post'Class are allowed only
+--     on primitive subprograms, and subprogram bodies are almost never
+--     primitive. So even non-completing subprogram bodies cannot specify
+--     Pre'Class or Post'Class. We've msrked cases that are illegal only
+--     because they are not primitive with "Non-prim"; other test cases
+--     test the objective (but also may be illegal by being non-primitive).
+--
+--     It is possible to have a subprogram body that is primitive and not
+--     acting as a completion: it would have to override an inherited
+--     primitive subprogram. So it would be possible to test a legal case;
+--     however, such overriding is unlikely, especially as only one such
+--     overriding is possible per type (since a body freezes the type).
+--     This case is too unlikely to test.
+--
+--     We retain all of the non-primitive, non-completion bodies as this is
+--     the only test that tries Pre'Class or Post'Class on subprogram bodies,
+--     and it is worth verifying that those are rejected.
+--
 -- CHANGE HISTORY:
 --     04 Feb 2016   RLB   Created test.
 --     28 Mar 2016   RLB   Added error location codes.
+--     23 Sep 2022   RLB   Corrected test to mark all of the bodies as illegal.
 --
 --!
 package B611004P is
@@ -87,73 +109,73 @@ package body B611004P is
     end OK;
 
     procedure No_Spec1 (P : in out Root)
-       with Pre'Class => Is_OK (P) is                          -- OK. {13;3}
+       with Pre'Class => Is_OK (P) is               -- ERROR: (Non-Prim) {13;3}
     begin
        P.N := P.N * 2;
     end No_Spec1;
 
     procedure Spec1 (P : in out Root)
-       with Pre'Class => Is_OK (P) is                          -- ERROR: {13;3}
+       with Pre'Class => Is_OK (P) is               -- ERROR: {13;3}
     begin
        P.N := P.N + 2;
     end Spec1;
 
     procedure Spec2 (P : in out Root) is separate
-       with Pre'Class => Is_OK (P);                            -- ERROR: {13;3}
+       with Pre'Class => Is_OK (P);                 -- ERROR: {13;3}
 
     procedure Spec3 (P : in out Root);
 
     procedure Spec3 (P : in out Root)
-       with Pre'Class => Is_OK (P) is                          -- ERROR: {13;3}
+       with Pre'Class => Is_OK (P) is               -- ERROR: {13;3}
     begin
        P.N := P.N * 2;
     end Spec3;
 
     function No_Spec4 (P : Root) return Root is (N => P.N * 2)
-       with Pre'Class => Is_OK (P);                            -- OK. {13;1}
+       with Pre'Class => Is_OK (P);                 -- ERROR: (Non-prim) {13;1}
 
     function Spec4 (P : Root) return Root is (N => P.N + 2)
-       with Pre'Class => Is_OK (P);                            -- ERROR: {13;1}
+       with Pre'Class => Is_OK (P);                 -- ERROR: {13;1}
 
 
     procedure No_Spec5 (P : in out Root)
-       with Post'Class => Is_OK (P) is                         -- OK. {13;3}
+       with Post'Class => Is_OK (P) is              -- ERROR: (Non-prim) {13;3}
     begin
        P.N := P.N + 2;
     end No_Spec5;
 
     procedure Spec5 (P : in out Root)
-       with Post'Class => Is_OK (P) is                         -- ERROR: {13;3}
+       with Post'Class => Is_OK (P) is              -- ERROR: {13;3}
     begin
        P.N := P.N + 2;
     end Spec5;
 
     procedure Spec6 (P : in out Root) is separate
-       with Post'Class => Is_OK (P);                           -- ERROR: {13;1}
+       with Post'Class => Is_OK (P);                -- ERROR: {13;1}
 
     procedure Spec7 (P : in out Root);
 
     procedure Spec7 (P : in out Root)
-       with Post'Class => Is_OK (P) is                         -- ERROR: {13;3}
+       with Post'Class => Is_OK (P) is              -- ERROR: {13;3}
     begin
        P.N := P.N + 2;
     end Spec7;
 
     function No_Spec8 (P : Root) return Root is (N => P.N + 2)
-       with Post'Class => Is_OK (P);                           -- OK. {13;1}
+       with Post'Class => Is_OK (P);                -- ERROR: (Non-Prim) {13;1}
 
     function Spec8 (P : Root) return Root is (N => P.N + 2)
-       with Post'Class => Is_OK (P);                           -- ERROR: {13;1}
+       with Post'Class => Is_OK (P);                -- ERROR: {13;1}
 
 
     procedure No_Spec9 (P : in out Root) is null
-       with Pre'Class => Is_OK (P);                            -- OK. {13;1}
+       with Pre'Class => Is_OK (P);                 -- ERROR: (Non-Prim) {13;1}
 
     procedure Spec9 (P : in out Root) is null
-       with Pre'Class => Is_OK (P);                            -- ERROR: {13;1}
+       with Pre'Class => Is_OK (P);                 -- ERROR: {13;1}
 
     procedure SpecA (P : in out Root) is null
-       with Post'Class => Is_OK (P);                           -- ERROR: {13;1}
+       with Post'Class => Is_OK (P);                -- ERROR: {13;1}
 
 end B611004P;
 
