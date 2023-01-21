@@ -48,10 +48,11 @@
 --     29 Dec 2021  RLB  Created package.
 --     29 Mar 2022  RLB  Issued ACATS Modification List 4.1Z.
 --     30 Jun 2022  RLB  Issued ACATS Modification List 4.1AA.
+--     25 Sep 2022  RLB  Issued ACATS Modification List 4.1BB.
 
 package Version is
 
-   ACATS_Version : constant String := "4.1AA";
+   ACATS_Version : constant String := "4.1BB";
       -- Version of ACATS being run (X.XX), including the ACATS Modification
       -- List identifier.
 
