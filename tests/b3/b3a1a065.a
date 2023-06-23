@@ -1,4 +1,4 @@
--- VERSION.A
+-- B3A1A065.A
 --
 --                             Grant of Unlimited Rights
 --
@@ -30,32 +30,51 @@
 --     assessment of a language processor. This test suite should not be used
 --     to make claims of conformance unless used in accordance with
 --     ISO/IEC 18009 and any applicable ACAA procedures.
---
 --*
 --
--- PURPOSE:
---     This package contains the version number of the ACATS, to be used in
---     ACATS output.
+-- OBJECTIVE:
+--     See B3A1A060.A.
 --
---     We make this a separate package so the version number can include the
---     ACATS Modification List identifier and thus change with each new List.
---     Since implementers are allowed to customize Report.A, leaving the
---     version number there would require redoing that customization with each
---     new ACATS Modification List. As a separate package, only this package
---     need change with each list.
-
+-- TEST DESCRIPTION
+--     See B3A1A060.A.
+--
+-- TEST FILES:
+--     This test consists of the following files:
+--         B3A1A060.A
+--         B3A1A061.A
+--         B3A1A062.A
+--         B3A1A063.A
+--         B3A1A064.A
+--      -> B3A1A065.A
+--
+-- PASS/FAIL CRITERIA:
+--     See B3A1A060.A.
+--
+--
 -- CHANGE HISTORY:
---     29 Dec 2021  RLB  Created package.
---     29 Mar 2022  RLB  Issued ACATS Modification List 4.1Z.
---     30 Jun 2022  RLB  Issued ACATS Modification List 4.1AA.
---     25 Sep 2022  RLB  Issued ACATS Modification List 4.1BB.
---     31 Dec 2022  RLB  Issued ACATS Modification List 4.1CC.
---     29 Mar 2023  RLB  Issued ACATS Modification List 4.1DD.
+--     29 Mar 2023  RLB  Created test.
+--
 
-package Version is
+package B3A1A06D.Pub_Child is
 
-   ACATS_Version : constant String := "4.1DD";
-      -- Version of ACATS being run (X.XX), including the ACATS Modification
-      -- List identifier.
+   -- Public children have visibility into their parent's private part in
+   -- their private part, but not the parent body.
 
-end Version;
+   type Our_Type is private;
+   
+
+private
+
+   type Our_Type is record
+       T : Tote_Type;
+   end record;
+   Sample : Our_Type;
+   PU : access Deferred_Untagged_Type := NP.EmptyU;        -- OK. {4}
+   PT : access Deferred_Tagged_Type := NP.EmptyT;          -- OK. {4}
+   N1 : Boolean := NP.HasU (Sample.T, PU.all);             -- ERROR: {20}
+   N2 : Boolean := NP.HasT (Sample.T, PT.all);             -- OK. {20}
+   N3 : Boolean := NP.HasU (Sample.T, NP.GetU (Sample.T)); -- ERROR: {20}
+   N4 : Boolean := NP.HasT (Sample.T, NP.GetT (Sample.T)); -- ERROR: {20}     
+
+end B3A1A06D.Pub_Child;
+
