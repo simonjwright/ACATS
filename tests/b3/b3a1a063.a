@@ -1,4 +1,4 @@
--- VERSION.A
+-- B3A1A063.A
 --
 --                             Grant of Unlimited Rights
 --
@@ -30,32 +30,56 @@
 --     assessment of a language processor. This test suite should not be used
 --     to make claims of conformance unless used in accordance with
 --     ISO/IEC 18009 and any applicable ACAA procedures.
---
 --*
 --
--- PURPOSE:
---     This package contains the version number of the ACATS, to be used in
---     ACATS output.
+-- OBJECTIVE:
+--     See B3A1A060.A.
 --
---     We make this a separate package so the version number can include the
---     ACATS Modification List identifier and thus change with each new List.
---     Since implementers are allowed to customize Report.A, leaving the
---     version number there would require redoing that customization with each
---     new ACATS Modification List. As a separate package, only this package
---     need change with each list.
-
+-- TEST DESCRIPTION
+--     See B3A1A060.A.
+--
+-- TEST FILES:
+--     This test consists of the following files:
+--         B3A1A060.A
+--         B3A1A061.A
+--         B3A1A062.A
+--      -> B3A1A063.A
+--         B3A1A064.A
+--         B3A1A065.A
+--
+-- PASS/FAIL CRITERIA:
+--     See B3A1A060.A.
+--
+--
 -- CHANGE HISTORY:
---     29 Dec 2021  RLB  Created package.
---     29 Mar 2022  RLB  Issued ACATS Modification List 4.1Z.
---     30 Jun 2022  RLB  Issued ACATS Modification List 4.1AA.
---     25 Sep 2022  RLB  Issued ACATS Modification List 4.1BB.
---     31 Dec 2022  RLB  Issued ACATS Modification List 4.1CC.
---     29 Mar 2023  RLB  Issued ACATS Modification List 4.1DD.
+--     29 Mar 2023  RLB  Created test.
+--
 
-package Version is
+package body B3A1A06D.Good_Child is
 
-   ACATS_Version : constant String := "4.1DD";
-      -- Version of ACATS being run (X.XX), including the ACATS Modification
-      -- List identifier.
+   -- Package bodies have visibility into their parent's private part,
+   -- but not the parent body. Thus, dispatching calls on primitive operations
+   -- of Set are not allowed (the type layout is not known).
+    
+   procedure Do_More_Stuff is
+      Tote : Tote_Type;
+      PU : access Deferred_Untagged_Type := NP.EmptyU;     -- OK. {7}
+      PT : access Deferred_Tagged_Type := NP.EmptyT;       -- OK. {7}
+   begin
+      NP.AddU (Tote, PU.all);                              -- ERROR: {7}
+      NP.AddT (Tote, PT.all);                              -- OK. {7}
+      NP.AddU (Tote, NP.GetU (Tote));                      -- ERROR: {7}
+      NP.AddT (Tote, NP.GetT (Tote));                      -- ERROR: {7}     
+      if NP.HasU (Tote, PU.all) then                       -- ERROR: {10;5}
+         null;    
+      elsif NP.HasT (Tote, PT.all) then                    -- OK. {13;5}
+         null;
+      elsif NP.HasU (Tote, NP.GetU (Tote)) then            -- ERROR: {13;5}
+         null;
+      elsif NP.HasT (Tote, NP.GetT (Tote)) then            -- ERROR: {13;5}
+         null;
+      end if;      
+   end Do_More_Stuff;
 
-end Version;
+end B3A1A06D.Good_Child;
+

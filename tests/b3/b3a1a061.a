@@ -1,4 +1,4 @@
--- VERSION.A
+-- B3A1A061.A
 --
 --                             Grant of Unlimited Rights
 --
@@ -30,32 +30,42 @@
 --     assessment of a language processor. This test suite should not be used
 --     to make claims of conformance unless used in accordance with
 --     ISO/IEC 18009 and any applicable ACAA procedures.
---
 --*
 --
--- PURPOSE:
---     This package contains the version number of the ACATS, to be used in
---     ACATS output.
+-- OBJECTIVE:
+--     See B3A1A060.A.
 --
---     We make this a separate package so the version number can include the
---     ACATS Modification List identifier and thus change with each new List.
---     Since implementers are allowed to customize Report.A, leaving the
---     version number there would require redoing that customization with each
---     new ACATS Modification List. As a separate package, only this package
---     need change with each list.
-
+-- TEST DESCRIPTION
+--     See B3A1A060.A.
+--
+-- TEST FILES:
+--     This test consists of the following files:
+--         B3A1A060.A
+--      -> B3A1A061.A
+--         B3A1A062.A
+--         B3A1A063.A
+--         B3A1A064.A
+--         B3A1A065.A
+--
+-- PASS/FAIL CRITERIA:
+--     See B3A1A060.A.
+--
+--
 -- CHANGE HISTORY:
---     29 Dec 2021  RLB  Created package.
---     29 Mar 2022  RLB  Issued ACATS Modification List 4.1Z.
---     30 Jun 2022  RLB  Issued ACATS Modification List 4.1AA.
---     25 Sep 2022  RLB  Issued ACATS Modification List 4.1BB.
---     31 Dec 2022  RLB  Issued ACATS Modification List 4.1CC.
---     29 Mar 2023  RLB  Issued ACATS Modification List 4.1DD.
+--     29 Mar 2023  RLB  Created test.
+--
 
-package Version is
+limited with F3A1A00;
+with B3A1A06L;
+package B3A1A061 is
 
-   ACATS_Version : constant String := "4.1DD";
-      -- Version of ACATS being run (X.XX), including the ACATS Modification
-      -- List identifier.
+   Tote : B3A1A06L.Tote_Type;
+   PU : access F3A1A00.An_Untagged_Type := B3A1A06L.EmptyU;      -- OK. {4}
+   PT : access F3A1A00.A_Tagged_Type := B3A1A06L.EmptyT;         -- OK. {4}
+   N1 : Boolean := B3A1A06L.HasU (Tote, PU.all);                 -- ERROR: {20}
+   N2 : Boolean := B3A1A06L.HasT (Tote, PT.all);                 -- OK. {20}
+   N3 : Boolean := B3A1A06L.HasU (Tote, B3A1A06L.GetU (Tote));   -- ERROR: {20}
+   N4 : Boolean := B3A1A06L.HasT (Tote, B3A1A06L.GetT (Tote));   -- ERROR: {20}
 
-end Version;
+end B3A1A061;
+
