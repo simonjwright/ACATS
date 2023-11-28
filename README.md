@@ -42,7 +42,11 @@ You can also run the tests, or individual chapters of the tests, by using the `r
 
 (assuming this repository is installed at `~/ACATS`) will run just chapters CXD, CXE (execution tests on Annexes D and E), using the current compiler. With no arguments, all tests are run.
 
-The above command will only build the support code if it isn't already built. To force a rebuild, say
+If you only want to run the execution tests (i.e. not the B tests, which check that compilation errors are detected, and are many),
+
+    ~/ACATS/run_local.sh $(cd ~/ACATS/tests; ls -d [ac-z]*)
+
+The above commands will only build the support code if it isn't already built. To force a rebuild, say
 
     ~/ACATS/run_local.sh NONE cxd cxe
 
