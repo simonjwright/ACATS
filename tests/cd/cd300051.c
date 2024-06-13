@@ -46,7 +46,8 @@
 --      12 Oct 95   SAIC    Initial prerelease version.                  
 --      14 Feb 97   PWB.CTA Created this file from code appearing in
 --                          CD30005.A (as comments).
---      13 May 24   SJW     Typed Value as int.
+--       3 Jun 24   RLB     Corrected code to have a proper prototype,
+--                          as recommended by all modern versions of C.
 --!
 */
             int _cd30005_1( int Value )
