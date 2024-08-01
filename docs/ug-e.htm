@@ -22,7 +22,7 @@
     </STYLE>
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFE8" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
-<DIV><SPAN Style="font-size:200%; color: rgb(0,0,153)"><B>ACATS 4.1 User's Guide</B></SPAN></DIV>
+<DIV><SPAN Style="font-size:200%; color: rgb(0,0,153)"><B>ACATS 4.2 User's Guide</B></SPAN></DIV>
 <DIV Class="Normal"><I><B><A HREF="UG-TTL.HTM">Title Page</A></B></I></DIV>
 <div style="margin-top: 0.6em; margin-bottom: 0.0em"><A HREF="UG-TOC.HTM"><IMG SRC="CONT.GIF" ALT="Contents" BORDER=0></A>&nbsp;
 &nbsp;<A HREF="UG-02.HTM"><IMG SRC="INDEX.GIF" ALT="Index" BORDER=0></A>&nbsp;
@@ -159,14 +159,16 @@ preferred. (Such characters are more likely to be present in the fonts
 available to ACATS users; users will be more likely to be able to view 
 the tests as intended if common characters are used.)</div>
 <div class="Bulleted">When constructing tests that check to see that 
-run-time checks are made, take special care that 11.6 permissions don't 
-render the test impotent. 11.6(5) allows language-defined checks to be 
-optimized away if the result of the operation is not used (even if the 
-exception is handled). That means it is critical that the values that 
-fail checks are used in some way afterwards (even though a correct program 
-will never execute that code). Failure to do that could allow a compiler 
-to optimize the entire test away, and that would require the test to 
-be corrected later.</div>
+run-time checks are made, take special care that 10.2.1 and 11.6 permissions 
+don't render the test impotent. 11.6(5) allows language-defined checks 
+to be optimized away if the result of the operation is not used (even 
+if the exception is handled). Similarly, 10.2.1(18/3) allows calls to 
+subprograms in Pure packages to be omitted if the result of the operation 
+is not used. That means it is critical that the values that fail checks 
+are used in some way afterwards (even though a correct program will never 
+execute that code). Failure to do that could allow a compiler to optimize 
+the entire test away, and that would require the test to be corrected 
+later.</div>
 <div class="Bulleted">When creating a B-Test for which different parts 
 test different errors, each error should identify the intended failure. 
 The standard error indication includes a colon; any needed text can follow 

@@ -46,8 +46,9 @@
 --
 -- CHANGE HISTORY:
 --      05 Mar 20   JAC     Initial pre-release version.
---      17 Mar 29   RLB     Readied for release - renamed, improved error
+--      17 Mar 20   RLB     Readied for release - renamed, improved error
 --                          markers, added additional descriptive test.
+--      19 Mar 20   RLB     Corrected Class_Acc type definition.
 --
 --!
 procedure B860002 is
@@ -56,7 +57,7 @@ procedure B860002 is
       X : Integer;
    end record;
    type Acc is access all T;
-   type Class_Acc is access T'Class;
+   type Class_Acc is access all T'Class;
    type Rec is record
       Comp : access T'Class;
    end record;

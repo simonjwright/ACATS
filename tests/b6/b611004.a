@@ -72,7 +72,7 @@ package B611004P is
     function Is_OK (P : in Root) return Boolean;
 
     procedure OK (P : in out Root)
-       with Pre'Class => Is_OK (P), Post'Class => Is_OK (P);   -- OK. {14;1}
+       with Pre'Class => Is_OK (P), Post'Class => Is_OK (P);   -- OK. {13;1}
 
     procedure Spec1 (P : in out Root);
 
@@ -121,7 +121,7 @@ package body B611004P is
     end Spec1;
 
     procedure Spec2 (P : in out Root) is separate
-       with Pre'Class => Is_OK (P);                 -- ERROR: {13;3}
+       with Pre'Class => Is_OK (P);                 -- ERROR: {13;1}
 
     procedure Spec3 (P : in out Root);
 

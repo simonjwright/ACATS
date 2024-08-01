@@ -61,9 +61,10 @@
 --         from its parent type.
 --
 --     (G) The name of a Constant_Indexing or Variable_Indexing aspect
---         specified for a type T cannot denote a function whose first parameter
---         has a type other than T or T'Class or an access-to-constant (resp.,
---         access-to-variable) type designating T or T'Class.
+--         specified for a type T cannot denote a function whose first
+--         parameter has a type other than T or T'Class or an
+--         access-to-constant (resp., access-to-variable) type designating T or
+--         T'Class.
 --
 --     (H) The name specified by a Variable_Indexing attribute cannot
 --         denote a function that returns a type other than a reference type
@@ -76,7 +77,7 @@
 --                       corrected format of error indications; added
 --                       indications of which rule each error is testing.
 --     15 Jun 2021 RLB Commented out dubious OK pending approval of
---                       AI12-0428-1.
+--                       AI12-0428-1. Fixed overlong lines.
 --!
 
 procedure B416001 is
@@ -206,8 +207,9 @@ procedure B416001 is
 
        type Type_1C is tagged null record
          with Constant_Indexing => Get_1_C;          -- ERROR: (C) (D)
-                                                     -- Denotes outside Get_1_C,
-                                                     -- with no parameters.
+                                                     -- Denotes outside
+                                                     -- Get_1_C, with no 
+                                                     -- parameters.
 
        type Type_2 is tagged null record
          with Variable_Indexing => Get_2;            -- ERROR: (D)
@@ -235,7 +237,8 @@ procedure B416001 is
 
        type Type_4 is tagged null record
          with Variable_Indexing => Get_4;            -- OK. (E)
-                                                     -- Overloaded, >= two params
+                                                     -- Overloaded, 
+                                                     -- >= two params
 
        function Get_4 (X : in out Type_4; Index : Positive)
          return Ref is (Null_Ref);
@@ -246,7 +249,8 @@ procedure B416001 is
 
        type Type_4_C is tagged null record
          with Constant_Indexing => Get_4_C;          -- OK. (E)
-                                                     -- Overloaded, >= two params
+                                                     -- Overloaded,
+                                                     -- >= two params
 
        function Get_4_C
          (X : Type_4_C; Index : Positive) return Ref_C is (Null_Ref_C);
@@ -326,8 +330,8 @@ procedure B416001 is
          is (Null_Ref);
 
        type Type_15 is new Type_14 with null record
-         with Variable_Indexing => Get_14;           -- ERROR: (G)  Parameter is
-                                                     -- not T'Class.
+         with Variable_Indexing => Get_14;           -- ERROR: (G)  Parameter
+                                                     -- is not T'Class.
 
        type Type_16 is tagged null record
          with Variable_Indexing => Inner.Get_16;     -- ERROR: (C)
@@ -346,7 +350,8 @@ procedure B416001 is
        type Type_17 is tagged null record
          with Variable_Indexing => Get_17;           -- ERROR: (D)
                                                      -- Function with one param
-                                                     -- overloaded with OK case.
+                                                     -- overloaded with OK
+                                                     -- case.
 
        function Get_17 (X : Type_17) return Ref is (Null_Ref);
 
@@ -356,7 +361,8 @@ procedure B416001 is
        type Type_17_C is tagged null record
          with Constant_Indexing => Get_17_C;         -- ERROR: (D)
                                                      -- Function with one param
-                                                     -- overloaded with OK case.
+                                                     -- overloaded with OK
+                                                     -- case.
 
        function Get_17_C (X : Type_17_C) return Integer is (1217);
 
@@ -369,7 +375,8 @@ procedure B416001 is
                                                      -- overloaded with correct
                                                      -- routine.
 
-       function Get_18 (Index : Positive; X : Type_18) return Ref is (Null_Ref);
+       function Get_18 (Index : Positive; X : Type_18) 
+         return Ref is (Null_Ref);
 
        function Get_18 (X : in out Type_18; Index : Positive)
          return Ref is (Null_Ref);

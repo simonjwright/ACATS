@@ -20,7 +20,7 @@
     </STYLE>
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFE8" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
-<DIV><SPAN Style="font-size:200%; color: rgb(0,0,153)"><B>ACATS 4.1 User's Guide</B></SPAN></DIV>
+<DIV><SPAN Style="font-size:200%; color: rgb(0,0,153)"><B>ACATS 4.2 User's Guide</B></SPAN></DIV>
 <DIV Class="Normal"><I><B><A HREF="UG-TTL.HTM">Title Page</A></B></I></DIV>
 <div style="margin-top: 0.6em; margin-bottom: 0.0em"><A HREF="UG-TOC.HTM"><IMG SRC="CONT.GIF" ALT="Contents" BORDER=0></A>&nbsp;
 &nbsp;<A HREF="UG-02.HTM"><IMG SRC="INDEX.GIF" ALT="Index" BORDER=0></A>&nbsp;
@@ -61,13 +61,13 @@ then the tests may be graded as inapplicable by demonstrating that they
 fail to bind.</div>
 <div class="Normal">If one of the Interfaces child packages is not provided, 
 then the corresponding tests may be graded as inapplicable, provided 
-they reject the corresponding <B>with</B> clause (see <A HREF="UG-D1F.HTM">D.1.15</A> 
-(C), <A HREF="UG-D1I.HTM">D.1.18</A> (COBOL), and <A HREF="UG-D1J.HTM">D.1.19</A> 
+they reject the corresponding <B>with</B> clause (see <A HREF="UG-D1G.HTM">D.1.16</A> 
+(C), <A HREF="UG-D1J.HTM">D.1.19</A> (COBOL), and <A HREF="UG-D1K.HTM">D.1.20</A> 
 (Fortran) for lists of tests that use the packages). Similarly, if a 
 convention identifier for one of these languages is not supported, then 
 the corresponding tests may be graded as inapplicable, provided they 
-reject the corresponding aspect or <B>pragma</B> (see <A HREF="UG-D1C.HTM">D.1.12</A> 
-(C), <A HREF="UG-D1D.HTM">D.1.13</A> (COBOL), and <A HREF="UG-D1E.HTM">D.1.14</A> 
+reject the corresponding aspect or <B>pragma</B> (see <A HREF="UG-D1D.HTM">D.1.13</A> 
+(C), <A HREF="UG-D1E.HTM">D.1.14</A> (COBOL), and <A HREF="UG-D1F.HTM">D.1.15</A> 
 (Fortran) for lists of tests containing each convention).</div>
 <div class="Normal">The tests involving interfaces to foreign code are 
 listed below.</div>
@@ -101,13 +101,14 @@ be compiled through a C compiler, and the resulting object code must
 be bound with the compiled Ada code. Pragma Import will take the name 
 of the C code from ImpDef.</div>
 <div class="Indented2"><table width="70%">
-<TR><TD align="left">cd30005*<TD align="left">cxb3003<TD align="left">cxb3010<TD align="left">cxb3017*<TD align="left">
-<TR><TD align="left">bxb3001<TD align="left">cxb3004*<TD align="left">cxb3011<TD align="left">cxb3018<TD align="left">
-<TR><TD align="left">bxb3002<TD align="left">cxb3005<TD align="left">cxb3012<TD align="left">cxb3019<TD align="left">
-<TR><TD align="left">bxb3003<TD align="left">cxb3006*<TD align="left">cxb3013*<TD align="left">cxb3020<TD align="left">
-<TR><TD align="left">bxb3004<TD align="left">cxb3007<TD align="left">cxb3014<TD align="left">cxb3021<TD align="left">
-<TR><TD align="left">cxb3001<TD align="left">cxb3008<TD align="left">cxb3015<TD align="left">cxb3022 <TD align="left">
-<TR><TD align="left">cxb3002<TD align="left">cxb3009<TD align="left">cxb3016<TD align="left">&nbsp;<TD align="left">
+<TR><TD align="left">cd30005*<TD align="left">cxb3004*<TD align="left">cxb3012<TD align="left">cxb3020<TD align="left">
+<TR><TD align="left">bxb3001<TD align="left">cxb3005<TD align="left">cxb3013*<TD align="left">cxb3021<TD align="left">
+<TR><TD align="left">bxb3002<TD align="left">cxb3006*<TD align="left">cxb3014<TD align="left">cxb3022<TD align="left">
+<TR><TD align="left">bxb3003<TD align="left">cxb3007<TD align="left">cxb3015<TD align="left">cxb3023*<TD align="left">
+<TR><TD align="left">bxb3004<TD align="left">cxb3008<TD align="left">cxb3016<TD align="left">cxb3024* <TD align="left">
+<TR><TD align="left">cxb3001<TD align="left">cxb3009<TD align="left">cxb3017*<TD align="left">&nbsp;<TD align="left">
+<TR><TD align="left">cxb3002<TD align="left">cxb3010<TD align="left">cxb3018<TD align="left">&nbsp;<TD align="left">
+<TR><TD align="left">cxb3003<TD align="left">cxb3011<TD align="left">cxb3019<TD align="left">&nbsp;<TD align="left">
 </table></div>
 <div class="WideAbove"><SPAN Class="swiss"><SPAN STYLE="font-size: 156%"><B></B></SPAN><SPAN STYLE="font-size: 125%"><B>COBOL 
 Language Interface</B></SPAN><SPAN STYLE="font-size: 156%"><B></B></SPAN></SPAN></div>

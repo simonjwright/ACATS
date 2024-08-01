@@ -425,8 +425,9 @@ that have been replaced have been removed.
      C330001
 (10) NN
 (11) NN  [C38005A, C38005B, C38005C test this]
+(11.1/3) C350A01, C350A02, C350B01, C350B02
 (12) NN
-(13) NN
+(13/3) C360A01, C360A02, C360B01, C360B02 [Default_Component_Value, NN otherwise]
 (14) GL
 (15) NN
 (16) NN
@@ -662,9 +663,10 @@ that have been replaced have been removed.
 (14) GL
 (15) NN
 (16) GL
+(16.1/2) B354002, C354004
 (17) C354002
 (18) NN
-(19) GL
+(19) %C453001
 (20) NN
 (21) PRI3
 (22) PRI3
@@ -1299,91 +1301,18 @@ that have been replaced have been removed.
 (11) EX
 4.1.3  [Replaced by new coverage documents.]
 4.1.4  [Replaced by new coverage documents.]
+4.1.5  [Ada 2012 only, in new coverage documents.]
+4.1.6  [Ada 2012 only, in new coverage documents.]
 4.2    [Replaced by new coverage documents.]
 4.3    [Replaced by new coverage documents.]
 4.3.1  [Replaced by new coverage documents.]
 4.3.2  [Replaced by new coverage documents.]
 4.3.3  [Replaced by new coverage documents.]
+4.3.4  [Ada 2020 only, in new coverage documents.]
 4.4    [Replaced by new coverage documents.]
-4.5
-(01) GL
-(02) Syn
-(03) Syn
-(04) Syn
-(05) Syn
-(06) Syn
-(07) Syn
-(08) NN
-(09) GL
-(10) C456001 (Exponentiation of float types)
-(11) PRI2
-(12) NN
-(13) NN
-(14) Note
-(15) EX
-(16) EX
-(17) EX
-4.5.1
-(01) GL
-(02) C450001
-     B354001
-(03) C450001
-     B354001
-(04) NN
-(05) C450001
-(06) NN
-(07) NN
-(08) PRI4
-(09) Note
-(10) Note
-(11) EX
-(12) EX
-(13) EX
-(14) EX
-4.5.2
-(01) GL
-(02) B354001
-(03) PRI3
-(04) PRI3
-(05) C450001
-(06) C450001
-(07) C450001
-(08) C450001
-(09) C450001
-(10) GL
-(11) NN
-(12) NN
-(13) PRI5
-(14) C452001
-     C340001
-(15) C452001
-(16) NN
-(17) NN
-(18) NN
-(19) NN
-(20) NN
-(21) NN
-(22) NN
-(23) NN
-(24) C452001
-(24.1/TC1) NT
-(25) NN
-     C392013 (Tagged)
-(26) NN
-(27) NN
-(28) NN
-(29) NN
-(30) PRI3
-(31) NN
-(32) NN
-(32.1/TC1) PRI1
-(33) Note
-(34) Note
-(35) EX
-(36) EX
-(37) EX
-(38) EX
-(39) EX
+4.5    [Replaced by new coverage documents.]
+4.5.1  [Replaced by new coverage documents.]
+4.5.2  [Replaced by new coverage documents.]
 4.5.3
 (01) CXF2A01
      C450001
@@ -1396,7 +1325,7 @@ that have been replaced have been removed.
 (08) NN
 (09) NN
 (10) NN
-(11) PRI3
+(11) %C453001
 (12) EX
 (13) EX
 (14) EX
@@ -1530,7 +1459,10 @@ that have been replaced have been removed.
      C460002
      C460001
 (49) C460013 [Rule moved to 51/2 for Ada 2005]
-(50) PRI3
+(50) C460014, C460015 [tagged conversions]; still need tests for
+     access-to-discriminated records as in 4.6(43-46). This case can't
+     cause numeric or array conversion, as such subtypes have to statically
+     match. [Was: PRI3]
 (51) NN
 (52) MV
 (53) NT
@@ -1573,8 +1505,11 @@ that have been replaced have been removed.
 (02) Syn
 (03/TC1) Classwide type matching (errors): PRI4
      C392014
-(04) B480001
+(03.1/3) C470001
+(04) B480001 (/4) C324005
 (05) PRI2
+   Ada 2007/12: C760A01, C760A02, and C760A03 (expr funcs) try initialized
+   allocators of limited types, but do nothing interesting with the result.
 (06) NN
 (07) NN
 (08) NT
@@ -1619,6 +1554,7 @@ that have been replaced have been removed.
 (22) C332001
 (23) NN
 (24) PRI3
+     B490004 (Static predicates)
 (25) B490001
 (26) NN
 (27) NT
@@ -1700,6 +1636,7 @@ that have been replaced have been removed.
 (26) EX
 (27) EX
 (28) Note
+5.2.1  [Ada 2020 only, TBD.]
 5.3
 (01) GL
 (02) Syn
@@ -1714,6 +1651,7 @@ that have been replaced have been removed.
 5.5    [Replaced by new coverage documents.]
 5.5.1  [Ada 2012 only, in new coverage documents.]
 5.5.2  [Ada 2012 only, in new coverage documents.]
+5.5.3  [Ada 2020 only, in new coverage documents.]
 5.6
 (01) GL
 (02) Syn
@@ -1722,6 +1660,7 @@ that have been replaced have been removed.
 (05) NN
 (06) EX
 (07) EX
+5.6.1  [Ada 2020 only, TBD.]
 5.7
 (01) GL
 (02) Syn
@@ -1790,8 +1729,10 @@ that have been replaced have been removed.
 6.1.1  [Ada 2012 only, in new coverage documents.]
 6.2
 (01) NT
-(02) NN
-(03) NN
+(02) NT (a definition)
+(03) C620001, C620002 (elementary types);
+     C62003B, C95072B (private types with elementary full type)
+     [NN, except for aliased parameter exception, tested paragraph 10]
 (04) NT
 (05) NT
 (06) NT
@@ -1825,7 +1766,8 @@ that have been replaced have been removed.
 (08) MV
 (09) MV
 (10) MV
-(11) PRI3
+(10.1/4) B631001
+(11) B3A0002, B631001 (Redundant).
 (12) MV
 (13) MV
 (13.1/TC1) PRI2
@@ -1894,6 +1836,11 @@ that have been replaced have been removed.
      B392009
 (04) NN
 (05) B641001
+(05.1/4) B641003
+(05.2/4) B641003
+(05.3/4) B641003
+(05.4/4) PRI1 [requires a function with an out parameter, 
+               and a call to that function in the same spec -- unlikely].
 (06) B610001
 (07) NT
 (08) NN
@@ -1902,6 +1849,8 @@ that have been replaced have been removed.
 (11) NN
 (12) NT
 (13) NN
+(13.1/4) C641002
+         C641003
 (14) MV
 (15) C641001
 (16) C3A0014
@@ -1954,7 +1903,8 @@ that have been replaced have been removed.
 (01) NT
 (02) Syn
 (03) Syn
-(04) MV
+(04) C730011
+     C730012
 (05) PRI3 (rep. items); CD10002 (does not apply to operational items)
 (06) CB20003
      C730004
@@ -1994,6 +1944,7 @@ that have been replaced have been removed.
 (15) C730003
      C730004
      B730006
+     B730013
      B830002
 (16) PRI3
 (17) NT
@@ -2045,6 +1996,8 @@ that have been replaced have been removed.
 (19) Note
 (20) Note
 7.3.2  [Ada 2012 only, in new coverage documents.]
+7.3.3  [Ada 2020 only, in new coverage documents.]
+7.3.4  [Ada 2020 only, in new coverage documents.]
 7.4    [Replaced by new coverage documents.]
 7.5    [Replaced by new coverage documents.]
 7.6    [Replaced by new coverage documents.]
@@ -2124,42 +2077,8 @@ that have been replaced have been removed.
 8.5.1  [Replaced by new coverage documents.]
 8.5.2  [Replaced by new coverage documents.]
 8.5.3  [Replaced by new coverage documents.]
-8.5.4
-(01) C854001
-(02) PRI2
-(03) PRI2
-(04) PRI2
-(05/TC1) PRI2 (Full conformance with spec.)
-     PRI1 (Convention may not be intrinsic.)
-     B854001
-     C854003
-(06) PRI2
-(07) NN
-     B393007 (Renaming abstract routines).
-(08) C854001
-(08.1/TC1) C854002
-(08.2/TC1) NT
-(09) PRI3
-(10) Note
-(11) Note
-(12) PRI3
-(13) EX
-(14) EX
-(15) EX
-(16) EX
-(17) EX
-(18) EX
-(19) EX
-(20) EX
-(21) EX
-8.5.5
-(01) PRI3
-(02) Syn
-(03) BA11011
-(04) BC70008
-(05) Note
-(06) EX
-(07) PRI2
+8.5.4  [Replaced by new coverage documents.]
+8.5.5  [Replaced by new coverage documents.]
 8.6
 (01) NN
 (02) NN
@@ -2867,7 +2786,7 @@ that have been replaced have been removed.
 (03) NN
 12.1
 (01) GL
-(02) Syn
+(02) Syn - BC10001
 (03) Syn
 (04) Syn
 (05) PRI3
@@ -3097,6 +3016,7 @@ that have been replaced have been removed.
 (11) EX
 (12) EX
 (13) EX
+12.5.5 (new in Amendment 1 to Ada 95)
 12.6
 (01) GL
 (02) Syn
@@ -3190,6 +3110,7 @@ that have been replaced have been removed.
      BDE0007
      BDE0006
 (09.1/TC1) BDD2004
+(09.2/4) BD10001 (Ada 2012 only)
 (10) PRI3 (rep. items);  CD10002 (does not apply to operational items)
 (11/TC1) PRI2;  CD10002 (2nd sentence does not apply to operational items)
 (12) NN
@@ -4599,6 +4520,10 @@ A.4.7
 (46) PRI2
 (47) Note
 (48) Note
+A.4.8  [Ada 2005 only, TBD.]
+A.4.9  [Ada 2012 only, TBD.]
+A.4.10  [Ada 2012 only, TBD.]
+A.4.11  [Ada 2012 only, TBD.]
 A.5
 (01) GL
 (02) Syn
@@ -5400,6 +5325,8 @@ A.10.10
 (19) Note
 (20) Note
 (21) Note
+A.10.11  [Ada 2012 only, TBD.]
+A.10.12  [Ada 2012 only, TBD.]
 A.11
 (01) CXAB001
 (02) CXAB001
@@ -5485,6 +5412,7 @@ A.12.3
 (03) Syn
 (04) Syn
 (05) PRI3
+A.12.4 [Added by Amendment 1 to Ada 95.]
 A.13
 (01) GL
 (02) Syn
@@ -5533,6 +5461,44 @@ A.15
 (20) CXAF001
 (21) IP
 (22) Note
+A.16 [Added by Amendment 1 to Ada 95.]
+A.16.1 [Added by Ada 2012.]
+A.17 [Added by Amendment 1 to Ada 95.]
+A.18 [Added by Amendment 1 to Ada 95.]
+A.18.1 [Added by Amendment 1 to Ada 95.]
+A.18.2 [Added by Amendment 1 to Ada 95.]
+A.18.3 [Added by Amendment 1 to Ada 95.]
+A.18.4 [Added by Amendment 1 to Ada 95.]
+A.18.5 [Added by Amendment 1 to Ada 95.]
+A.18.6 [Added by Amendment 1 to Ada 95.]
+A.18.7 [Added by Amendment 1 to Ada 95.]
+A.18.8 [Added by Amendment 1 to Ada 95.]
+A.18.9 [Added by Amendment 1 to Ada 95.]
+A.18.10 [Added by Ada 2012.]
+A.18.11 [Added by Ada 2012.]
+A.18.12 [Added by Ada 2012.]
+A.18.13 [Added by Ada 2012.]
+A.18.14 [Added by Ada 2012.]
+A.18.15 [Added by Ada 2012.]
+A.18.16 [Added by Ada 2012.]
+A.18.17 [Added by Ada 2012.]
+A.18.18 [Added by Ada 2012.]
+A.18.19 [Added by Ada 2012.]
+A.18.20 [Added by Ada 2012.]
+A.18.21 [Added by Ada 2012.]
+A.18.22 [Added by Ada 2012.]
+A.18.23 [Added by Ada 2012.]
+A.18.24 [Added by Ada 2012.]
+A.18.25 [Added by Ada 2012.]
+A.18.26 [Added by Ada 2012.]
+A.18.27 [Added by Ada 2012.]
+A.18.28 [Added by Ada 2012.]
+A.18.29 [Added by Ada 2012.]
+A.18.30 [Added by Ada 2012.]
+A.18.31 [Added by Ada 2012.]
+A.18.32 [Added by Ada 2020.]
+A.18.33 [Added by Ada 2012.]
+A.19 [Added by Ada 2012.]
 B
 (01) GL
 B.1
@@ -6425,6 +6391,7 @@ C.7.2
 (31) Note
 (32) Note
 (33) Note
+C.7.3 [Added by Amendment 1 to Ada 95.]
 D
 (01) GL
 (02) DOC
@@ -6508,6 +6475,10 @@ D.2.2
 (19) CXD2004
 (20) PRI3
 (21) PRI3
+D.2.3 [Added by Amendment 1 to Ada 95.]
+D.2.4 [Added by Amendment 1 to Ada 95.]
+D.2.5 [Added by Amendment 1 to Ada 95.]
+D.2.6 [Added by Amendment 1 to Ada 95.]
 D.3
 (01) PRI3
 (02) PRI3
@@ -6577,6 +6548,8 @@ D.5
 (17) Note
 (18) PRI3
 (19) Note
+D.5.1 [Added by Amendment 1 to Ada 95.]
+D.5.2 [Added by Amendment 1 to Ada 95.]
 D.6
 (01) GL
 (02) CXD6003
@@ -6706,6 +6679,7 @@ D.10
 (11) CXDA004
      CXDA003
      CXD5002
+D.10.1 [Added by Ada 2012.]
 D.11
 (01) GL
 (02) Syn
@@ -6739,6 +6713,14 @@ D.12
 (10) DOC
 (11) DOC
 (12) DOC
+D.13 [Added by Amendment 1 to Ada 95.]
+D.14 [Added by Amendment 1 to Ada 95.]
+D.14.1 [Added by Amendment 1 to Ada 95.]
+D.14.2 [Added by Amendment 1 to Ada 95.]
+D.14.3 [Added by Amendment 1 to Ada 95.]
+D.15 [Added by Amendment 1 to Ada 95.]
+D.16 [Added by Ada 2012.]
+D.16.1 [Added by Ada 2012.]
 E
 (01) GL
 (02) GL
@@ -7546,6 +7528,7 @@ G.1.3
 (35) IP
 G.1.4
 (01) PRI4
+G.1.5 [Added by Amendment 1 to Ada 95.]
 G.2
 (01) GL
 (02) IP
@@ -7680,6 +7663,9 @@ G.2.6
 (13) PRI3
 (14) PRI3
 (15) IA
+G.3 [Added by Amendment 1 to Ada 95.]
+G.3.1 [Added by Amendment 1 to Ada 95.]
+G.3.2 [Added by Amendment 1 to Ada 95.]
 H
 (01) GL
 (02) GL
@@ -7779,3 +7765,6 @@ H.4
 (25) DOC
 (26) NT
 (27) NT
+H.4.1 [Added by Ada 202x.]
+H.5 [Added by Amendment 1 to Ada 95.]
+H.6 [Added by Amendment 1 to Ada 95.]

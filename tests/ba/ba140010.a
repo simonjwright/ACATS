@@ -64,8 +64,10 @@
 --         BA14001A.A
 --
 -- PASS/FAIL CRITERIA:
---      Files BA110141.A, and BA110142.A contain errors. All
---      errors in these files must be detected to pass the test.
+--      Files BA140011.A, BA140012.A, BA140013.A, BA140014.A, BA140015.A,
+--      BA140016.A, BA140017.A, BA140018.A, BA140019.A, and
+--      BA14001A.A contain errors. All errors in these files
+--      must be detected to pass the test.
 --      Compiling the generic subprogram bodies BA14001H and
 --      BA14001A.Daughter is optional.
 --

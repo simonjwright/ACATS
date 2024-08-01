@@ -64,4 +64,4 @@
 
 with BA14001G;
 package BA14001G is new BA14001B; -- ERROR: {1:1}
-  -- Probably two errors here, as BA14001B is undefined.
+  -- BA14001B is undefined, so probably two errors here.
