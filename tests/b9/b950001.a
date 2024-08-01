@@ -66,7 +66,6 @@
 --                          overlong lines. Added error indicators.
 --!
 
-
 procedure B950001 is
 
    protected type POT1 is
@@ -432,7 +431,7 @@ procedure B950001 is
                           new Gen1 (Prot_Arr_Var(1).PP11);   -- OK. {1:18;1}
                  package GPF99 is 
                           new Gen2 (Prot_Arr_Var(1).PF11);   -- OK. {1:18;1}
-                 procedure RPE99 renames Prot_Arr_Var(1).PE11; -- OK. {1:18;1}
+                 procedure RPE99 renames Prot_Arr_Var(1).PE11; -- OK. {18;1}
                  procedure RPP99 (Int : in Integer)
                                 renames Prot_Arr_Var(1).PP12;-- OK. {1:18;1}
                  function RPF99 (Int : in Integer) return Boolean
@@ -471,7 +470,7 @@ procedure B950001 is
            when 112 => POT1'(Prot_Variable).PE12(Int);       -- ERROR: {24;1}
            when 113 => POT1'(Prot_Variable).PP11;            -- ERROR: {24;1}
            when 114 => 
-                 POT1'(Prot_Variable).PP12(Prot_Component);  -- ERROR: {24;1}
+                 POT1'(Prot_Variable).PP12(Prot_Component);  -- ERROR: {18;1}
            when 115 => Sink1(POT1'(Prot_Variable).PF11);     -- OK. {24;1}
            when 116 => Sink1(POT1'(Prot_Variable).PF12(2));  -- OK. {24;1}
            when 117 => Sink2(POT1'(Prot_Variable).PP11'access);-- ERROR: {24;1}
@@ -498,13 +497,13 @@ procedure B950001 is
            when 122 => POT1'(Prot_In_Out_Parm).PE12(Int);    -- ERROR: {24;1}
            when 123 => POT1'(Prot_In_Out_Parm).PP11;         -- ERROR: {24;1}
            when 124 => 
-               POT1'(Prot_In_Out_Parm).PP12(Prot_Component); -- ERROR: {24;1}
+               POT1'(Prot_In_Out_Parm).PP12(Prot_Component); -- ERROR: {16;1}
            when 125 => Sink1(POT1'(Prot_In_Out_Parm).PF11);  -- OK. {24;1}
            when 126 => Sink1(POT1'(Prot_In_Out_Parm).PF12(2)); -- OK. {24;1}
            when 127 => 
-                 Sink2(POT1'(Prot_In_Out_Parm).PP11'access); -- ERROR: {24;1}
+                 Sink2(POT1'(Prot_In_Out_Parm).PP11'access); -- ERROR: {18;1}
            when 128 => 
-                 Sink3(POT1'(Prot_In_Out_Parm).PF11'access); -- OK. {24;1}
+                 Sink3(POT1'(Prot_In_Out_Parm).PF11'access); -- OK. {18;1}
            when 129 =>
               declare
                  package GPE129 is 

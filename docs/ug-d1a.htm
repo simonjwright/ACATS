@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-    <TITLE>Instantiation of Sequential_IO with indefinite types</TITLE>
+    <TITLE>Stream Sizes</TITLE>
     <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <META NAME="Author" CONTENT="JTC1/SC22/WG9/ARG, by Randall Brukardt, ARG Editor">
     <META NAME="GENERATOR" CONTENT="Arm_Form.Exe, Ada Reference Manual generator">
@@ -19,7 +19,7 @@
     </STYLE>
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFE8" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
-<DIV><SPAN Style="font-size:200%; color: rgb(0,0,153)"><B>ACATS 4.1 User's Guide</B></SPAN></DIV>
+<DIV><SPAN Style="font-size:200%; color: rgb(0,0,153)"><B>ACATS 4.2 User's Guide</B></SPAN></DIV>
 <DIV Class="Normal"><I><B><A HREF="UG-TTL.HTM">Title Page</A></B></I></DIV>
 <div style="margin-top: 0.6em; margin-bottom: 0.0em"><A HREF="UG-TOC.HTM"><IMG SRC="CONT.GIF" ALT="Contents" BORDER=0></A>&nbsp;
 &nbsp;<A HREF="UG-02.HTM"><IMG SRC="INDEX.GIF" ALT="Index" BORDER=0></A>&nbsp;
@@ -28,12 +28,12 @@
 &nbsp;<A HREF="UG-D1B.HTM"><IMG SRC="NEXT.GIF" ALT="Next" BORDER=0></A>&nbsp;
 </div>
 <HR>
-<H1>D.1.10 Instantiation of Sequential_IO with indefinite types</H1>
-<div class="Normal" style="margin-bottom: 0.4em">If Sequential_IO does 
-not support indefinite types, then the tests contained in the following 
-files are not applicable:</div>
+<H1>D.1.10 Stream Sizes</H1>
+<div class="Normal" style="margin-bottom: 0.4em">If Stream_Element'Size 
+is less than 8, or the largest signed integer uses less than 4 stream 
+elements, then the tests contained in the following files are not applicable:</div>
 <div class="Indented2"><table width="70%">
-<TR><TD align="left">CE2201D.DEP<TD align="left">CE2201E.DEP <TD align="left">&nbsp;<TD align="left">&nbsp;<TD align="left">
+<TR><TD align="left">CDD2B03.A<TD align="left">CDD2B04.A <TD align="left">&nbsp;<TD align="left">&nbsp;<TD align="left">
 </table></div>
 
 <HR>

@@ -18,6 +18,23 @@ for dynamic predicates. Check that a nonstatic subtype named in
 an aggregate choice of a named array aggregate cannot have a predicate.
 Check that a subtype with a dynamic predicate is not static.
 
+B324003
+
+Check that rules prohibiting use of subtypes with predicates are
+enforced in generic instances.
+
+B324004
+
+Check that a Predicate_Failure aspect cannot be given on an entity other
+than a type or subtype.
+    
+Check that the Predicate_Failure aspect cannot be specified on a type or 
+subtype that does not also have a Static_Predicate or Dynamic_Predicate 
+aspect specified.
+
+Check that the expression of a Predicate_Failure aspect must have type
+String.
+
 B330001
 
 Check that if a subtype indication of a variable object defines an
@@ -26,6 +43,10 @@ array type definition of a variable object defines an unconstrained
 array subtype, then there is an initialization. Check that indefinite
 subtypes may not be used as the subtype indication of a component
 definition (in either an array or a record definition).
+
+B350001
+
+Check that Legality Rules are enforced when Default_Value is specified.
 
 B354001
 
@@ -39,6 +60,23 @@ Check that the value of a potentially static expression of a modular
 type that appears in a nonstatic context must be within the base range
 of its expected type. Check that the predefined logical operators and
 membership tests are available.
+
+B354002
+
+Check that the prefix of the Mod attribute must be a modular subtype.
+Check that the result subtype of the Mod attribute is the subtype
+identified by the prefix. Check that the argument of the Mod attribute
+can be any integer type.
+
+B35A001
+
+Check that Legality Rules are enforced when Small is specified with
+an aspect specification.
+
+B360001
+
+Check that Legality Rules are enforced when Default_Component_Value is
+specified.
 
 B370001
 
@@ -295,6 +333,26 @@ Check that an abstract routine of an abstract partial view overridden
 by a non-abstract routine in the private part requires overriding when
 it is inherited if the private part is not visible where it is inherited.
 
+B393012
+
+For nonformal tagged abstract types, check that: Aggregates may not be defined
+or allocated of an abstract type. Generic in parameters may not be of an
+abstract type. A function with an access result type that designates an
+abstract result type must be declared abstract. The result type of a generic
+function may not be abstract. The designated type of the access result type of
+a generic function may not be abstract. The target of an assignment statement
+may not be abstract. The return subtype indication of an extended return
+statement may not be abstract.
+
+B393013
+
+For nonformal interface types, check that: Generic in parameters may not be of
+an abstract type. A function with an access result type that designates an
+abstract result type must be declared abstract. The result type of a generic
+function may not be abstract. The designated type of the access result type of
+a generic function may not be abstract. The return subtype indication of an
+extended return statement may not be abstract.
+
 B394001
 
 Check that a primitive subprogram of an interface type cannot be a
@@ -468,6 +526,11 @@ type cannot be used as a prefix.
 Check that a dereference of an access-to-formal incomplete type cannot
 be used as a prefix.
 
+B3A1011
+
+Check that the controlling parameter or controlling result cannot be an
+incomplete view if the call is dynamically tagged.
+
 B3A1A01
 
 Check that the name of an untagged incomplete view cannot be used as
@@ -506,6 +569,14 @@ B3A1A05
 
 Check that the name of an incomplete view cannot be used in the
 subtype_indication of a generic formal object.
+
+B3A1A06
+
+Check that the actual parameter to a call cannot be of an untagged
+incomplete view.
+
+Check that the result object of a function call cannot be of an
+incomplete view.
 
 B3A2002
 
@@ -650,6 +721,15 @@ occurs within the body of that generic unit or within the body
 of a generic unit declared within the declarative region of the
 generic unit, S must be a nonformal type declared within the generic unit.
 
+B3A2018
+
+Check that an explicitly aliased parameter has the same
+static accessibility level as a normal parameter unless it used to
+compare with the level of the return object.
+
+Check that "the master of the call" is correctly statically determined
+for a call on a function containing explicitly aliased parameters.
+
 B413001
 
 If L represents an object of a tagged type, check that the reference
@@ -670,6 +750,39 @@ a variable.
 Check that the prefixed view L.R is illegal if the first parameter
 of R is a parameter with an access-to-variable type and L does not
 denote a variable.
+
+B413004
+
+Check that for the reference L.R, if L represents an object or value
+of an non-access untagged type T or an access type designating
+an untagged type T, and R represents a subprogram with a
+first parameter of T, the reference is illegal even if the
+subprogram is primitive for T.
+
+Check that for the reference L.R, if L represents an object or value
+of an non-access untagged type T or an access type designating
+an untagged type T, and R represents a subprogram with a
+first access parameter designating T, the reference is illegal
+even if the subprogram is primitive for T.
+
+B413005
+
+(1) Check that a call of a prefixed view cannot repeat the first
+parameter in the parameter list.
+
+(2) Check that for the reference L.R, if L represents an object of a 
+tagged type T or an access type designating a tagged type T, and R 
+represents a subprogram with a first parameter of the type T or a 
+class-wide type that is covered by T that is not declared immediately
+in the declarative region of an ancestor of T, the reference is
+illegal.
+
+(3) Check that for the reference L.R, if L represents an object of a
+tagged type T or an access type designating a tagged type T, and R
+represents a subprogram with some parameter other than the first
+parameter of the type T and a first parameter of a non-access
+untagged type that is declared immediately in the declarative region
+of an ancestor of T, the reference is illegal.
 
 B415001
 
@@ -777,6 +890,22 @@ Check that if a variant part is not nested in an unselected variant,
 the value of the governing discriminant of a variant in a record
 aggregate cannot be non-static.
 
+B431007
+
+Check that the type of a record aggregate cannot be a derived type that has an
+ancestor for which the current view of the parent of the derived type is not a
+descendant of the full view of the ancestor.
+
+B431008
+
+Check that the association in a record aggregate for a discriminant
+without a default cannot be given by <>.
+
+B431009
+
+Check that the association in an extension aggregate for a discriminant
+without a default cannot be given by <>.
+
 B432001
 
 Check rules related to the type of the ancestor expression or subtype
@@ -793,6 +922,17 @@ in an extension aggregate:
        to resolve the ancestor expression.
 Also, check that the type of an extension aggregate cannot be a
 tagged record type or a private extension.
+
+B432002
+
+Check that the type of an extension aggregate cannot be a type such
+that the current view of the parent of the aggregate type is not a
+descendant of the full view of the ancestor type.
+
+B432003
+
+Check that the subtype_mark of an extension aggregate cannot denote a
+view of a type that has unknown discriminants.
 
 B433001
 
@@ -813,6 +953,61 @@ is unconstrained.
 Check that an others choice is not allowed in an array aggregate in the
 return expression of an expression function if the subtype of the
 function return is unconstrained.
+
+B433004
+
+Check that an others choice is not allowed in an array aggregate which
+is the dependent expression of a conditional expression used as:
+    * the expression of a return statement if the subtype of the
+      function return is unconstrained;
+    * the return expression of an expression function if the subtype of
+      the function return is unconstrained;
+    * the expression of an object declaration if the subtype of the
+      object declaration is unconstrained;
+    * an actual parameter to a call of a subprogram if the subtype of
+      the formal parameter is unconstrained;
+    * the operand of a qualified expression if the subtype of the
+      qualfied expression is unconstrained.
+
+B440001
+
+Check that the operands of a membership test are simple_expressions, not
+choice_expressions.
+
+B455001
+
+Check that if the tested expression has a limited type and the
+membership has any choice expressions, the tested type must have
+a visible equality operator.
+
+B455002
+
+[A] Check that a universal access equality operator does not resolve
+if neither operand is a specific anonymous access type.
+
+[B] Check that a universal access equality operator is illegal if one
+of the operands is access-to-object and the other is
+access-to-subprogram.
+
+[C] Check that a universal access equality operator is illegal when both
+operands have access-to-object types and the designated subtypes of
+the operands are different kinds of types.
+
+[D] Check that a universal access equality operator is illegal when both
+operands have access-to-object types and the designated subtypes of
+the operands are elementary and do not statically match.
+
+[E] Check that a universal access equality operator is illegal when both
+operands have access-to-object types and the designated subtypes of the
+operands are array types and do not statically match.
+
+[F] Check that a universal access equality operator is illegal when both
+operands have access-to-object types and the designated types of the
+operands are record types and one does not cover the other.
+
+[G] Check that a universal access equality operator is illegal when both
+operands have access-to-subprogram types and the designated profiles of
+the operand types are not subtype conformant.
 
 B455002
 
@@ -871,6 +1066,11 @@ B457007
 Check that if the type of a conditional expression is not determined by
 the resolution rules, it is illegal.
 
+B458001
+
+Check that a quantified expression has to be surrounded in parentheses
+if it is not already surrounded by them.
+
 B460001
 
 Check that if the target type of a type conversion is a general access
@@ -912,6 +1112,11 @@ is not tagged is not treated as a view conversion.
 (Defect Report 8652/0017, as reflected in Technical Corrigendum 1,
 RM95 4.6(5/1)).
 
+B470001
+
+Check that a qualified expression is a constant view of the expression,
+even if the expression is a variable object.
+
 B480001
 
 Check that if the subtype indication of an uninitialized allocator
@@ -929,6 +1134,11 @@ B480003
 If the designated type of an uninitialized allocator is class-wide,
 check that the accessibility level of the type of the subtype indication
 cannot be statically deeper than the level of the type of the allocator.
+
+B480004
+
+Check that an allocator for an access type with Storage_Size statically
+set to zero is illegal.
 
 B490001
 
@@ -960,6 +1170,11 @@ B490003
 
 Check that statically unevaluated static expressions do not make a
 static expression illegal.
+
+B490004
+
+Check that a static expression is illegal if it fails the check of a
+static predicate, even if the assertion policy is Ignore.
 
 B540001
 
@@ -1149,10 +1364,6 @@ Check that, for a primitive operation of a type T, that a class-wide
 precondition or postcondition expression cannot use a global object
 of type T or T'Class as a parameter to a primitive operation of type T.
 
-Check that a primitive subprogram is illegal if the corresponding
-expression for an inherited class-wide precondition or postcondition
-expression would be illegal.
-
 B611007
 
 Check that Pre'Class and Post'Class cannot be specified for an entry of
@@ -1208,6 +1419,69 @@ B611013
 
 For a discrete X, check that the nominal subtype of X'Old is that of X.
 
+B611014
+
+Check that an Old attribute reference is illegal if the prefix does not
+statically denote an object, and the use of Old appears in:
+   (A) any part of an if expression other than the first condition;
+   (B) the dependent expression of a case expression;
+   (C) the predicate of a quantified expression;
+   (D) the right operand of a short circuit control form;
+   (E) a membership choice other than the first in a membership
+       operation.
+
+B611015
+
+Check that the prefix of an Old attribute cannot have a limited type.
+
+B611016
+
+Check that Pre'Class and Post'Class cannot be specified for an entry of
+a tagged task or protected type.
+
+Check that Pre'Class and Post'Class cannot be specified for a protected
+subprogram of a tagged protected type.
+
+Check that Pre'Class and Post'Class cannot be specified for a subprogram
+that is not a primitive subprogram of some tagged type. (Tagged task type
+and tagged protected type cases.)
+
+Check that Pre'Class and Post'Class cannot be specified for task
+types, protected types, single tasks, and single protected objects.
+
+B611017
+
+Check that Pre'Class cannot be specified for an overriding of a
+subprogram that does not specify Pre'Class.
+
+Check that an instance is illegal if the instance contains a subprogram
+that specifies Pre'Class and overrides a primitive operation of a formal
+type that does not specify Pre'Class.
+
+B611018
+
+Check that for an abstract type T that inherits homographs of a
+subprogram S from two different ancestors with non-conforming
+preconditions, the inherited S cannot be called by a statically
+bound call.
+
+Check that for a nonabstract type T that inherits homographs of a
+subprogram S from two different ancestors with non-conforming
+preconditions, the inherited S is illegal if it is not overridden.
+
+B611019
+
+Check that a renaming S1 that overrides an inherited routine S2 is
+illegal if any of the class-wide preconditions do not fully conform.
+
+Check that an instance is illegal if the instance contains a renaming
+that overrides a primitive operation of a formal type where all of the
+class-wide preconditions do not fully conform.
+
+B631001
+
+Check that a prefixed view is intrinsic.
+
 B640001
 
 Check that an abstract nondispatching operation is not considered for
@@ -1226,6 +1500,13 @@ B641002
 
 Check the actual parameter corresponding to an explicitly aliased
 parameter cannot violate any of the applicable legality rules.
+
+B641003
+
+Check that, for an out parameter of a scalar type with a specified
+Default_Value, it is illegal to pass a type conversion of an object
+unless the type of the object is related and has a specified
+Default_Value.
 
 B650001
 
@@ -1281,6 +1562,37 @@ B650006
 
 Check that an extended return statement containing keyword constant
 cannot omit an expression.
+
+B650007
+
+Check that an extended return statement containing the reserved word aliased
+is only allowed if the type of the return object is immutably limited.
+
+B651001
+
+Check that a return statement cannot be used in a nonreturning
+procedure. Check that a renames-as-body that completes a
+nonreturning procedure declaration renames a nonreturning procedure.
+Case 1: pragma No_Return.
+
+B651002
+
+Check that a return statement cannot be used in a nonreturning
+procedure. Check that a renames-as-body that completes a
+nonreturning procedure declaration renames a nonreturning procedure.
+Case 2: aspect No_Return.
+
+B651003
+
+Check that the aspect No_Return can only be specified for a procedure
+or generic procedure. Check that the expression for aspect No_Return
+cannot be nonstatic. Check that the aspect No_Return cannot be specified
+for a null procedure nor a procedure instance.
+
+B651004
+
+Check that a dispatching nonreturning procedure can only be overridden
+with a nonreturning procedure.
 
 B660001
 
@@ -1406,6 +1718,42 @@ Check that if the full_type_declaration for a private extension
 includes a derived_type_definition, then the reserved word limited
 shall appear in the full_type_declaration if it also appears in the
 private_extension_declaration.
+
+B730011
+
+Check that a private type or private extension cannot appear in
+the private part of a package specification, in a package body,
+a subprogram, a block, or a task body.
+
+Check that the full definition of a private type or private
+extension cannot appear in the visible part, and cannot be
+omitted from the package specification (even if it is provided
+in the package body).
+
+Check that the full declaration of a private type or private extension
+cannot appear in the private part of a nested or enclosing package
+specification.
+
+B730012
+
+Check that a private type or private extension cannot appear in
+the private part of a generic package specification, in a generic
+package body, or a generic subprogram.
+
+Check that the full definition of a private type or private
+extension cannot appear in the visible part of a generic package, and
+cannot be omitted from the package specification (even if it is provided
+in the package body).
+
+Check that the full declaration of a private type or private extension
+cannot appear in the private part of a nested or enclosing generic
+package specification.
+
+B730013
+
+Check that no basic operations that depend on the full declaration
+of the type are available for private and limited private types
+completed by fixed and floating point types.
 
 B731001
 
@@ -1620,6 +1968,30 @@ For a type extension declared in a child package, where the parent
 type is declared in an ancestor package, it is illegal for the two
 types to have duplicate component names.
 
+B830003
+
+Check that homographs are forbidden in any of these combinations
+of parts of a generic package: Visible-Visible; Visible-Private;
+Private-Private.
+
+B830004
+
+Check that homographs are forbidden in any of these combinations
+of parts of a generic package: Visible-Body; Private-Body; Body-Body.
+
+B830005
+
+Check that homographs are forbidden in any of these combinations
+of parts of a generic package with the body in a subunit: 
+Visible-Body; Private-Body; Body-Body.
+
+B830006
+
+Check that homographs of expression functions are forbidden in any of 
+these combinations of parts of a generic package: Visible-Visible; 
+Visible-Private; Private-Private; Visible-Body; Private-Body;
+Body-Body.
+
 B831001
 
 Check that an operation that has an overriding indicator is a
@@ -1675,6 +2047,11 @@ Check that an operation with the indicator of not overriding is illegal
 if it is primitive for a type derived from a generic formal type and
 the operation inherits a homograph in either the generic or the instance.
 (Part B: package bodies)
+
+B831006
+
+Check that a subprogram with an overriding indicator is illegal in a
+protected body.
 
 B840001
 
@@ -1743,14 +2120,44 @@ with a null_exclusion, check that the renaming is illegal if the
 subtype of the renamed object does not exclude null.
 
 For an object renaming with a null_exclusion or an access_definition
-with a null_exclusion that renames a formal object in a generic package
+with a null_exclusion that renames a formal in out object in a generic package
 specification, check that an instance is illegal if the subtype of the
 actual object does not exclude null.
 
 For an object renaming with a null_exclusion or an access_definition
-with a null_exclusion that renames a formal object in a generic package
+with a null_exclusion that renames a formal in out object in a generic package
 body, check that the renaming is illegal if the formal object does
 not include a null_exclusion.
+
+B851005
+
+Check that an object renaming declaration is illegal if it
+renames a discriminant-dependent component or subcomponent
+if the enclosing record type has an unconstrained nominal
+subtype and the object is not known to be constrained.
+Part A: "Normal" cases (no generics or access types).
+
+B851006
+
+Check that an object renaming declaration is illegal if it
+renames a discriminant-dependent component or subcomponent
+if the enclosing record type has an unconstrained nominal
+subtype and the object is not known to be constrained.
+Part B: Access types and dereferences.
+
+B851007
+
+Check that an object renaming declaration is illegal if it
+renames a discriminant-dependent component or subcomponent
+if the enclosing record type has an unconstrained nominal
+subtype and the object is not known to be constrained.
+Part C: Generic units.
+
+B853001
+
+Check that the name of a renamed limited view of a package cannot be
+used outside of the scope of a with clause for the package or the
+immediate scope of the renaming.
 
 B854001
 
@@ -1759,6 +2166,46 @@ the subprogram it completes is frozen, and the renaming renames the
 subprogram itself.  (Defect Report 8652/0027, as reflected in Technical
 Corrigendum 1).
 
+B854002
+
+For a subprogram renaming with a parameter or result type that has a
+null_exclusion or is an access_definition with a null_exclusion, check that the
+renaming is illegal if the subtype of the corresponding parameter or result of
+the renamed subprogram does not exclude null.
+
+For a subprogram renaming with a parameter or result type that has a
+null_exclusion or is an access_definition with a null_exclusion that appears in
+the specification of an outer generic whose renamed subprogram is a generic
+formal subprogram of the outer generic, check that an instantiation of the outer
+generic is illegal if the corresponding parameter or result of the actual
+subprogram does not exclude null.
+
+For a subprogram renaming with a parameter or result type that has a
+null_exclusion or is an access_definition with a null_exclusion that appears in
+the body of an outer generic whose renamed subprogram is a generic formal
+subprogram of the outer generic, check that the renaming is illegal if the
+corresponding parameter or result of the formal subprogram does not include a
+null_exclusion.
+
+B854003
+
+Check that a renames-as-body is illegal if:
+  A) it does not fully conform to the declaration that it completes;
+  B) the renamed entity is not subtype conformant with the declaration
+     that it completes if that declaration is frozen;
+  C) the renamed entity has convention Intrinsic;
+  D) the renamed entity is abstract;
+
+B854004
+
+Check that a renames is illegal if the renamed entity requires
+overriding.
+
+B854005
+
+Check that if a renaming is of a prefixed view, the renaming is illegal
+if renaming the prefix of that view as an object is illegal.
+
 B860001
 
 Check that the selecting_expression of a case expression cannot be
@@ -1766,6 +2213,10 @@ resolved if information from the choices is required to resolve it.
 
 Check that the selecting_expression of a case statement cannot be
 resolved if information from the choices is required to resolve it.
+
+B860002
+
+Check that access type implicit conversion works as expected.
 
 B940001
 
@@ -1805,6 +2256,47 @@ B940007
 
 Check that component declarations are not allowed in the body of
 protected objects.
+
+B940008
+
+Check that a protected subprogram with an overriding indicator of
+"overriding" implements an inherited subprogram.
+
+Check that a protected subprogram with an overriding indicator of
+"not overriding" does not implement an inherited subprogram.
+
+B940009
+
+Check that a protected procedure or entry is illegal if it implements
+an inherited procedure with a first parameter of mode in other than
+an access-to-variable parameter.
+
+Check that a protected function is illegal if it implements
+an inherited function with a first parameter that is not mode in or
+is an access-to-variable parameter.
+
+B940010
+
+Check that a protected operation is illegal if it implements an inherited
+subprogram and the subprogram is also overridden by a primitive
+subprogram.
+
+Check that a primitive subprogram of a tagged protected type is illegal
+if it is type conformant with the prefixed view profile of a protected
+operation of the type.
+
+B940011
+
+Check that if an inherited subprogram is implemented by a protected
+operation, the prefixed view profile of the inherited subprogram must be
+subtype conformant with the protected operation.
+
+Check that if a primitive subprogram overrides an inherited subprogrm
+of a protected opration, the primitive and inherited subprogram must be
+subtype conformant.
+
+Check that if an inherited subprogram for a protected type is neither
+inherited nor overridden, it must be a null subprogram.
 
 B950001
 
@@ -1853,6 +2345,14 @@ Check that an entry_declaration in a task declaration cannot  contain a
 specification for an access parameter. Check that an accept_statement
 is not allowed within an  asynchronous_select inner to the enclosing
 task_body.
+
+B952005
+
+Check that an entry with an overriding indicator of
+"overriding" implements an inherited subprogram.
+
+Check that an entry with an overriding indicator of
+"not overriding" does not implement an inherited subprogram.
 
 B954001
 
@@ -2093,6 +2593,22 @@ Check that a limited_with_clause is not given in the context clause
 for a descendant of the named package. (10.1.2(20/3),
 objective added by AI05-0040-1, Ada 2012).
 
+BA12018
+
+Check that a unit mentioned but not named in a private with clause and
+not mentioned in other with clauses is not allowed in
+the package visible part or subprogram specification of the unit that has
+the with clause. (10.1.2(12-16/2))
+
+Check that a unit mentioned but not named in a private with clause and
+not mentioned in other with clauses is not allowed in
+a context-clause use_clause. (10.1.2(12-16/2))
+
+Check that a unit mentioned but not named in a private with clause and
+not mentioned in other with clauses is not allowed in
+the package visible part or subprogram specification of a public
+descendant of the unit that has the with clause. (10.1.2(12-16/2))
+
 BA13B01
 
 Check that a separate subprogram declared in a private child unit  of a
@@ -2106,6 +2622,16 @@ Check that a separate subprogram declared in a public child unit  of a
 private parent does not have visibility into the private part  of the
 package on which its parent depends or the private part of  its
 parent's public sibling.
+
+BA14001
+
+Check that a compilation unit is illegal if it depends on an earlier
+version of itself. Part 1: normal with.
+
+BA14002
+
+Check that a compilation unit is illegal if it depends on an earlier
+version of itself. Part 2: private with.
 
 BA15001
 
@@ -2213,6 +2739,17 @@ This change does not negate the requirement of RM-10.2.1(11),
 which requires that all semantic dependents of a preelaborated
 library unit also be preelaborated (whether or not they are used
 during elaboration).
+
+BA21005
+
+Check that the categorization aspects Pure and Preelaborate cannot
+be specified by a value declared in the same package.
+
+Check that the categorization aspects Pure and Preelaborate cannot
+be specified by a nonstatic value.
+
+Check that the categorization aspects Pure and Preelaborate are
+specified by a value of type Boolean.
 
 BA21A01
 
@@ -2343,6 +2880,18 @@ BB42003
 Check that a pragma Assertion_Policy is illegal if the policy is
 not recognized.
 
+BB50001
+
+Check that a checking pragma can only be given in a
+package_specification, declarative_part, or configuration pragma.
+
+Check that the identifier in a checking pragma is the name of a check.
+
+BC10001
+
+Check that a task or protected unit cannot be preceded by a generic
+formal part.
+
 BC30001
 
 Check that, in the visible part of an instance, legality rules are
@@ -2363,6 +2912,24 @@ in that class.  Check that, for a generic formal object of mode in out:
 If the formal object is of tagged type T, the type of the actual must
 be T. If the formal object is of type T'Class, the type of the actual
 must be T'Class.
+
+BC40003
+
+For a generic formal in out object with a null_exclusion or an
+access_definition with a null_exclusion, check that an instantiation
+is illegal if the subtype of the actual object does not exclude null.
+
+For an instance of a generic in the specification of an outer generic with a
+generic formal in out object with a null_exclusion or an access_definition with a
+null_exclusion whose actual is a null excluding generic formal in out object of
+the outer generic, check that an instantiation of the outer generic is illegal
+if the subtype of the actual object does not exclude null.
+
+For an instance of a generic in the body of an outer generic with a generic
+formal in out object with a null_exclusion or an access_definition with a
+null_exclusion whose actual is a null excluding generic formal in out object of
+the outer generic, check that the instance is illegal if the formal object does
+not include a null_exclusion.
 
 BC50001
 
@@ -2598,6 +3165,11 @@ the formal and actual must be the same. Specifically, check for the
 case where the parameters in the profile of the formal type are
 themselves formal types.
 
+BC54004
+
+Check that for a generic formal access type, either both or neither of
+the formal and actual subtypes exclude null.
+
 BC54A01
 
 Check that, for a formal access-to-subprogram subtype whose profile
@@ -2641,6 +3213,17 @@ of the formal and actual must statically match. Check for the case
 where the access-to-object type is a pool-specific access-to-variable
 type.
 
+BC55001
+
+Check that for a formal interface type, then the following entities
+that are of the formal type are illegal because the type is abstract:
+an object created by an object declaration or an allocator,
+a component, an aggregate, a generic formal object of mode in, the
+result type of a non-abstract function, the designated type of the
+access result type of a non-abstract function, the result type of a
+generic function, and the designated type of the access result type
+of a generic function.
+
 BC60001
 
 Check that a subprogram default of null shall not be specified for a
@@ -2673,6 +3256,28 @@ subprogram.
 BC60004
 
 Check that every call on an formal abstract subprogram is a dispatching call.
+
+BC60005
+
+For a generic formal subprogram with a parameter or result type that has a
+null_exclusion or is an access_definition with a null_exclusion, check that an
+instantiation is illegal if the subtype of the corresponding parameter or result
+of the actual subprogram does not exclude null.
+
+For an instance of a generic with a generic formal subprogram with a parameter
+or result type that has null_exclusion or is an access_definition with a
+null_exclusion whose actual is a generic formal subprogram of an outer generic
+and that appears in the specification of the outer generic, check that an
+instantiation of the outer generic is illegal if the if the corresponding
+parameter or result of the actual subprogram does not exclude null.
+
+For an instance of a generic with a generic formal subprogram with a parameter
+or result type that has null_exclusion or is an access_definition with a
+null_exclusion whose actual is a generic formal subprogram of an outer generic
+and that appears in the body of the outer generic, check that the instance is
+illegal if the corresponding parameter or result of the formal subprogram does
+not include a null_exclusion.
+
 
 BC70001
 
@@ -2747,6 +3352,12 @@ if its actuals do not match the corresponding actuals in the formal
 package actual part. Specifically, check that, for formal subtypes, the
 actuals must denote statically matching subtypes.
 
+BD10001
+
+Check that only one of a representation item, operational item, or
+aspect specification can be specified for a single aspect of a
+single entity.
+
 BD11001
 
 Check that violations of the legality rules for aspect specifications are
@@ -2758,6 +3369,21 @@ Check that the usage names in an aspect_declaration given in the visible
 part of a package are resolved at the end of the the visible part; in
 particular, names declared in the private part cannot be used.
 
+BD30001
+
+Check that Legality Rules are enforced when Size for a type is
+specified with an aspect specification.
+
+BD30002
+
+Check that Legality Rules are enforced when Alignment for a type is
+specified with an aspect specification.
+
+BD30003
+
+Check that Legality Rules are enforced when Component_Size is
+specified with an aspect specification.
+
 BDB0A01
 
 Check that Storage_Size may not be specified for a derived
@@ -2768,6 +3394,11 @@ Allocate, Deallocate and function Storage_Size.  Check that
 Storage_Size may not be specified for a given access type if
 Storage_Pool is specified for it.
 
+BDB2001
+
+Check that a call of an instance of Unchecked_Deallocation is illegal
+for an access type with Storage_Size statically set to zero.
+
 BDB3A01
 
 Check that the expected type for the Default_Storage_Pool pragma is
@@ -2777,6 +3408,53 @@ a variable.
 Check that the expected type for the Default_Storage_Pool aspect is
 Root_Storage_Pool'Class, and that the aspect definition must denote
 a variable.
+
+BDB4001
+
+Check that a specification of a storage pool is illegal if the
+storage pool supports subpools and:
+    (A) The access type is statically deeper than the storage pool
+        object;
+    (B) The storage pool object is a part of a formal parameter;
+    (C) The storage pool object is a part of the dereference of a
+        non-library level general access type;
+    (D) The access type is a general access type.
+Part 1: Non-generic uses.
+
+BDC1001
+
+Check that the restriction_parameter_argument of restriction
+No_Use_of_Attribute can be any identifier (or one of the allowed
+reserved words).
+
+Check that a use of an attribute mentioned in a restriction
+No_Use_of_Attribute is detected.
+
+Check that the restriction No_Use_of_Attribute only applies to the
+current compilation.
+
+BDC1002
+
+Check that the restriction_parameter_argument of restriction
+No_Specification_of_Aspect can be any identifier.
+
+Check that specification of an aspect (by any means) mentioned in a
+restriction No_Specification_of_Aspect is detected.
+
+Check that the restriction No_Specification_of_Aspect only applies to
+the current compilation.
+
+BDC1003
+
+Check that the restriction_parameter_argument of restriction
+No_Use_of_Pragma can be any identifier.
+
+Check that a use of an pragma mentioned in a restriction
+No_Use_of_Pragma is detected.
+
+Check that the restriction No_Use_of_Pragma only applies to the
+current compilation.
+
 
 BDD2001
 
@@ -2809,6 +3487,16 @@ BDD2005
 
 Check that subprograms specified with aspect_specifications
 for stream attributes meet the requirements for such subprograms.
+
+BDD2006
+
+Check that Legality Rules are enforced when Stream_Size is
+specified with an attribute definition clause.
+
+BDD2007
+
+Check that Legality Rules are enforced when Stream_Size is
+specified with an aspect specification.
 
 BDE0001
 
@@ -3451,7 +4139,17 @@ type or subtype still is determines the items iterated by a for loop
 on the type or subtype even if it is disabled (the applicable assertion
 policy is Ignore).
 
+C324006
 
+Check that a failed predicate check for a type or subtype with a 
+predicate and a Predicate_Failure aspect that does not raise an 
+exception propagates Assertion_Error with the string value resulting
+from the evaluation of the Predicate_Failure aspect.
+
+Check that a predicate is checked when it is enabled by a specific
+pragma.
+
+Check that a dynamic predicate of a type is checked when it is enabled.
 
 C330001
 
@@ -3525,6 +4223,38 @@ C341A04
 
 Check that class-wide objects can be initialized using allocation.
 
+C350001
+
+Check that the object form of the Image attribute works as defined.
+
+C350A01
+
+Check that objects of types with a specified Default_Value are
+appropriately initialized.
+
+Part 1: Normal discrete types.
+
+C350A02
+
+Check that objects of types with a specified Default_Value are
+appropriately initialized.
+
+Part 2: Generic discrete types.
+
+C350B01
+
+Check that objects of types with a specified Default_Value are
+appropriately initialized.
+
+Part 3: Normal real types.
+
+C350B02
+
+Check that objects of types with a specified Default_Value are
+appropriately initialized.
+
+Part 4: Generic real types.
+
 C352001
 
 Check that the predefined Character type comprises 256 positions.
@@ -3543,6 +4273,14 @@ C354003
 Check that the Wide_String attributes of modular types yield correct
 values/results.  The attributes checked are:  Wide_Image Wide_Value
 
+C354004
+
+Check the operation of the Mod attribute.
+
+C35A001
+
+Check that Small can be specified with an aspect specification.
+
 C360002
 
 Check that modular types may be used as array indices.  Check that if
@@ -3550,6 +4288,34 @@ aliased appears in the component_definition of an array_type that each
 component of the array is aliased.  Check that references to aliased
 array objects produce correct results, and that out-of-bounds indexing
 correctly produces Constraint_Error.
+
+C360A01
+
+Check that objects of types with a specified Default_Component_Value are
+appropriately initialized.
+
+Part 1: Arrays of discrete types.
+
+C360A02
+
+Check that objects of types with a specified Default_Component_Value are
+appropriately initialized.
+
+Part 2: Generic arrays of discrete types.
+
+C360B01
+
+Check that objects of types with a specified Default_Component_Value are
+appropriately initialized.
+
+Part 3: Arrays of real types.
+
+C360B02
+
+Check that objects of types with a specified Default_Component_Value are
+appropriately initialized.
+
+Part 4: Generic arrays of real types.
 
 C371001
 
@@ -4352,6 +5118,13 @@ C413006
 Check that if X denotes a task object, an entry call of the form
 X.E is permitted.
 
+C413007
+
+Check that for the reference L.R, if L represents an object or value of
+an access type designating a tagged type T with the value null, and R
+represents an appropriate subprogram for a prefixed view, that
+Constraint_Error is raised when the name L.R is evaluated.
+
 C415001
 
 Check that the reference_object_name is evaluated by the evaluation of
@@ -4408,6 +5181,27 @@ C431001
 Check that a record aggregate can be given for a nonprivate, nonlimited
 record extension and that the tag of the aggregate  values are
 initialized to the tag of the record extension.
+
+C431002
+
+Check that a component association of others => <> in a record or
+extension aggregate may have any number of associated components,
+including none. (Case 2: Null records and extensions.)
+
+Check that for each association with a <> in a record aggregate, if
+the associated component does not have a default expression but the
+type does have a Default_Value, the component is initialized by default
+to the Default_Value.
+
+C431003
+
+Check that the association in a record aggregate for a discriminant
+with a default can be given by <>.
+
+C431004
+
+Check that the association in an extension aggregate for a discriminant
+with a default can be given by <>.
 
 C431A01
 
@@ -4532,6 +5326,18 @@ Check that the constraint of the constrained array subtype of a function
 return is used to determine the bounds of an array aggregate with an
 others choice in the return expression of an expression function.
 
+C433007
+
+Check that an aggregate with an others choice can be assigned into
+an array variable, even if the nominal subtype of the variable is
+unconstrained.
+
+C433008
+
+Check that the constraint of the applicable index constraint of a
+conditional_expression is used to determine the bounds of the body
+expression array aggregate with an others choice.
+
 C433A01
 
 Check that the array component expressions in an array aggregate
@@ -4583,6 +5389,80 @@ the full type is a record type. The partial view of the type may be
 tagged or untagged. Check that predefined equality for a private
 type whose full view is an untagged nonrecord type is defined in terms
 of the predefined equality operator of its full type.
+
+C452002
+
+Check that Ada 2012 memberships can be resolved even when there are
+many choices that are overloaded.
+
+C452003
+
+For a membership where the membership choice is a subtype (determining
+the tested type) which is a (named) general access-to-object type
+designating a tagged type, check that the membership returns False
+unless all of the below are true:
+(1) the type of the tested expression is convertible to the tested type;
+(2) the accessibility level of the tested expression is no deeper than
+    that of the tested type;
+(3) if the tested expression is not null, the tag of the designated
+    object is covered by the designated type of the tested type;
+(4) if the tested subtype excludes null, the tested expression is not
+    null.
+
+C452004
+
+Check that for a membership test with multiple choices, the tested
+expression is evaluated first, and then the choices are evaluated
+in order.
+
+Check that for a membership test with multiple choices, choices after
+the first individual membership test that evaluates True are not
+evaluated.
+
+Check that an individual membership test that is an expression of an
+untagged record yields True if the primitive equals for the type yields
+True, and False otherwise.
+
+C452005
+
+Check that an individual membership test that is an expression of a
+limited array type yields True if the primitive equals for the type yields
+True, and False otherwise.
+
+Check that an individual membership test that is an expression of a
+nonlimited array type yields True if the predefined equals for the type yields
+True, and False otherwise.
+
+C452006
+
+Check that an individual membership test that is an expression of an
+access type yields True if the predefined equals for the type
+yields True, and False otherwise.
+
+C452A01
+
+Check that the "=" operator of a language-defined nonlimited private
+type is used in the equality for a record type containing a component of
+the type. Part 1: Core types.
+
+C452A02
+
+Check that "=" for all language-defined nonlimited private types
+behaves as if it is predefined for composition and for
+formal types - Part 2: Types from the Ada.Strings subsystem.
+
+C452A03
+
+Check that "=" for all language-defined nonlimited private types
+behaves as if it is predefined for composition and for
+formal types - Part 3: Annex C types.
+
+
+
+C453001
+
+Check that overflow checking is not performed for adding operators of
+modular types.
 
 C455001
 
@@ -4674,6 +5554,111 @@ is some, and is False otherwise.
 Check that evaluation of predicates of a quantified expression with
 a loop_parameter_specification stops when the result is determined,
 and no extra evaluations occur.
+
+C458002
+
+(A) Check that the predicate of a quantified expression is evaluated in
+    the order specified by an array component iterator specification.
+
+(B) Check that result of a quantified expression with an
+    array component iterator specification is True if the predicate is
+    True for all values if the quantifier is all and any value if the
+    quantifier is some, and is False otherwise.
+
+(C) Check that evaluation of predicates of a quantified expression with
+    an array component iterator specification stops when the result is
+    determined, and no extra evaluations occur.
+
+(D) Check that if the quantifier is all, the result of a quantified
+    expression is True if there are no values in the domain.
+
+(E) Check that if the quantifier is some, the result of a quantified
+    expression is False if there are no values in the domain.
+
+(F) Check that any exceptions propagated by the predicate of a
+    quantified expression with a quantifier of all is propagated by the
+    quantified expression.
+
+(G) Check that any exceptions propagated by the predicate of a
+    quantified expression with a quantifier of some is propagated by the
+    quantified expression.
+
+C458003
+
+(A) Check that result of a quantified expression with a
+    loop_parameter_specification is True if the predicate is True for
+    all values if the quantifier is all and any value if the quantifier
+    is some, and is False otherwise. (False result cases).
+
+(B) Check that if the quantifier is all, the result of a quantified
+    expression is True if there are no values in the domain.
+
+(C) Check that if the quantifier is some, the result of a quantified
+    expression is False if there are no values in the domain.
+
+(D) Check that any exceptions propagated by the predicate of a
+    quantified expression with a quantifier of all is propagated by the
+    quantified expression.
+
+(E) Check that any exceptions propagated by the predicate of a
+    quantified expression with a quantifier of some is propagated by the
+    quantified expression.
+
+C458A01
+
+(A) Check that the predicate of a quantified expression is evaluated in
+    the order specified by the generalized iterator.
+
+(B) Check that result of a quantified expression with a
+    generalized iterator is True if the predicate is True for
+    all values if the quantifier is all and any value if the quantifier
+    is some, and is False otherwise.
+
+(C) Check that evaluation of predicates of a quantified expression with
+    a generalized iterator stops when the result is determined,
+    and no extra evaluations occur.
+
+(D) Check that if the quantifier is all, the result of a quantified
+    expression is True if there are no values in the domain.
+
+(E) Check that if the quantifier is some, the result of a quantified
+    expression is False if there are no values in the domain.
+
+(F) Check that any exceptions propagated by the predicate of a
+    quantified expression with a quantifier of all is propagated by the
+    quantified expression.
+
+(G) Check that any exceptions propagated by the predicate of a
+    quantified expression with a quantifier of some is propagated by the
+    quantified expression.
+
+C458A02
+
+(A) Check that the predicate of a quantified expression is evaluated in
+    the order specified by the container element iterator.
+
+(B) Check that result of a quantified expression with a
+    container element iterator is True if the predicate is True for
+    all values if the quantifier is all and any value if the quantifier
+    is some, and is False otherwise.
+
+(C) Check that evaluation of predicates of a quantified expression with
+    a container element iterator stops when the result is determined,
+    and no extra evaluations occur.
+
+(D) Check that if the quantifier is all, the result of a quantified
+    expression is True if there are no values in the domain.
+
+(E) Check that if the quantifier is some, the result of a quantified
+    expression is False if there are no values in the domain.
+
+(F) Check that any exceptions propagated by the predicate of a
+    quantified expression with a quantifier of all is propagated by the
+    quantified expression.
+
+(G) Check that any exceptions propagated by the predicate of a
+    quantified expression with a quantifier of some is propagated by the
+    quantified expression.
 
 C460001
 
@@ -4770,6 +5755,13 @@ null. Check access parameters, which null-excluding if:
   (1) not null is given in their definition; or
   (2) the access parameter is controlling.
 
+C460014
+
+Check that if the operand type of a type conversion is
+access-to-class-wide, Constraint_Error is raised if the tag of the
+object designated by the operand does not identify a specific type
+that is covered by or descended from the target type.
+
 C460A01
 
 Check that if the target type of a type conversion is a general access
@@ -4786,6 +5778,24 @@ type is deeper than that of the target type. Check for cases where the
 type conversion occurs in an instance body, and the operand type is
 declared inside the instance or is the anonymous access type of an
 access parameter or access discriminant.
+
+C470001
+
+Check that a qualified expression is a name, and thus can be used:
+   * as the prefix of indexing;
+   * as the prefix of a slice;
+   * as the prefix of selection;
+   * as the prefix of a dereference;
+   * as the prefix of an attribute;
+   * as renamed entity in an object renaming.
+
+C480001
+
+If the designated type of an initialized allocator is class-wide,
+check that Program_Error is raised if the master of the type of the
+tag of the value of the qualified expression of the allocator does
+not include the elaboration of the type of the allocator. Case 1:
+Nested subprograms.
 
 C490001
 
@@ -5062,6 +6072,59 @@ evaluated after evaluating the parameters of a call on S and before S is
 called, and that Assertion_Error is raised if all such expressions
 evaluate to False.
 
+C611A04
+
+Check that the class-wide precondition of a dispatching call is that
+associated with the denoted subprogram, even if the body of a descendant
+operation is invoked.
+
+For a concrete type C derived from an interface type T and a
+primitive subprogram S of T that has a class-wide
+postcondition expression E, check that for a call of S that is
+statically bound to type C, calls to primitive operations of T
+within E invoke the bodies appropriate for T, even if the tag of
+the controlling parameter object is not C.
+
+For an interface type T and a primitive subprogram S of T
+that has a class-wide precondition expression E, check that for a
+dynamically tagged dispatching call of S, calls to primitive operations
+of T within E invoke the bodies appropriate for the controlling tag, even
+if it is not a concrete type derived from T.
+
+For a concrete type C derived from an interface type T and a
+primitive subprogram S of T that has a class-wide
+postcondition expression E, check that for a call of S that is
+statically bound to type C, calls to primitive operations of T
+within E invoke the bodies appropriate for T, even if the tag of
+the controlling parameter object is not C.
+
+For an interface type T and a primitive subprogram S of T
+that has a class-wide postcondition expression E, check that for a
+dynamically tagged dispatching call of S, calls to primitive operations
+of T within E invoke the bodies appropriate for the controlling tag, even
+if it is not a concrete type derived from T.
+
+For a dispatching call, check that the class-wide postcondition evaluated
+is that of the actual body invoked.
+
+Check that if multiple enabled class-wide postconditions apply to a
+subprogram S, check that they are all evaluated if they all evaluate to
+True.
+
+Check that if a subprogram S has multiple applicable class-wide
+preconditions, that all such expressions evaluate to False before
+Assertion_Error is raised.
+
+Check that an enabled class-wide postcondition of a subprogram S is
+evaluated after completing the subprogram body but before continuing
+execution after the call of S, and that Assertion_Error is raised if any
+such expression evaluates to False.
+
+Check that an enabled class-wide precondition of a subprogram S is
+evaluated after evaluating the parameters of a call on S and before S is
+called, and that Assertion_Error is raised if all such expressions
+evaluate to False.
+
 C611B01
 
 For X'Old given in the postcondition for a subprogram S, check that
@@ -5072,12 +6135,24 @@ C611B02
 
 For X'Old given in the postcondition for a subprogram S, check that
 X'Old has the same tag as X when X is a parameter P of S, even if the
-tag of X is different than the nominal subtype of P (Part 1: Post'Class).
+tag of X is different than the nominal subtype of P (Part 2: Post'Class).
+
+C611B03
+
+For X'Old given in the postcondition for a subprogram S, check that
+X'Old has the same tag as X when X is a parameter P of S, even if the
+tag of X is different than the nominal subtype of P. (Part 3:
+Post'Class of an interface)
 
 C620001
 
 Check that elementary parameters are passed by copy.
 Part 1: Integer, float, and access types, procedures and functions.
+
+C620002
+
+Check that elementary parameters are passed by copy.
+Part 2: Integer, float, and access types, task and protected entries.
 
 C631001
 
@@ -5104,6 +6179,18 @@ C641001
 
 Check that actual parameters passed by reference are view converted to
 the nominal subtype of the formal parameter.
+
+C641002
+
+Check that, for an out parameter of a scalar type with a specified
+Default_Value, the value of the actual parameter is passed in without any
+constraint check.
+
+C641003
+
+Check that, for an out parameter of a scalar type with a specified
+Default_Value, the value of the actual parameter is passed in without any
+predicate check.
 
 C650002
 
@@ -5179,6 +6266,20 @@ Check that Program_Error is raised if the tag identified by the result
 object for a function returning a class-wide type has a master that
 does not include the elaboration of the master that elaborated the
 function body. Case 1: Nested subprograms.
+
+C651001
+
+Check that a nonreturning procedure can propagate an exception to
+"return" to the caller. Check that a nonreturning procedure raises
+Program_Error if it attempts to return normally. Case 1: pragma
+No_Return.
+
+C651002
+
+Check that a nonreturning procedure can propagate an exception to
+"return" to the caller. Check that a nonreturning procedure raises
+Program_Error if it attempts to return normally. Case 2: aspect
+No_Return.
 
 C660001
 
@@ -5326,11 +6427,6 @@ Check that an invariant check is never applied to a default-initialized
 object of a type to which invariant expressions apply whose partial
 view has unknown discriminants.
 
-C750B01
-
-Check that no separate anonymous object is used for a limited aggregate
-initializing an object.
-
 C760001
 
 Check that Initialize is called for objects and components of a
@@ -5418,6 +6514,21 @@ C760015
 Check that a controlled type can be declared within a subprogram,
 and that an overridden Initialize or Finalize is called appropriately
 and can access local variables to the subprogram.
+
+C760A01
+
+Check that no separate anonymous object is used for a limited aggregate
+initializing an object.
+
+C760A02
+
+Check that no separate anonymous object is used for a function call
+initializing an object of an immutably limited type.
+
+C760A03
+
+Check that no separate anonymous object is used for a call on any expression
+function that initializes an object of an immutably limited type.
 
 C761001
 
@@ -5702,6 +6813,12 @@ C940016
 Check that an Unchecked_Deallocation of a protected object performs the
 required finalization on the protected object.
 
+C940017
+
+Check that dispatching calls can be made for subprograms inherited from
+a progenator for a protected type and implemented by protected
+operations of the type.
+
 C940A03
 
 Check that a protected object provides coordinated access to shared
@@ -5914,6 +7031,11 @@ With the triggering statement being a delay and with the Asynchronous
 Select statement being in a tasking situation complete the abortable
 part before the delay expires.  Check that the delay is cancelled  and
 that the optional statements in the triggering part are not executed.
+
+C961001
+
+Check that the Image and Value operations of Ada.Calendar.Formatting
+operate as expected.
 
 C974001
 
@@ -6500,6 +7622,11 @@ Check that procedure Assert evaluates its arguments and raises
 Assertion_Error if the boolean expression is True, regardless of
 the Assertion_Policy.
 
+CB50001
+
+Check that checks are made in the scope of an appropriate pragma
+Unsuppress, even if checks are suppressed for the entire containing unit.
+
 CC30001
 
 Check that if a non-overriding primitive subprogram is declared for a
@@ -6905,6 +8032,41 @@ Check that Component_Sizes that are multiples of the word size are
 supported.  Check that for such Component_Sizes arrays contain no gaps
 between components.
 
+CD30010
+
+Check that Component_Sizes that are specified via an aspect specification
+and are multiples of the word size are supported. Check that for such
+Component_Sizes arrays contain no gaps between components.
+
+CD30011
+
+Check that a size specification can be given by an attribute definition
+clause for an enumeration type:
+   * in the visible or private part of a package for a type declared
+     in the visible part;
+   * for a derived enumeration type;
+   * for a derived private type whose full declaration is an
+     enumeration type.
+
+CD30012
+
+Check that a size specification can be given by an attribute definition
+clause for an integer type:
+   * in the visible or private part of a package for a type declared
+     in the visible part;
+   * for a derived integer type;
+   * for a derived private type whose full declaration is an integer type.
+
+CD30013
+
+Check that Program_Error is raised if two distinct declarations of tagged
+types have the same external tag. Part 1: Attribute definition clauses.
+
+CD30014
+
+Check that Program_Error is raised if two distinct declarations of tagged
+types have the same external tag. Part 2: Aspect specifications.
+
 CD40001
 
 Check that Enumeration_Representation_Clauses are supported for codes
@@ -7021,6 +8183,30 @@ components are non-limited or have user-defined attributes.  Check that
 such limited type extension attributes are callable (Defect Report
 8652/0040, as reflected in Technical Corrigendum 1, penultimate sentence
  of 13.13.2(9/1) and 13.13.2(36/1)).
+
+CDD2B01
+
+Check that the default stream attributes read and write the number
+of stream elements specified by their Stream_Size attribute. Part 1:
+attribute definition clauses, confirming values.
+
+CDD2B02
+
+Check that the default stream attributes read and write the number
+of stream elements specified by their Stream_Size attribute. Part 2:
+aspect specifications, confirming values.
+
+CDD2B03
+
+Check that the default stream attributes read and write the number
+of stream elements specified by their Stream_Size attribute. Part 3:
+attribute definition clauses, non-confirming values.
+
+CDD2B04
+
+Check that the default stream attributes read and write the number
+of stream elements specified by their Stream_Size attribute. Part 4:
+aspect specifications, non-confirming values.
 
 CDE0001
 
@@ -7317,15 +8503,6 @@ Check that the functionality found in packages Ada.Strings.Wide_Maps,
 Ada.Strings.Wide_Unbounded, and Ada.Strings.Wide_Maps.Wide_Constants
 is available and produces correct results.
 
-CXA4034
-
-Check that Ada.Strings.Bounded.Slice raises Index_Error if
-High > Length (Source) or Low > Length (Source) + 1.
-(Defect Report 8652/0049).
-
-Check that Ada.Strings.Wide_Bounded.Slice raises Index_Error if
-High > Length (Source) or Low > Length (Source) + 1.
-
 CXA4035
 
 Check that the case insensitive string comparison functions provide
@@ -7340,6 +8517,38 @@ CXA4037
 
 Check that Constraint_Error is raised by Ada.Strings.Fixed.Find_Token if
 Source'First is not in Positive.  (Defect Report 8652/0049).
+
+CXA4038
+
+Check that Ada.Strings.Bounded.Slice raises Index_Error if
+High > Length (Source) or Low > Length (Source) + 1.
+
+Check that the bounds of the result of Ada.Strings.Bounded.Slice are
+Low and High. Check that the bounds of the result of
+Ada.Strings.Bounded.To_String are 1 and Length. 
+
+Check that Ada.Strings.Wide_Bounded.Slice raises Index_Error if
+High > Length (Source) or Low > Length (Source) + 1.
+
+Check that the bounds of the result of Ada.Strings.Wide_Bounded.Slice are
+Low and High. Check that the bounds of the result of
+Ada.Strings.Wide_Bounded.To_Wide_String are 1 and Length. 
+
+CXA4039
+
+Check that Ada.Strings.Unbounded.Slice raises Index_Error if
+High > Length (Source) or Low > Length (Source) + 1.
+
+Check that the bounds of the result of Ada.Strings.Unbounded.Slice are
+Low and High. Check that the bounds of the result of
+Ada.Strings.Unbounded.To_String are 1 and Length. 
+
+Check that Ada.Strings.Wide_Unbounded.Slice raises Index_Error if
+High > Length (Source) or Low > Length (Source) + 1.
+
+Check that the bounds of the result of Ada.Strings.Wide_Unbounded.Slice
+are Low and High. Check that the bounds of the result of
+Ada.Strings.Wide_Unbounded.To_Wide_String are 1 and Length. 
 
 CXA5011
 
@@ -7720,6 +8929,10 @@ CXAC008
 Check that the Reset and Close subprograms defined in package
 Ada.Streams.Stream_IO do not truncate Out_File mode files.
 
+CXAC009
+
+Check that Stream_IO.File_Type has Preeelaborable_Initialization.
+
 CXACA01
 
 Check that the default attributes 'Write and 'Read work properly when
@@ -7766,6 +8979,11 @@ CXAG002
 
 Check that package Ada.Directories.Hierarchical_File_Names exists and
 the functions it contains work as expected.
+
+CXAG003
+
+Check that function Ada.Directories.Name_Case_Equivalence exists and
+that the value returned reflects the actual handling of files.
 
 CXAH001
 
@@ -8030,6 +9248,85 @@ CXAIA14
 
 Check iterators, indexing, and references for package
 Ada.Containers.Indefinite_Multiway_Trees.
+
+CXAIB01
+
+Check that Ada.Containers.Vectors is preelaborated.
+
+Check that type Vector from an instance of Ada.Containers.Vectors
+has Preeelaborable_Initialization, regardless of whether the element
+type has Preelaborable_Initialization.
+
+CXAIB02
+
+Check that Ada.Containers.Bounded_Vectors is preelaborated.
+
+Check that type Vector from an instance of
+Ada.Containers.Bounded_Vectors has Preeelaborable_Initialization if
+the element type has Preelaborable_Initialization.
+
+Check that an instance of Ada.Containers.Bounded_Vectors can be
+used if the element type does not have Preelaborable_Initialization.
+
+CXAIB03
+
+Check that Ada.Containers.Doubly_Linked_Lists is preelaborated.
+
+Check that type List from an instance of
+Ada.Containers.Doubly_Linked_Lists has Preeelaborable_Initialization,
+regardless of whether the element type has
+Preelaborable_Initialization.
+
+CXAIB04
+
+Check that Ada.Containers.Bounded_Doubly_Linked_Lists is preelaborated.
+
+Check that type List from an instance of
+Ada.Containers.Bounded_Doubly_Linked_Lists has
+Preeelaborable_Initialization if the element type has
+Preelaborable_Initialization.
+
+Check that an instance of Ada.Containers.Bounded_Doubly_Linked_Lists
+can be used if the element type does not have
+Preelaborable_Initialization.
+
+CXAIB05
+
+Check that Ada.Containers.Ordered_Maps is preelaborated.
+
+Check that type Map from an instance of Ada.Containers.Ordered_Maps
+has Preeelaborable_Initialization, regardless of whether the element
+type has Preelaborable_Initialization.
+
+CXAIB06
+
+Check that Ada.Containers.Bounded_Ordered_Maps is preelaborated.
+
+Check that type Map from an instance of
+Ada.Containers.Bounded_Ordered_Maps has Preeelaborable_Initialization
+if the element type has Preelaborable_Initialization.
+
+Check that an instance of Ada.Containers.Bounded_Ordered_Maps can be
+used if the element type does not have Preelaborable_Initialization.
+
+CXAIB07
+
+Check that Ada.Containers.Hashed_Maps is preelaborated.
+
+Check that type Map from an instance of Ada.Containers.Hashed_Maps
+has Preeelaborable_Initialization, regardless of whether the element
+type has Preelaborable_Initialization.
+
+CXAIB08
+
+Check that Ada.Containers.Bounded_Hashed_Maps is preelaborated.
+
+Check that type Map from an instance of
+Ada.Containers.Bounded_Ordered_Maps has Preeelaborable_Initialization
+if the element type has Preelaborable_Initialization.
+
+Check that an instance of Ada.Containers.Bounded_Hashed_Maps can be
+used if the element type does not have Preelaborable_Initialization.
 
 CXB2001
 
@@ -9320,7 +10617,8 @@ with compatible 'small values produce exact results.
 
 CXG2023
 
-
+Check that multiplication and division of decimal fixed point
+numbers produce exact results.
 
 CXG2024
 
@@ -9353,11 +10651,6 @@ CXH3003
 
 Check pragma Reviewable. Check that pragma Reviewable is accepted as a
 configuration pragma.
-
-F954A00
-
-This file contains foundation code for tests covering the requeue
-statement.
 
 LA14001
 

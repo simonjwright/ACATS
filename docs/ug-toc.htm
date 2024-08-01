@@ -18,7 +18,7 @@
     </STYLE>
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFE8" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
-<DIV><SPAN Style="font-size:200%; color: rgb(0,0,153)"><B>ACATS 4.1 User's Guide</B></SPAN></DIV>
+<DIV><SPAN Style="font-size:200%; color: rgb(0,0,153)"><B>ACATS 4.2 User's Guide</B></SPAN></DIV>
 <DIV Class="Normal"><I><B><A HREF="UG-TTL.HTM">Title Page</A></B></I></DIV>
 <div style="margin-top: 0.6em; margin-bottom: 0.0em"><A HREF="UG-TOC.HTM"><IMG SRC="CONT.GIF" ALT="Contents" BORDER=0></A>&nbsp;
 &nbsp;<A HREF="UG-02.HTM"><IMG SRC="INDEX.GIF" ALT="Index" BORDER=0></A>&nbsp;
@@ -29,7 +29,7 @@
 <div class="Normal">1. <A HREF="UG-1.HTM">Introduction</A><BR>
     1.1&nbsp;<A HREF="UG-11.HTM">ACATS Purpose</A><BR>
     1.2&nbsp;<A HREF="UG-12.HTM">ACATS Coverage of Ada</A></div>
-<div class="Normal">2. <A HREF="UG-2.HTM">Changes for ACATS 4.1</A></div>
+<div class="Normal">2. <A HREF="UG-2.HTM">Changes for ACATS 4.2</A></div>
 <div class="Normal">3. <A HREF="UG-3.HTM">Test Objectives and Coverage</A><BR>
     3.1&nbsp;<A HREF="UG-31.HTM">Test Objectives and Rules</A><BR>
     3.2&nbsp;<A HREF="UG-32.HTM">Coverage of the Ada Standard</A><BR>
@@ -145,26 +145,25 @@ Listings</A><BR>
     A.3&nbsp;<A HREF="UG-A3.HTM">Foundation Code Files</A><BR>
     A.4&nbsp;<A HREF="UG-A4.HTM">Documentation Files</A><BR>
     A.5&nbsp;<A HREF="UG-A5.HTM">Other Files</A><BR>
-        A.5.1&nbsp;<A HREF="UG-A51.HTM">List of ACATS 4.1 Files</A><BR>
+        A.5.1&nbsp;<A HREF="UG-A51.HTM">List of ACATS 4.2 Files</A><BR>
         A.5.2&nbsp;<A HREF="UG-A52.HTM">Support Units Referenced by Many 
 Tests</A><BR>
         A.5.3&nbsp;<A HREF="UG-A53.HTM">Preprocessing Tools and Data</A><BR>
         A.5.4&nbsp;<A HREF="UG-A54.HTM">Tests for Reporting Code</A><BR>
         A.5.5&nbsp;<A HREF="UG-A55.HTM">Test Grading Tools</A><BR>
     A.6&nbsp;<A HREF="UG-A6.HTM">Tests With Special Requirements</A><BR>
-    A.7&nbsp;<A HREF="UG-A7.HTM">Test Files Added Since ACATS 4.0</A><BR>
+    A.7&nbsp;<A HREF="UG-A7.HTM">Test Files Added Since ACATS 4.1</A><BR>
     A.8&nbsp;<A HREF="UG-A8.HTM">Documentation Files Added Since ACATS 
-4.0</A><BR>
-    A.9&nbsp;<A HREF="UG-A9.HTM">Support Files Added Since ACATS 4.0</A><BR>
-    A.10&nbsp;<A HREF="UG-AA.HTM">Test Files Modified Since ACATS 4.0</A><BR>
+4.1</A><BR>
+    A.9&nbsp;<A HREF="UG-A9.HTM">Support Files Added Since ACATS 4.1</A><BR>
+    A.10&nbsp;<A HREF="UG-AA.HTM">Test Files Modified Since ACATS 4.1</A><BR>
     A.11&nbsp;<A HREF="UG-AB.HTM">Support Files Modified Since ACATS 
-4.0</A><BR>
+4.1</A><BR>
     A.12&nbsp;<A HREF="UG-AC.HTM">Documentation Files Modified Since 
-ACATS 4.0</A><BR>
-    A.13&nbsp;<A HREF="UG-AD.HTM">Test Files Deleted Since ACATS 4.0</A><BR>
+ACATS 4.1</A><BR>
+    A.13&nbsp;<A HREF="UG-AD.HTM">Test Files Deleted Since ACATS 4.1</A><BR>
     A.14&nbsp;<A HREF="UG-AE.HTM">Documentation Files Deleted Since ACATS 
-4.0</A><BR>
-    A.15&nbsp;<A HREF="UG-AF.HTM">Support Files Deleted Since ACATS 4.0</A></div>
+4.1</A></div>
 <div class="Normal">B. <A HREF="UG-B.HTM">Parameterization Files</A><BR>
     B.1&nbsp;<A HREF="UG-B1.HTM">Macro Substitution File</A><BR>
     B.2&nbsp;<A HREF="UG-B2.HTM">Macro Substitution Tests</A><BR>
@@ -190,19 +189,20 @@ Static Expression</A><BR>
         D.1.7&nbsp;<A HREF="UG-D17.HTM">Machine Code Insertions</A><BR>
         D.1.8&nbsp;<A HREF="UG-D18.HTM">Illegal External File Names</A><BR>
         D.1.9&nbsp;<A HREF="UG-D19.HTM">Decimal Types</A><BR>
-        D.1.10&nbsp;<A HREF="UG-D1A.HTM">Instantiation of Sequential_IO 
+        D.1.10&nbsp;<A HREF="UG-D1A.HTM">Stream Sizes</A><BR>
+        D.1.11&nbsp;<A HREF="UG-D1B.HTM">Instantiation of Sequential_IO 
 with indefinite types</A><BR>
-        D.1.11&nbsp;<A HREF="UG-D1B.HTM">Package Ada.Directories.Hierarchical_File_Names</A><BR>
-        D.1.12&nbsp;<A HREF="UG-D1C.HTM">Convention C</A><BR>
-        D.1.13&nbsp;<A HREF="UG-D1D.HTM">Convention COBOL</A><BR>
-        D.1.14&nbsp;<A HREF="UG-D1E.HTM">Convention Fortran</A><BR>
-        D.1.15&nbsp;<A HREF="UG-D1F.HTM">Package Interfaces.C</A><BR>
-        D.1.16&nbsp;<A HREF="UG-D1G.HTM">Package Interfaces.C.Strings</A><BR>
-        D.1.17&nbsp;<A HREF="UG-D1H.HTM">Package Interfaces.C.Pointers</A><BR>
-        D.1.18&nbsp;<A HREF="UG-D1I.HTM">Package Interfaces.COBOL</A><BR>
-        D.1.19&nbsp;<A HREF="UG-D1J.HTM">Package Interfaces.Fortran</A><BR>
-        D.1.20&nbsp;<A HREF="UG-D1K.HTM">Unchecked Unions</A><BR>
-        D.1.21&nbsp;<A HREF="UG-D1L.HTM">Special Handling Tests</A><BR>
+        D.1.12&nbsp;<A HREF="UG-D1C.HTM">Package Ada.Directories.Hierarchical_File_Names</A><BR>
+        D.1.13&nbsp;<A HREF="UG-D1D.HTM">Convention C</A><BR>
+        D.1.14&nbsp;<A HREF="UG-D1E.HTM">Convention COBOL</A><BR>
+        D.1.15&nbsp;<A HREF="UG-D1F.HTM">Convention Fortran</A><BR>
+        D.1.16&nbsp;<A HREF="UG-D1G.HTM">Package Interfaces.C</A><BR>
+        D.1.17&nbsp;<A HREF="UG-D1H.HTM">Package Interfaces.C.Strings</A><BR>
+        D.1.18&nbsp;<A HREF="UG-D1I.HTM">Package Interfaces.C.Pointers</A><BR>
+        D.1.19&nbsp;<A HREF="UG-D1J.HTM">Package Interfaces.COBOL</A><BR>
+        D.1.20&nbsp;<A HREF="UG-D1K.HTM">Package Interfaces.Fortran</A><BR>
+        D.1.21&nbsp;<A HREF="UG-D1L.HTM">Unchecked Unions</A><BR>
+        D.1.22&nbsp;<A HREF="UG-D1M.HTM">Special Handling Tests</A><BR>
     D.2&nbsp;<A HREF="UG-D2.HTM">Reported Inapplicability</A><BR>
         D.2.1&nbsp;<A HREF="UG-D21.HTM">Value of Machine_Overflows is 
 False</A><BR>

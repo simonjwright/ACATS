@@ -177,7 +177,7 @@ package body BDB4001_Tracked_Subpools is
       Tracked_Subpool_Handle is
     begin
         for I in Pool.Allocation_Map'Range loop
-	   declare
+           declare
               Info : Allocator_Info renames Pool.Allocation_Map(I);
            begin
                 if Storage_Address >= Info.Storage_Address and then

@@ -95,5 +95,6 @@ private
    DI2 : Integer := G (DF2);                               -- ERROR: {21}
 -- DI3 : Integer := G (DO1);                               -- OK. {21}
    DI4 : Integer := G (DO2);                               -- ERROR: {21}
+   type Def is tagged null record; 
 
 end B3A1011;
