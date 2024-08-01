@@ -47,6 +47,8 @@
 --       
 -- CHANGE HISTORY:
 --      06 Dec 94   SAIC    ACVC 2.0
+--      30 May 24   RLB     Added uses of Bad_Map to prevent optimization from
+--                          removing the calls that generate Bad_Map.
 --
 --!
 
@@ -185,6 +187,11 @@ begin
       begin
          Bad_Map := Maps.To_Mapping(From => "aa", To => "yz");
          Report.Failed("Exception not raised with repeated character");
+         if Report.Equal (Character'Pos('y'),
+                          Character'Pos(Maps.Value(Bad_Map, 'a'))) then
+            -- Use the map to avoid optimization.
+            Report.Comment ("Shouldn't get here.");
+         end if;
       exception
          when Translation_Error => null;  -- OK
          when others            => 
@@ -200,6 +207,11 @@ begin
       begin
          Bad_Map := Maps.To_Mapping("abc", "yz");
          Report.Failed("Exception not raised with unequal parameter lengths");
+         if Report.Equal (Character'Pos('y'),
+                          Character'Pos(Maps.Value(Bad_Map, 'a'))) then
+            -- Use the map to avoid optimization.
+            Report.Comment ("Shouldn't get here.");
+         end if;
       exception
          when Translation_Error => null;  -- OK
          when others            => 

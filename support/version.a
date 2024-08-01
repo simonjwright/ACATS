@@ -54,11 +54,11 @@
 --     29 Jun 2023  RLB  Issued ACATS Modification List 4.1EE.
 --     10 Jan 2024  RLB  Issued ACATS Modification List 4.1FF.
 --     06 Jun 2024  RLB  Issued ACATS Modification List 4.1GG.
---     10 Jun 2024  RLB  Issued ACATS 4.2.
+--     10 Jun 2024  RLB  Issued ACATS Modification List 4.2A along with ACATS 4.2.
 
 package Version is
 
-   ACATS_Version : constant String := "4.2 ";
+   ACATS_Version : constant String := "4.2A";
       -- Version of ACATS being run (X.XX), including the ACATS Modification
       -- List identifier.
 
